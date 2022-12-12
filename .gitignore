@@ -35,5 +35,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-/firebase/serviceAccount.json
-/app/output.css
+serviceAccount.json
+output.css
