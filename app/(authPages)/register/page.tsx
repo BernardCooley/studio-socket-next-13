@@ -4,13 +4,12 @@ import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
-import CustomButton from "../../../components/CustomButton";
 import {
     generateFormMessages,
     RegisterFormSchema,
 } from "../../../formValidation";
 import { getErrorMessages, getRoute } from "../../../utils";
-import FormDialog from "../../../components/FormDialog";
+import AuthForm from "../../../components/AuthForm";
 
 interface Props {}
 
@@ -93,72 +92,47 @@ const Register = ({}: Props) => {
 
     return (
         <div className="register pt-14" data-testid="register-page">
-            <form
-                onSubmit={handleSubmit}
-                className="w-full flexCenter flex-col p-8"
-                noValidate={true}
-                onClick={onFormClick}
+            <AuthForm
+                handleSubmit={handleSubmit}
+                onFormClick={onFormClick}
+                formMessages={formMessages}
+                showFormMessages={showFormMessages}
+                submitButtonDisabled={submitButtonDisabled}
+                buttonLabel="Register"
             >
-                <div className="text-4xl mb-28">Create account</div>
-
-                <div className="w-full flex flex-col justify-center items-center">
-                    <FormDialog
-                        formMessages={formMessages}
-                        showFormMessages={showFormMessages}
-                    />
-                    <CustomTextInput
-                        id="email"
-                        type="email"
-                        label="Email"
-                        name="email"
-                        className=""
-                        ref={emailRef}
-                        defaultValue={
-                            !isProduction ? "bernardcooley@gmail.com" : ""
-                        }
-                        errorMessages={getErrorMessages(errors, "email")}
-                    />
-                    <CustomTextInput
-                        className=""
-                        type="password"
-                        id="password"
-                        label="Password"
-                        name="password"
-                        ref={passwordRef}
-                        defaultValue={!isProduction ? "Yeloocc1" : ""}
-                        errorMessages={getErrorMessages(errors, "password")}
-                    />
-                    <CustomTextInput
-                        className=""
-                        type="password"
-                        id="repeatPassword"
-                        label="Repeat password"
-                        name="repeatPassword"
-                        ref={repeatPasswordRef}
-                        defaultValue={!isProduction ? "Yeloocc1" : ""}
-                        errorMessages={getErrorMessages(
-                            errors,
-                            "repeatPassword"
-                        )}
-                    />
-                    <CustomButton
-                        label="Register"
-                        type="submit"
-                        buttonClassName="authSubmitButton"
-                        disabled={submitButtonDisabled}
-                    />
-                </div>
-                <div className="absolute bottom-4 right-4">
-                    <span>Already registered?</span>
-                    <CustomButton
-                        label="Log in"
-                        type="button"
-                        buttonClassName=""
-                        labelClassName=""
-                        onClick={() => router.push("/login")}
-                    />
-                </div>
-            </form>
+                <CustomTextInput
+                    id="email"
+                    type="email"
+                    label="Email"
+                    name="email"
+                    className=""
+                    ref={emailRef}
+                    defaultValue={
+                        !isProduction ? "bernardcooley@gmail.com" : ""
+                    }
+                    errorMessages={getErrorMessages(errors, "email")}
+                />
+                <CustomTextInput
+                    className=""
+                    type="password"
+                    id="password"
+                    label="Password"
+                    name="password"
+                    ref={passwordRef}
+                    defaultValue={!isProduction ? "Yeloocc1" : ""}
+                    errorMessages={getErrorMessages(errors, "password")}
+                />
+                <CustomTextInput
+                    className=""
+                    type="password"
+                    id="repeatPassword"
+                    label="Repeat password"
+                    name="repeatPassword"
+                    ref={repeatPasswordRef}
+                    defaultValue={!isProduction ? "Yeloocc1" : ""}
+                    errorMessages={getErrorMessages(errors, "repeatPassword")}
+                />
+            </AuthForm>
         </div>
     );
 };

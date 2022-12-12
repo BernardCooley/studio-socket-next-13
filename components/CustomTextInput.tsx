@@ -28,7 +28,7 @@ const CustomTextInput = forwardRef(
         const [value, setValue] = useState(defaultValue);
 
         return (
-            <div className={`h-36 w-full ${className ? className : ""}`}>
+            <div className={`h-32 w-full ${className ? className : ""}`}>
                 <div className="relative">
                     <input
                         className={`block px-2.5 pb-2.5 pt-5 w-full text-primary text-2xl bg-primary-light border-0 border-b-2 border-primary appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${

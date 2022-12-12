@@ -4,10 +4,9 @@ import React, { useState, useRef, FormEvent, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
-import CustomButton from "../../../components/CustomButton";
-import FormDialog from "../../../components/FormDialog";
 import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
 import { getErrorMessages, getRoute } from "../../../utils";
+import AuthForm from "../../../components/AuthForm";
 
 interface Props {}
 
@@ -84,65 +83,41 @@ const Login = ({}: Props) => {
 
     return (
         <div className="login pt-14" data-testid="login-page">
-            <form
-                onSubmit={handleSubmit}
-                className="w-full flexCenter flex-col p-8"
-                noValidate={true}
-                onClick={onFormClick}
+            <AuthForm
+                handleSubmit={handleSubmit}
+                onFormClick={onFormClick}
+                formMessages={formMessages}
+                showFormMessages={showFormMessages}
+                submitButtonDisabled={submitButtonDisabled}
+                buttonLabel="Login"
             >
-                <div className="text-4xl mb-28">Log in</div>
-
-                <div className="w-full flex flex-col justify-center items-center">
-                    <FormDialog
-                        formMessages={formMessages}
-                        showFormMessages={showFormMessages}
-                    />
-                    <CustomTextInput
-                        id="email"
-                        type="email"
-                        label="Email"
-                        name="email"
-                        className={`${
-                            showFormMessages ? "pointer-events-none" : ""
-                        }`}
-                        defaultValue={
-                            !isProduction ? "bernardcooley@gmail.com" : ""
-                        }
-                        ref={emailRef}
-                        errorMessages={getErrorMessages(errors, "email")}
-                    />
-                    <CustomTextInput
-                        className={`${
-                            showFormMessages ? "pointer-events-none" : ""
-                        }`}
-                        type="password"
-                        id="password"
-                        label="Password"
-                        name="password"
-                        defaultValue={!isProduction ? "Yeloocc1" : ""}
-                        ref={passwordRef}
-                        errorMessages={getErrorMessages(errors, "password")}
-                    />
-                    <CustomButton
-                        label="Log in"
-                        type="submit"
-                        buttonClassName={`authSubmitButton ${
-                            showFormMessages ? "pointer-events-none" : ""
-                        }`}
-                        disabled={submitButtonDisabled}
-                    />
-                </div>
-                <div className="absolute bottom-4 right-4">
-                    <span>Not registered?</span>
-                    <CustomButton
-                        label="Register"
-                        type="button"
-                        buttonClassName=""
-                        labelClassName=""
-                        onClick={() => router.push("/register")}
-                    />
-                </div>
-            </form>
+                <CustomTextInput
+                    id="email"
+                    type="email"
+                    label="Email"
+                    name="email"
+                    className={`${
+                        showFormMessages ? "pointer-events-none" : ""
+                    }`}
+                    defaultValue={
+                        !isProduction ? "bernardcooley@gmail.com" : ""
+                    }
+                    ref={emailRef}
+                    errorMessages={getErrorMessages(errors, "email")}
+                />
+                <CustomTextInput
+                    className={`${
+                        showFormMessages ? "pointer-events-none" : ""
+                    }`}
+                    type="password"
+                    id="password"
+                    label="Password"
+                    name="password"
+                    defaultValue={!isProduction ? "Yeloocc1" : ""}
+                    ref={passwordRef}
+                    errorMessages={getErrorMessages(errors, "password")}
+                />
+            </AuthForm>
         </div>
     );
 };
