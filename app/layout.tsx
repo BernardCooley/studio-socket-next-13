@@ -1,20 +1,27 @@
+"use client";
+
 import Head from "next/head";
 import "./globals.css";
+import { SessionProvider } from "next-auth/react";
 
-export default function RootLayout({
-    children,
-}: {
+interface Props {
     children: React.ReactNode;
-}) {
+
+    session: any;
+}
+
+export default function RootLayout({ children, session }: Props) {
     return (
         <html lang="en">
             <Head>
                 <title>My page title</title>
                 <meta name="viewport" />
             </Head>
-            <body className="h-screen bg-primary-light font-default">
-                {children}
-            </body>
+            <SessionProvider session={session}>
+                <body className="h-screen bg-primary-light font-default">
+                    {children}
+                </body>
+            </SessionProvider>
         </html>
     );
 }
