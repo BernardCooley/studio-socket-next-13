@@ -20,7 +20,7 @@ const CustomButton = ({
     return (
         <button
             disabled={disabled}
-            className={buttonClassName}
+            className={`disabled:opacity-50 disabled:cursor-not-allowed ${buttonClassName}`}
             onClick={onClick}
             type={type}
         >

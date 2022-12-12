@@ -9,6 +9,7 @@ interface Props {
     defaultValue?: string;
     type: string;
     errorMessages: string[];
+    onBlur?: () => void;
 }
 
 const CustomTextInput = forwardRef(
@@ -22,6 +23,7 @@ const CustomTextInput = forwardRef(
             defaultValue,
             type,
             errorMessages,
+            onBlur,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -39,6 +41,7 @@ const CustomTextInput = forwardRef(
                         id={id}
                         value={value}
                         onChange={(e) => setValue(e.target.value)}
+                        onBlur={onBlur}
                         ref={ref}
                         placeholder=" "
                     />

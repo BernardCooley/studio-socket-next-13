@@ -77,8 +77,10 @@ const Register = ({}: Props) => {
                 password: passwordRef.current?.value,
                 repeatPassword: repeatPasswordRef.current?.value,
             });
+            setSubmitButtonDisabled(false);
             return true;
         } catch (err: any) {
+            setSubmitButtonDisabled(true);
             setErrors(err.errors);
             return false;
         }
@@ -87,7 +89,6 @@ const Register = ({}: Props) => {
     const onFormClick = () => {
         setShowFormMessages(false);
         setFormMessages([]);
-        setSubmitButtonDisabled(false);
     };
 
     return (
@@ -111,6 +112,7 @@ const Register = ({}: Props) => {
                         !isProduction ? "bernardcooley@gmail.com" : ""
                     }
                     errorMessages={getErrorMessages(errors, "email")}
+                    onBlur={validate}
                 />
                 <CustomTextInput
                     className=""
@@ -121,6 +123,7 @@ const Register = ({}: Props) => {
                     ref={passwordRef}
                     defaultValue={!isProduction ? "Yeloocc1" : ""}
                     errorMessages={getErrorMessages(errors, "password")}
+                    onBlur={validate}
                 />
                 <CustomTextInput
                     className=""
@@ -131,6 +134,7 @@ const Register = ({}: Props) => {
                     ref={repeatPasswordRef}
                     defaultValue={!isProduction ? "Yeloocc1" : ""}
                     errorMessages={getErrorMessages(errors, "repeatPassword")}
+                    onBlur={validate}
                 />
             </AuthForm>
         </div>

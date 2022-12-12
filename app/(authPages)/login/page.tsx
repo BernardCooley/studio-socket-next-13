@@ -68,8 +68,10 @@ const Login = ({}: Props) => {
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
             });
+            setSubmitButtonDisabled(false);
             return true;
         } catch (err: any) {
+            setSubmitButtonDisabled(true);
             setErrors(err.errors);
             return false;
         }
@@ -78,7 +80,6 @@ const Login = ({}: Props) => {
     const onFormClick = () => {
         setShowFormMessages(false);
         setFormMessages([]);
-        setSubmitButtonDisabled(false);
     };
 
     return (
@@ -104,6 +105,7 @@ const Login = ({}: Props) => {
                     }
                     ref={emailRef}
                     errorMessages={getErrorMessages(errors, "email")}
+                    onBlur={validate}
                 />
                 <CustomTextInput
                     className={`${
@@ -116,6 +118,7 @@ const Login = ({}: Props) => {
                     defaultValue={!isProduction ? "Yeloocc1" : ""}
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
+                    onBlur={validate}
                 />
             </AuthForm>
         </div>
