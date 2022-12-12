@@ -3,6 +3,7 @@
 import Head from "next/head";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import Navigation from "../components/Navigation";
 
 interface Props {
     children: React.ReactNode;
@@ -18,6 +19,7 @@ export default function RootLayout({ children, session }: Props) {
                 <meta name="viewport" />
             </Head>
             <SessionProvider session={session}>
+                <Navigation />
                 <body className="h-screen bg-primary-light font-default">
                     {children}
                 </body>

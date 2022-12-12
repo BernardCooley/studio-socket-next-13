@@ -1,10 +1,13 @@
 "use client";
 
 import React, { useEffect } from "react";
-import Link from "next/link";
 import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import { IFirebaseImage } from "../types";
+import CustomButton from "../components/CustomButton";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { getRoute } from "../utils";
 
 const listItems = [
     "Create a collection of your devices",
@@ -18,12 +21,18 @@ const listItems = [
 interface Props {}
 
 const Landing = ({}: Props) => {
+    const { data: session } = useSession();
+    const router = useRouter();
     const [logo, setLogo] = React.useState<IFirebaseImage | undefined>(
         undefined
     );
     const [tableImage, setTableImage] = React.useState<
         IFirebaseImage | undefined
     >(undefined);
+
+    if (session) {
+        router.push(getRoute("Dashboard").path);
+    }
 
     useEffect(() => {
         getLogo();
@@ -44,8 +53,11 @@ const Landing = ({}: Props) => {
         <div className="Home bg-primary-light">
             <section className="text-primary-light flex flex-col items-center bg-modular bg-centered">
                 <div className="Links p-6 flex justify-between w-full text-2xl font-light">
-                    <Link href="./login">Login</Link>
-                    <Link href="./register">Sign up</Link>
+                    <CustomButton
+                        label="Login/Register"
+                        type="button"
+                        onClick={() => signIn()}
+                    />
                 </div>
                 <div className="Logo w-full flex justify-center">
                     <ImageWithFallback

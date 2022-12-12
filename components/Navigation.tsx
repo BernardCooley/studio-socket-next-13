@@ -1,89 +1,76 @@
+import React, { useState } from "react";
+import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
-import { routes } from "../routes";
-import {
-    AccountCircleRounded,
-    Settings,
-    Logout,
-    Close,
-    Menu,
-} from "@mui/icons-material";
 import { getRoute } from "../utils";
-import { useAuth } from "../contexts/AuthContext";
-import useRouter from "next/router";
-import { useNavigationContext } from "../contexts/NavigationContext";
+import CloseIcon from "@mui/icons-material/Close";
+import Person2Icon from "@mui/icons-material/Person2";
 
 interface Props {}
 
 const Navigation = ({}: Props) => {
-    const router = useRouter;
-    const { logout } = useAuth();
-    const { scrollPosition, scrollingDown } = useNavigationContext();
-    const [showNav, setShowNav] = useState<boolean>(false);
-    const [navScrollClasses, setNavScrollClasses] = useState<string>("");
+    const [isExpanded, setIsexpanded] = useState<boolean>(false);
 
-    useEffect(() => {
-        setNavScrollClasses(getScrollClasses);
-    }, [scrollPosition]);
-
-    const getScrollClasses = () => {
-        if (scrollPosition < 50) return "translate-y-0";
-        if (scrollPosition > 50 && !scrollingDown) return "translate-y-0";
-        return "-translate-y-full";
-    };
-
-    const signOut = async () => {
-        toggleNav();
-        await logout();
-        router.push("/login");
-    };
-
-    const toggleNav = () => {
-        setShowNav(!showNav);
-    };
+    const links = [
+        {
+            name: "Dashboard",
+            path: getRoute("Dashboard").path,
+        },
+        {
+            name: "Devices",
+            path: getRoute("Devices").path,
+        },
+        {
+            name: "Studios",
+            path: getRoute("Studios").path,
+        },
+    ];
 
     return (
-        <div className={`${showNav ? "" : ""}${navScrollClasses}`}>
-            <div>
-                <div onClick={toggleNav} className={``}>
-                    <Close sx={{ fontSize: 40 }} />
-                </div>
+        <div
+            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl ${
+                isExpanded ? "h-72" : "h-11"
+            }`}
+        >
+            <div
+                className={`flex justify-between ${
+                    isExpanded ? "" : "items-center"
+                }`}
+            >
+                {!isExpanded ? (
+                    <MenuIcon
+                        className="text-primary-light h-8 w-8"
+                        onClick={() => setIsexpanded(true)}
+                    />
+                ) : (
+                    <Link className="" href={getRoute("Account").path}>
+                        <Person2Icon className="text-primary-light h-8 w-8" />
+                    </Link>
+                )}
 
-                <div onClick={toggleNav} className={``}>
-                    <Menu sx={{ fontSize: 35 }} />
+                <div
+                    className={`text-primary-light text-2xl ease-in-out duration-200`}
+                >
+                    Studio Socket
                 </div>
             </div>
 
-            <ul className={``}>
-                {routes.map((route) => {
-                    if (route.protected && route.showInNav) {
-                        return (
-                            <li key={route.name} className="">
-                                <Link legacyBehavior passHref href={route.path}>
-                                    <a onClick={toggleNav} className={``}>
-                                        {route.name}
-                                    </a>
-                                </Link>
-                            </li>
-                        );
-                    }
-                })}
-                <div className="">
-                    <Link passHref href={getRoute("Account").path}>
-                        <div onClick={toggleNav} className="">
-                            <AccountCircleRounded sx={{ fontSize: 40 }} />
-                        </div>
+            <div
+                className={`mt-10 font-regular text-primary-light text-3xl w-full flex justify-center items-center flex-col ease-in-out duration-200 ${
+                    isExpanded ? "opacity-100" : "opacity-0"
+                }`}
+            >
+                {links.map((link) => (
+                    <Link key={link.name} className="my-3" href={link.path}>
+                        {link.name}
                     </Link>
-                    <Link passHref href={getRoute("Settings").path}>
-                        <div onClick={toggleNav} className="">
-                            <Settings sx={{ fontSize: 40 }} />
-                        </div>
-                    </Link>
-                    <div className="" onClick={signOut}>
-                        <Logout sx={{ fontSize: 40 }} />
-                    </div>
-                </div>
-            </ul>
+                ))}
+            </div>
+            {isExpanded && (
+                <CloseIcon
+                    className="text-primary-light h-10 w-10 relative bottom-8"
+                    onClick={() => setIsexpanded(false)}
+                />
+            )}
         </div>
     );
 };
