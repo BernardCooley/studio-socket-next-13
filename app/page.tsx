@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { NextPage } from "next";
 import Link from "next/link";
 import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
@@ -18,7 +17,7 @@ const listItems = [
 
 interface Props {}
 
-const Landing: NextPage<any> = ({}: Props) => {
+const Landing = ({}: Props) => {
     const [logo, setLogo] = React.useState<IFirebaseImage | undefined>(
         undefined
     );

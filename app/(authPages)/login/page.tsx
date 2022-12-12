@@ -6,13 +6,12 @@ import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
 import CustomButton from "../../../components/CustomButton";
 import FormDialog from "../../../components/FormDialog";
-import { NextPage } from "next";
 import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
 import { getErrorMessages, getRoute } from "../../../utils";
 
 interface Props {}
 
-const Login: NextPage<any> = ({}: Props) => {
+const Login = ({}: Props) => {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);

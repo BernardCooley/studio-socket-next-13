@@ -6,7 +6,10 @@
         "dev": "concurrently \"next dev\" \"tailwindcss --input ./app/globals.css --output ./app/output.css --watch\"",
         "build": "tailwindcss ./app/globals.css --output ./app/output.css && next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "tsc": "tsc --noEmit",
+        "test": "jest --watch",
+        "jest": "jest"
     },
     "dependencies": {
         "@emotion/react": "11.10.5",
