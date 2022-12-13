@@ -2,13 +2,13 @@
 
 import { signOut } from "next-auth/react";
 import React from "react";
-import CustomButton from "../../components/CustomButton";
+import CustomButton from "../../../components/CustomButton";
 
 interface Props {}
 
-const Dashboard = ({}: Props) => {
+const Account = ({}: Props) => {
     return (
-        <div className="mt-20">
+        <div className="">
             <CustomButton
                 label={"Sign out"}
                 type="submit"
@@ -18,4 +18,4 @@ const Dashboard = ({}: Props) => {
     );
 };
 
-export default Dashboard;
+export default Account;
