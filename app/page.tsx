@@ -5,9 +5,7 @@ import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import { IFirebaseImage } from "../types";
 import CustomButton from "../components/CustomButton";
-import { signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { getRoute } from "../utils";
+import { signIn } from "next-auth/react";
 
 const listItems = [
     "Create a collection of your devices",
@@ -21,18 +19,12 @@ const listItems = [
 interface Props {}
 
 const Landing = ({}: Props) => {
-    const { data: session } = useSession();
-    const router = useRouter();
     const [logo, setLogo] = React.useState<IFirebaseImage | undefined>(
         undefined
     );
     const [tableImage, setTableImage] = React.useState<
         IFirebaseImage | undefined
     >(undefined);
-
-    if (session) {
-        router.push(getRoute("Dashboard").path);
-    }
 
     useEffect(() => {
         getLogo();

@@ -7,7 +7,6 @@ import Navigation from "../components/Navigation";
 
 interface Props {
     children: React.ReactNode;
-
     session: any;
 }
 

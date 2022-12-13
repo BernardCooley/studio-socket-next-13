@@ -1,30 +1,23 @@
 "use client";
 
 import React, { useState, useRef, FormEvent, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
-import { getErrorMessages, getRoute } from "../../../utils";
+import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
-import { useSession, signIn } from "next-auth/react";
+import { signIn } from "next-auth/react";
 
 interface Props {}
 
 const Login = ({}: Props) => {
-    const { data: session } = useSession();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
     const [formMessages, setFormMessages] = useState<string[]>([]);
     const [showFormMessages, setShowFormMessages] = useState<boolean>(false);
-    const router = useRouter();
     const [submitButtonDisabled, setSubmitButtonDisabled] =
         useState<boolean>(false);
     const isProduction = process.env.NODE_ENV === "production";
-
-    if (session) {
-        router.push(getRoute("Dashboard").path);
-    }
 
     useEffect(() => {
         if (formMessages.length > 0) {
