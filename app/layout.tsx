@@ -7,17 +7,16 @@ import Navigation from "../components/Navigation";
 
 interface Props {
     children: React.ReactNode;
-    session: any;
 }
 
-export default function RootLayout({ children, session }: Props) {
+export default function RootLayout({ children }: Props) {
     return (
         <html lang="en">
             <Head>
                 <title>My page title</title>
                 <meta name="viewport" />
             </Head>
-            <SessionProvider session={session}>
+            <SessionProvider>
                 <Navigation />
                 <body className="h-screen bg-primary-light font-default">
                     {children}

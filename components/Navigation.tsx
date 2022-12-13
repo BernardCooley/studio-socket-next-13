@@ -42,7 +42,11 @@ const Navigation = ({}: Props) => {
                         onClick={() => setIsexpanded(true)}
                     />
                 ) : (
-                    <Link className="" href={getRoute("Account").path}>
+                    <Link
+                        className=""
+                        href={getRoute("Account").path}
+                        onClick={() => setIsexpanded(false)}
+                    >
                         <Person2Icon className="text-primary-light h-8 w-8" />
                     </Link>
                 )}
@@ -60,7 +64,12 @@ const Navigation = ({}: Props) => {
                 }`}
             >
                 {links.map((link) => (
-                    <Link key={link.name} className="my-3" href={link.path}>
+                    <Link
+                        key={link.name}
+                        className="my-3"
+                        href={link.path}
+                        onClick={() => setIsexpanded(false)}
+                    >
                         {link.name}
                     </Link>
                 ))}
