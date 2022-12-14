@@ -4,7 +4,7 @@ import FormDialog from "./FormDialog";
 
 interface Props {
     handleSubmit: (e: FormEvent) => Promise<void>;
-    onFormClick: () => void;
+    onFormClick?: () => void;
     formMessages: string[];
     showFormMessages: boolean;
     submitButtonDisabled: boolean;

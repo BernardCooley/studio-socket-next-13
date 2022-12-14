@@ -6,7 +6,6 @@ import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
-import ImageWithFallback from "../../../components/ImageWithFallback";
 
 interface Props {}
 
@@ -19,6 +18,7 @@ const SignIn = ({}: Props) => {
     const [submitButtonDisabled, setSubmitButtonDisabled] =
         useState<boolean>(false);
     const isProduction = process.env.NODE_ENV === "production";
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
         if (formMessages.length > 0) {
@@ -40,9 +40,8 @@ const SignIn = ({}: Props) => {
         e.preventDefault();
 
         if (validate() && errors.length === 0) {
-            setSubmitButtonDisabled(true);
-
             if (emailRef.current && passwordRef.current) {
+                setSubmitting(true);
                 try {
                     await signIn("credentials", {
                         email: emailRef.current.value,
@@ -51,6 +50,7 @@ const SignIn = ({}: Props) => {
                     });
                     clearMessages();
                 } catch (err: any) {
+                    setSubmitting(false);
                     setFormMessages(
                         generateFormMessages(err.code, formMessages)
                     );
@@ -74,23 +74,19 @@ const SignIn = ({}: Props) => {
         }
     };
 
-    const onFormClick = () => {
-        setShowFormMessages(false);
-        setFormMessages([]);
-    };
-
     return (
         <div
-            className="signin pt-14 flex flex-col items-center"
+            className={`signin pt-14 flex flex-col items-center ${
+                submitting ? "opacity-40 pointer-events-none" : ""
+            }`}
             data-testid="signin-page"
         >
             <AuthForm
                 handleSubmit={handleSubmit}
-                onFormClick={onFormClick}
                 formMessages={formMessages}
                 showFormMessages={showFormMessages}
                 submitButtonDisabled={submitButtonDisabled}
-                buttonLabel="Sign in with email and password"
+                buttonLabel={submitting ? "Signing in..." : `Sign in`}
             >
                 <CustomTextInput
                     id="email"
@@ -121,18 +117,6 @@ const SignIn = ({}: Props) => {
                     onBlur={validate}
                 />
             </AuthForm>
-            <ImageWithFallback
-                title=""
-                image={{
-                    url: "/assets/backgrounds/google-sign-in-button.png",
-                    name: "google logo",
-                }}
-                fit="contain"
-                layout="responsive"
-                containerClassname="w-64 h-14"
-                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-                size={{ width: 30, height: 10 }}
-            />
         </div>
     );
 };

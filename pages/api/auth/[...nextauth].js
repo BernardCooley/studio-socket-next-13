@@ -1,15 +1,10 @@
 import NextAuth from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../../firebase/clientApp";
 
 export default NextAuth({
     providers: [
-        GoogleProvider({
-            clientId: process.env.GOOGLE_ID,
-            clientSecret: process.env.GOOGLE_SECRET,
-        }),
         CredentialsProvider({
             name: "Credentials",
             credentials: {},
@@ -43,22 +38,6 @@ export default NextAuth({
             session.accessToken = token.accessToken;
             session.user.id = token.sub;
             return session;
-        },
-        async signIn({ credentials, provider }) {
-            if (provider === "google") {
-                try {
-                    await signInWithEmailAndPassword(
-                        auth,
-                        credentials.email,
-                        credentials.password
-                    );
-                    return true;
-                } catch (e) {
-                    return false;
-                }
-            } else {
-                return true;
-            }
         },
     },
 });
