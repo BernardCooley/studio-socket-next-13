@@ -1141,6 +1141,4 @@ export interface IFirebaseImage {
 export interface IRoute {
     name: string;
     path: string;
-    protected: boolean;
-    showInNav: boolean;
 }

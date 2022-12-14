@@ -74,5 +74,5 @@ a {
 }
 
 .authSubmitButton {
-    @apply w-32 bg-primary text-primary-light text-2xl py-2 rounded-lg font-bold font-medium mb-4;
+    @apply w-auto bg-primary text-primary-light text-2xl p-4 rounded-lg font-bold font-medium mb-4;
 }

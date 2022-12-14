@@ -1,7 +1,6 @@
 "use client";
 
 import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { useAuth } from "../../../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
 import {
@@ -19,7 +18,6 @@ const Register = ({}: Props) => {
     const repeatPasswordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
     const router = useRouter();
-    const { register } = useAuth();
     const [formMessages, setFormMessages] = useState<string[]>([]);
     const [showFormMessages, setShowFormMessages] = useState<boolean>(false);
     const [submitButtonDisabled, setSubmitButtonDisabled] =
@@ -55,10 +53,6 @@ const Register = ({}: Props) => {
                 repeatPasswordRef.current
             ) {
                 try {
-                    await register(
-                        emailRef.current.value,
-                        passwordRef.current.value
-                    );
                     clearMessages();
                     router.push(getRoute("Dashboard").path);
                 } catch (err: any) {

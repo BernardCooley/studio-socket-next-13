@@ -5,7 +5,8 @@ import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import { IFirebaseImage } from "../types";
 import CustomButton from "../components/CustomButton";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { getRoute } from "../utils";
 
 const listItems = [
     "Create a collection of your devices",
@@ -19,6 +20,7 @@ const listItems = [
 interface Props {}
 
 const Landing = ({}: Props) => {
+    const router = useRouter();
     const [logo, setLogo] = React.useState<IFirebaseImage | undefined>(
         undefined
     );
@@ -46,9 +48,14 @@ const Landing = ({}: Props) => {
             <section className="text-primary-light flex flex-col items-center bg-modular bg-centered">
                 <div className="Links p-6 flex justify-between w-full text-2xl font-light">
                     <CustomButton
-                        label="Login/Register"
+                        label="Sign in"
                         type="button"
-                        onClick={() => signIn()}
+                        onClick={() => router.push(getRoute("SignIn").path)}
+                    />
+                    <CustomButton
+                        label="Register"
+                        type="button"
+                        onClick={() => router.push(getRoute("Register").path)}
                     />
                 </div>
                 <div className="Logo w-full flex justify-center">

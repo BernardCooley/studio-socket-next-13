@@ -6,10 +6,11 @@ import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
+import ImageWithFallback from "../../../components/ImageWithFallback";
 
 interface Props {}
 
-const Login = ({}: Props) => {
+const SignIn = ({}: Props) => {
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
@@ -43,9 +44,10 @@ const Login = ({}: Props) => {
 
             if (emailRef.current && passwordRef.current) {
                 try {
-                    signIn("credentials", {
+                    await signIn("credentials", {
                         email: emailRef.current.value,
                         password: passwordRef.current.value,
+                        callbackUrl: "/dashboard",
                     });
                     clearMessages();
                 } catch (err: any) {
@@ -78,14 +80,17 @@ const Login = ({}: Props) => {
     };
 
     return (
-        <div className="login pt-14" data-testid="login-page">
+        <div
+            className="signin pt-14 flex flex-col items-center"
+            data-testid="signin-page"
+        >
             <AuthForm
                 handleSubmit={handleSubmit}
                 onFormClick={onFormClick}
                 formMessages={formMessages}
                 showFormMessages={showFormMessages}
                 submitButtonDisabled={submitButtonDisabled}
-                buttonLabel="Login"
+                buttonLabel="Sign in with email and password"
             >
                 <CustomTextInput
                     id="email"
@@ -116,8 +121,20 @@ const Login = ({}: Props) => {
                     onBlur={validate}
                 />
             </AuthForm>
+            <ImageWithFallback
+                title=""
+                image={{
+                    url: "/assets/backgrounds/google-sign-in-button.png",
+                    name: "google logo",
+                }}
+                fit="contain"
+                layout="responsive"
+                containerClassname="w-64 h-14"
+                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+                size={{ width: 30, height: 10 }}
+            />
         </div>
     );
 };
 
-export default Login;
+export default SignIn;

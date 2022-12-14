@@ -11,9 +11,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
     const getPageProps = (page: string | null) => {
         switch (page) {
-            case "login":
+            case "signin":
                 return {
-                    title: "Log in",
+                    title: "Sign in",
                     buttonText: "Log in",
                     linkText: "Not registered? Register now",
                     linkTo: "/register",
@@ -23,11 +23,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     title: "Register",
                     buttonText: "Register",
                     linkText: "Already registered? Log in",
-                    linkTo: "/login",
+                    linkTo: "/signin",
                 };
             default:
                 return {
-                    title: "Log in",
+                    title: "Sign in",
                     buttonText: "Log in",
                     linkText: "Not registered? Register now",
                     linkTo: "/register",

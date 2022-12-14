@@ -1,4 +1,4 @@
 import { collection } from "firebase/firestore";
-import { db } from "./clientApp";
+import { firestore } from "./clientApp";
 
-export const devicesRef = collection(db, "devices");
+export const devicesRef = collection(firestore, "devices");
