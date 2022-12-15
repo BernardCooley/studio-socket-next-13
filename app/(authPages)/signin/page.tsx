@@ -3,15 +3,16 @@
 import React, { useState, useRef, FormEvent, useEffect } from "react";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { getFormMessages, LoginFormSchema } from "../../../formValidation";
-import { getErrorMessages } from "../../../utils";
+import { getErrorMessages, noop } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "../../../contexts/AuthContext";
 
 interface Props {}
 
 const SignIn = ({}: Props) => {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const { updateDialogMessages, dialogMessages, updateIcon } =
         useAuthContext();
@@ -21,7 +22,6 @@ const SignIn = ({}: Props) => {
     const [errors, setErrors] = useState([]);
     const [submitButtonDisabled, setSubmitButtonDisabled] =
         useState<boolean>(false);
-    const isProduction = process.env.NODE_ENV === "production";
     const [submitting, setSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
@@ -79,6 +79,9 @@ const SignIn = ({}: Props) => {
                 handleSubmit={handleSubmit}
                 submitButtonDisabled={submitButtonDisabled}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
+                onFormClick={
+                    dialogMessages.length > 0 ? () => router.back() : noop
+                }
             >
                 <CustomTextInput
                     id="email"
@@ -88,9 +91,6 @@ const SignIn = ({}: Props) => {
                     className={`${
                         dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
-                    defaultValue={
-                        !isProduction ? "bernardcooley@gmail.com" : ""
-                    }
                     ref={emailRef}
                     errorMessages={getErrorMessages(errors, "email")}
                     onBlur={validate}
@@ -103,7 +103,6 @@ const SignIn = ({}: Props) => {
                     id="password"
                     label="Password"
                     name="password"
-                    defaultValue={!isProduction ? "Yeloocc1" : ""}
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
                     onBlur={validate}
