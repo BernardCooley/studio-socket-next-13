@@ -81,5 +81,5 @@ input:-webkit-autofill:active {
 }
 
 .authSubmitButton {
-    @apply w-auto bg-primary text-primary-light text-2xl p-4 rounded-lg font-bold font-medium mb-4;
+    @apply bg-primary text-primary-light text-2xl p-4 rounded-lg font-bold font-medium mb-4 min-w-formSubmitButton;
 }
