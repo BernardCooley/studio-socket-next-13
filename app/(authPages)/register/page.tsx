@@ -3,10 +3,7 @@
 import React, { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import CustomTextInput from "../../../components/CustomTextInput";
-import {
-    generateFormMessages,
-    RegisterFormSchema,
-} from "../../../formValidation";
+import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
 import { getErrorMessages, getRoute } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 
@@ -56,9 +53,7 @@ const Register = ({}: Props) => {
                     clearMessages();
                     router.push(getRoute("Dashboard").path);
                 } catch (err: any) {
-                    setFormMessages(
-                        generateFormMessages(err.code, formMessages)
-                    );
+                    setFormMessages(getFormMessages(err.code, formMessages));
                 }
             }
         }

@@ -3,6 +3,7 @@
 import Head from "next/head";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { AuthContextProvider } from "../contexts/AuthContext";
 
 interface Props {
     children: React.ReactNode;
@@ -16,8 +17,14 @@ export default function RootLayout({ children }: Props) {
                 <meta name="viewport" />
             </Head>
             <SessionProvider>
-                <body className="h-screen bg-primary-light font-default">
-                    {children}
+                <body className="relative">
+                    <AuthContextProvider>
+                        <div
+                            className={`h-screen bg-primary-light font-default`}
+                        >
+                            {children}
+                        </div>
+                    </AuthContextProvider>
                 </body>
             </SessionProvider>
         </html>

@@ -2,36 +2,34 @@
 
 import React, { useState, useRef, FormEvent, useEffect } from "react";
 import CustomTextInput from "../../../components/CustomTextInput";
-import { generateFormMessages, LoginFormSchema } from "../../../formValidation";
+import { getFormMessages, LoginFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
+import { useAuthContext } from "../../../contexts/AuthContext";
 
 interface Props {}
 
 const SignIn = ({}: Props) => {
+    const searchParams = useSearchParams();
+    const { updateDialogMessages, dialogMessages, updateIcon } =
+        useAuthContext();
+
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
-    const [formMessages, setFormMessages] = useState<string[]>([]);
-    const [showFormMessages, setShowFormMessages] = useState<boolean>(false);
     const [submitButtonDisabled, setSubmitButtonDisabled] =
         useState<boolean>(false);
     const isProduction = process.env.NODE_ENV === "production";
     const [submitting, setSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
-        if (formMessages.length > 0) {
-            setShowFormMessages(true);
-        } else {
-            setShowFormMessages(false);
-        }
-    }, [formMessages]);
+        const messages = getFormMessages(searchParams.getAll("error")[0]);
+        updateDialogMessages(messages);
+    }, []);
 
     const clearMessages = () => {
-        setFormMessages([]);
-        setShowFormMessages(false);
-        setErrors([]);
         setSubmitButtonDisabled(false);
     };
 
@@ -46,14 +44,10 @@ const SignIn = ({}: Props) => {
                     await signIn("credentials", {
                         email: emailRef.current.value,
                         password: passwordRef.current.value,
-                        callbackUrl: "/dashboard",
+                        callbackUrl: "/account",
                     });
-                    clearMessages();
                 } catch (err: any) {
-                    setSubmitting(false);
-                    setFormMessages(
-                        generateFormMessages(err.code, formMessages)
-                    );
+                    console.error(err);
                 }
             }
         }
@@ -83,8 +77,6 @@ const SignIn = ({}: Props) => {
         >
             <AuthForm
                 handleSubmit={handleSubmit}
-                formMessages={formMessages}
-                showFormMessages={showFormMessages}
                 submitButtonDisabled={submitButtonDisabled}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
             >
@@ -94,7 +86,7 @@ const SignIn = ({}: Props) => {
                     label="Email"
                     name="email"
                     className={`${
-                        showFormMessages ? "pointer-events-none" : ""
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
                     defaultValue={
                         !isProduction ? "bernardcooley@gmail.com" : ""
@@ -105,7 +97,7 @@ const SignIn = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        showFormMessages ? "pointer-events-none" : ""
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
                     type="password"
                     id="password"

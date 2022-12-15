@@ -3,7 +3,6 @@
 import React, { useEffect } from "react";
 import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
-import { IFirebaseImage } from "../types";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { getRoute } from "../utils";
@@ -21,12 +20,8 @@ interface Props {}
 
 const Landing = ({}: Props) => {
     const router = useRouter();
-    const [logo, setLogo] = React.useState<IFirebaseImage | undefined>(
-        undefined
-    );
-    const [tableImage, setTableImage] = React.useState<
-        IFirebaseImage | undefined
-    >(undefined);
+    const [logo, setLogo] = React.useState(undefined);
+    const [tableImage, setTableImage] = React.useState(undefined);
 
     useEffect(() => {
         getLogo();

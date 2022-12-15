@@ -5,8 +5,6 @@ import FormDialog from "./FormDialog";
 interface Props {
     handleSubmit: (e: FormEvent) => Promise<void>;
     onFormClick?: () => void;
-    formMessages: string[];
-    showFormMessages: boolean;
     submitButtonDisabled: boolean;
     children: React.ReactNode;
     buttonLabel: string;
@@ -15,8 +13,6 @@ interface Props {
 const AuthForm = ({
     handleSubmit,
     onFormClick,
-    formMessages,
-    showFormMessages,
     submitButtonDisabled,
     children,
     buttonLabel,
@@ -29,17 +25,11 @@ const AuthForm = ({
             onClick={onFormClick}
         >
             <div className="w-full flex flex-col justify-center items-center">
-                <FormDialog
-                    formMessages={formMessages}
-                    showFormMessages={showFormMessages}
-                />
                 {children}
                 <CustomButton
                     label={buttonLabel}
                     type="submit"
-                    buttonClassName={`authSubmitButton ${
-                        showFormMessages ? "pointer-events-none" : ""
-                    }`}
+                    buttonClassName={`authSubmitButton`}
                     disabled={submitButtonDisabled}
                 />
             </div>

@@ -11,26 +11,31 @@ export default NextAuth({
             async authorize(credentials) {
                 const { email, password } = credentials;
 
-                try {
-                    const res = await signInWithEmailAndPassword(
-                        auth,
-                        email,
-                        password
-                    );
+                const signInPromise = new Promise((resolve, reject) => {
+                    signInWithEmailAndPassword(auth, email, password)
+                        .then((userCredential) => {
+                            resolve(userCredential.user);
+                        })
+                        .catch((error) => {
+                            reject(error);
+                        });
+                });
 
-                    const user = {
-                        email: res.user.email,
+                const res = await signInPromise;
+
+                if (res.email) {
+                    return {
+                        email: res.email,
                     };
-
-                    return user;
-                } catch (e) {
-                    return null;
                 }
+
+                return null;
             },
         }),
     ],
     pages: {
         signIn: "/signin",
+        error: "/signin",
     },
     secret: process.env.JWT_SECRET,
     callbacks: {

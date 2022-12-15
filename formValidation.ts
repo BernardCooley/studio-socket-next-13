@@ -27,14 +27,15 @@ export const RegisterFormSchema = z
         }
     });
 
-export const generateFormMessages = (
+export const getFormMessages = (
     errorCode: any,
-    formMessages: string[]
+    formMessages: string[] = []
 ) => {
+    // TODO: Match all other error codes
     const messages = [];
 
     if (
-        errorCode === "auth/user-not-found" ||
+        errorCode === "Firebase: Error (auth/user-not-found)." ||
         errorCode === "auth/wrong-password"
     ) {
         messages.push("Email/password incorrect.");

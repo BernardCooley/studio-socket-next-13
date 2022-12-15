@@ -18,6 +18,9 @@ module.exports = {
             scale: {
                 85: ".85",
             },
+            minHeight: {
+                dialog: "100px",
+            },
             boxShadow: {
                 "3xl": "0 0 26px 11px #383b43",
             },
