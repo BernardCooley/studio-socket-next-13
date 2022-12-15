@@ -9,6 +9,9 @@ export const LoginFormSchema = z.object({
 
 export const RegisterFormSchema = z
     .object({
+        username: z
+            .string()
+            .min(3, { message: "Username must be 3 or more characters" }),
         email: z.string().email(),
         password: z
             .string()
@@ -34,6 +37,18 @@ export const getFormMessages = (
     const messages: string[] = [];
 
     const errorMessages = [
+        {
+            code: "email-already-exists",
+            message: "Email already exists.",
+        },
+        {
+            code: "invalid-argument",
+            message: "Sometghing went wrong. Please try again later.",
+        },
+        {
+            code: "internal-error",
+            message: "Sometghing went wrong. Please try again later.",
+        },
         {
             code: "Firebase: Error (auth/user-not-found).",
             message: "Email/password incorrect.",
@@ -65,6 +80,10 @@ export const getFormMessages = (
             messages.push(message.message);
         }
     });
+
+    if (messages.length === 0) {
+        messages.push("An error has occurred. Please try again later");
+    }
 
     return [...formMessages, ...messages];
 };

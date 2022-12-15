@@ -1,59 +1,69 @@
 "use client";
 
-import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { FormEvent, useRef, useState } from "react";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
-import { getErrorMessages, getRoute } from "../../../utils";
+import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
+import { useAuthContext } from "../../../contexts/AuthContext";
+import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import { auth, db } from "../../../firebase/clientApp";
+import { signIn } from "next-auth/react";
+import { doc, setDoc } from "firebase/firestore";
 
 interface Props {}
 
 const Register = ({}: Props) => {
+    const { updateDialogMessages, dialogMessages } = useAuthContext();
     const emailRef = useRef<HTMLInputElement>(null);
+    const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const repeatPasswordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
-    const router = useRouter();
-    const [formMessages, setFormMessages] = useState<string[]>([]);
-    const [showFormMessages, setShowFormMessages] = useState<boolean>(false);
-    const [submitButtonDisabled, setSubmitButtonDisabled] =
-        useState<boolean>(false);
-
-    const isProduction = process.env.NODE_ENV === "production";
-
-    useEffect(() => {
-        if (formMessages.length > 0) {
-            setShowFormMessages(true);
-        } else {
-            setShowFormMessages(false);
-        }
-    }, [formMessages]);
+    const [submitting, setSubmitting] = useState<boolean>(false);
 
     const clearMessages = () => {
-        setFormMessages([]);
-        setShowFormMessages(false);
         setErrors([]);
-        setSubmitButtonDisabled(false);
+        setSubmitting(false);
     };
 
     const handleSubmit = async (e: FormEvent) => {
+        setSubmitting(true);
         clearMessages();
         e.preventDefault();
 
         if (validate() && errors.length === 0) {
-            setSubmitButtonDisabled(true);
-
             if (
+                usernameRef.current &&
                 emailRef.current &&
                 passwordRef.current &&
                 repeatPasswordRef.current
             ) {
+                let user = null;
                 try {
-                    clearMessages();
-                    router.push(getRoute("Dashboard").path);
+                    user = await createUserWithEmailAndPassword(
+                        auth,
+                        emailRef.current.value,
+                        passwordRef.current.value
+                    );
+
+                    await setDoc(doc(db, "users", user.user.uid), {
+                        username: usernameRef.current.value,
+                    });
+
+                    await signIn("credentials", {
+                        email: emailRef.current.value,
+                        password: passwordRef.current.value,
+                        callbackUrl: "/account",
+                    });
                 } catch (err: any) {
-                    setFormMessages(getFormMessages(err.code, formMessages));
+                    if (user) {
+                        await deleteUser(user.user);
+                    }
+                    setSubmitting(false);
+                    updateDialogMessages(
+                        getFormMessages(err.code, dialogMessages)
+                    );
                 }
             }
         }
@@ -62,68 +72,81 @@ const Register = ({}: Props) => {
     const validate = () => {
         try {
             RegisterFormSchema.parse({
+                username: usernameRef.current?.value,
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
                 repeatPassword: repeatPasswordRef.current?.value,
             });
-            setSubmitButtonDisabled(false);
             return true;
         } catch (err: any) {
-            setSubmitButtonDisabled(true);
             setErrors(err.errors);
             return false;
         }
     };
 
-    const onFormClick = () => {
-        setShowFormMessages(false);
-        setFormMessages([]);
-    };
-
     return (
-        <div className="register pt-14" data-testid="register-page">
+        <div
+            className={`register pt-14 flex flex-col items-center ${
+                submitting ? "opacity-40 pointer-events-none" : ""
+            }`}
+            data-testid="register-page"
+        >
             <AuthForm
                 handleSubmit={handleSubmit}
-                onFormClick={onFormClick}
-                formMessages={formMessages}
-                showFormMessages={showFormMessages}
-                submitButtonDisabled={submitButtonDisabled}
+                submitButtonDisabled={submitting}
                 buttonLabel="Register"
             >
                 <CustomTextInput
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
+                    id="username"
+                    type="text"
+                    label="Username"
+                    name="username"
+                    ref={usernameRef}
+                    errorMessages={getErrorMessages(errors, "username")}
+                    onBlur={validate}
+                    defaultValue="test"
+                />
+                <CustomTextInput
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
                     id="email"
                     type="email"
                     label="Email"
                     name="email"
-                    className=""
                     ref={emailRef}
-                    defaultValue={
-                        !isProduction ? "bernardcooley@gmail.com" : ""
-                    }
                     errorMessages={getErrorMessages(errors, "email")}
                     onBlur={validate}
+                    defaultValue="bernardcooley1@gmail.com"
                 />
                 <CustomTextInput
-                    className=""
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
                     type="password"
                     id="password"
                     label="Password"
                     name="password"
                     ref={passwordRef}
-                    defaultValue={!isProduction ? "Yeloocc1" : ""}
                     errorMessages={getErrorMessages(errors, "password")}
                     onBlur={validate}
+                    defaultValue="password"
                 />
                 <CustomTextInput
-                    className=""
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
                     type="password"
                     id="repeatPassword"
                     label="Repeat password"
                     name="repeatPassword"
                     ref={repeatPasswordRef}
-                    defaultValue={!isProduction ? "Yeloocc1" : ""}
                     errorMessages={getErrorMessages(errors, "repeatPassword")}
                     onBlur={validate}
+                    defaultValue="password"
                 />
             </AuthForm>
         </div>

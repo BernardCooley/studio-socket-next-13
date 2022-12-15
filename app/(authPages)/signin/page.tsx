@@ -14,14 +14,10 @@ interface Props {}
 const SignIn = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { updateDialogMessages, dialogMessages, updateIcon } =
-        useAuthContext();
-
+    const { updateDialogMessages, dialogMessages } = useAuthContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
-    const [submitButtonDisabled, setSubmitButtonDisabled] =
-        useState<boolean>(false);
     const [submitting, setSubmitting] = useState<boolean>(false);
 
     useEffect(() => {
@@ -30,7 +26,7 @@ const SignIn = ({}: Props) => {
     }, []);
 
     const clearMessages = () => {
-        setSubmitButtonDisabled(false);
+        setSubmitting(false);
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -59,10 +55,10 @@ const SignIn = ({}: Props) => {
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
             });
-            setSubmitButtonDisabled(false);
+            setSubmitting(true);
             return true;
         } catch (err: any) {
-            setSubmitButtonDisabled(true);
+            setSubmitting(false);
             setErrors(err.errors);
             return false;
         }
@@ -77,20 +73,20 @@ const SignIn = ({}: Props) => {
         >
             <AuthForm
                 handleSubmit={handleSubmit}
-                submitButtonDisabled={submitButtonDisabled}
+                submitButtonDisabled={submitting}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
                 onFormClick={
                     dialogMessages.length > 0 ? () => router.back() : noop
                 }
             >
                 <CustomTextInput
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
                     id="email"
                     type="email"
                     label="Email"
                     name="email"
-                    className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
-                    }`}
                     ref={emailRef}
                     errorMessages={getErrorMessages(errors, "email")}
                     onBlur={validate}

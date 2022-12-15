@@ -20,7 +20,7 @@ const AuthForm = ({
     return (
         <form
             onSubmit={handleSubmit}
-            className="w-full flexCenter flex-col p-8"
+            className="w-full flexCenter flex-col p-8 bg-primary-light"
             noValidate={true}
             onClick={onFormClick}
         >

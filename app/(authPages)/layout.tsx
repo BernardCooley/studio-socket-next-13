@@ -65,7 +65,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     {getPageProps(currentPage).title}
                 </div>
                 <div className="w-full">{children}</div>
-                <div className="absolute bottom-4 right-4">
+                <div className="absolute top-4 right-4">
                     <CustomButton
                         label={getPageProps(currentPage).linkText}
                         type="button"
