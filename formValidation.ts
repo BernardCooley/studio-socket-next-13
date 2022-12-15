@@ -31,30 +31,40 @@ export const getFormMessages = (
     errorCode: any,
     formMessages: string[] = []
 ) => {
-    // TODO: Match all other error codes
-    const messages = [];
+    const messages: string[] = [];
 
-    if (
-        errorCode === "Firebase: Error (auth/user-not-found)." ||
-        errorCode === "auth/wrong-password"
-    ) {
-        messages.push("Email/password incorrect.");
-    }
+    const errorMessages = [
+        {
+            code: "Firebase: Error (auth/user-not-found).",
+            message: "Email/password incorrect.",
+        },
+        {
+            code: "Firebase: Error (auth/wrong-password).",
+            message: "Email/password incorrect.",
+        },
+        {
+            code: "Firebase: Error (auth/too-many-requests).",
+            message: "Too many attempts. Please try again later.",
+        },
+        {
+            code: "Firebase: Error (auth/email-already-exists).",
+            message: "User already exists.",
+        },
+        {
+            code: "Firebase: Error (auth/email-already-in-use).",
+            message: "User already exists.",
+        },
+        {
+            code: "Firebase: Error (auth/internal-error).",
+            message: "An error has occurred. Please try again later",
+        },
+    ];
 
-    if (errorCode === "auth/too-many-requests") {
-        messages.push("Too many attempts. Please try again later.");
-    }
-
-    if (
-        errorCode === "auth/email-already-exists" ||
-        errorCode === "auth/email-already-in-use"
-    ) {
-        messages.push("User already exists.");
-    }
-
-    if (errorCode === "auth/internal-error") {
-        messages.push("An error has occurred. Please try again later");
-    }
+    errorMessages.forEach((message) => {
+        if (errorCode === message.code) {
+            messages.push(message.message);
+        }
+    });
 
     return [...formMessages, ...messages];
 };
