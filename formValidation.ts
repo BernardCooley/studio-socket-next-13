@@ -19,6 +19,12 @@ export const RegisterFormSchema = z
         repeatPassword: z
             .string()
             .min(8, { message: "Password must be 8 or more characters" }),
+        avatar: z
+            .string()
+            .regex(/jpg|jpeg|png/, {
+                message: "Invalid file type (only jpg, jpeg and png allowed)",
+            })
+            .optional(),
     })
     .superRefine(({ repeatPassword, password }, ctx) => {
         if (repeatPassword !== password) {

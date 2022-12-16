@@ -16,6 +16,8 @@ interface Props {
     isFile?: boolean;
     borderless?: boolean;
     scaleLabel?: boolean;
+    hide?: boolean;
+    resetValue?: boolean;
 }
 
 const CustomTextInput = forwardRef(
@@ -34,6 +36,8 @@ const CustomTextInput = forwardRef(
             isFile,
             borderless,
             scaleLabel,
+            hide,
+            resetValue,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -49,16 +53,29 @@ const CustomTextInput = forwardRef(
         };
 
         const [value, setValue] = useState(defaultValue);
+        const [firstLoad, setFirstLoad] = useState(true);
+
+        useEffect(() => {
+            if (!firstLoad) {
+                updateFile("");
+                setValue("");
+            }
+            setFirstLoad(false);
+        }, [resetValue]);
 
         return (
-            <div className={`h-32 w-full ${className ? className : ""}`}>
+            <div
+                className={`w-full ${className ? className : ""} ${
+                    hide ? "h-4" : "h-32"
+                }`}
+            >
                 <div className="relative">
                     <input
                         className={`block px-2.5 pb-2.5 pt-5 w-full text-primary text-2xl bg-primary-light border-primary appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${inputClassName} ${
                             borderless
                                 ? "border-0 border-b-0"
                                 : "border-0 border-b-2"
-                        }`}
+                        } ${hide ? "opacity-0 h-0 pointer-events-none" : ""}`}
                         type={type}
                         name={name}
                         id={id}

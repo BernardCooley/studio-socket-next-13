@@ -11,10 +11,12 @@ import { auth, db } from "../../../firebase/clientApp";
 import { signIn } from "next-auth/react";
 import { doc, setDoc } from "firebase/firestore";
 import Avatar from "../../../components/Avatar";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface Props {}
 
 const Register = ({}: Props) => {
+    const storage = getStorage();
     const { updateDialogMessages, dialogMessages, file, updateFile } =
         useAuthContext();
     const emailRef = useRef<HTMLInputElement>(null);
@@ -24,6 +26,11 @@ const Register = ({}: Props) => {
     const avatarRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
+
+    useEffect(() => {
+        console.log(errors[0]);
+    }, [errors]);
 
     const clearMessages = () => {
         setErrors([]);
@@ -54,6 +61,17 @@ const Register = ({}: Props) => {
                         username: usernameRef.current.value,
                     });
 
+                    if (avatarRef.current?.files) {
+                        const storageRef = ref(
+                            storage,
+                            `users/avatars/${user.user.uid}`
+                        );
+                        await uploadBytes(
+                            storageRef,
+                            avatarRef.current?.files[0]
+                        );
+                    }
+
                     await signIn("credentials", {
                         email: emailRef.current.value,
                         password: passwordRef.current.value,
@@ -74,18 +92,25 @@ const Register = ({}: Props) => {
 
     const validate = () => {
         try {
-            // TODO: Add avatar validation
             RegisterFormSchema.parse({
                 username: usernameRef.current?.value,
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
                 repeatPassword: repeatPasswordRef.current?.value,
+                avatar: avatarRef.current?.files
+                    ? avatarRef.current?.files[0].name
+                    : "",
             });
             return true;
         } catch (err: any) {
             setErrors(err.errors);
             return false;
         }
+    };
+
+    const handleDeleteAvatar = () => {
+        updateFile("");
+        setTriggerResetValue(!triggerResetValue);
     };
 
     return (
@@ -106,11 +131,10 @@ const Register = ({}: Props) => {
                     }`}
                     id="username"
                     type="text"
-                    label="Username"
+                    label="Username *"
                     name="username"
                     ref={usernameRef}
                     errorMessages={getErrorMessages(errors, "username")}
-                    onBlur={validate}
                 />
                 <CustomTextInput
                     className={`${
@@ -118,11 +142,10 @@ const Register = ({}: Props) => {
                     }`}
                     id="email"
                     type="email"
-                    label="Email"
+                    label="Email *"
                     name="email"
                     ref={emailRef}
                     errorMessages={getErrorMessages(errors, "email")}
-                    onBlur={validate}
                     defaultValue="bernardcooley1@gmail.com"
                 />
                 <CustomTextInput
@@ -131,11 +154,10 @@ const Register = ({}: Props) => {
                     }`}
                     type="password"
                     id="password"
-                    label="Password"
+                    label="Password *"
                     name="password"
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
-                    onBlur={validate}
                     defaultValue="password"
                 />
                 <CustomTextInput
@@ -144,37 +166,34 @@ const Register = ({}: Props) => {
                     }`}
                     type="password"
                     id="repeatPassword"
-                    label="Repeat password"
+                    label="Repeat password *"
                     name="repeatPassword"
                     ref={repeatPasswordRef}
                     errorMessages={getErrorMessages(errors, "repeatPassword")}
-                    onBlur={validate}
                     defaultValue="password"
                 />
-                {file ? (
+                <CustomTextInput
+                    className={`${
+                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                    }`}
+                    type="file"
+                    id="avatar"
+                    label="Avatar (jpg, jpeg, png)"
+                    name="avatar"
+                    ref={avatarRef}
+                    errorMessages={getErrorMessages(errors, "avatar")}
+                    isFile={true}
+                    borderless={true}
+                    scaleLabel={false}
+                    resetValue={triggerResetValue}
+                    hide={file.length > 0}
+                />
+                {file && (
                     <Avatar
                         image={file}
                         containerClassname="w-3/4 mb-4"
                         buttonClassname="bg-primary text-primary-light w-24"
-                        onClick={() => updateFile("")}
-                    />
-                ) : (
-                    <CustomTextInput
-                        className={`${
-                            dialogMessages.length > 0
-                                ? "pointer-events-none"
-                                : ""
-                        }`}
-                        type="file"
-                        id="avatar"
-                        label="Avatar"
-                        name="avatar"
-                        ref={avatarRef}
-                        errorMessages={getErrorMessages(errors, "avatar")}
-                        onBlur={validate}
-                        isFile={true}
-                        borderless={true}
-                        scaleLabel={false}
+                        onClick={handleDeleteAvatar}
                     />
                 )}
             </AuthForm>
