@@ -13,12 +13,13 @@ import { doc, setDoc } from "firebase/firestore";
 import Avatar from "../../../components/Avatar";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import TogglePassword from "../../../components/TogglePassword";
+import { FormMessageTypes } from "../../../types";
 
 interface Props {}
 
 const Register = ({}: Props) => {
     const storage = getStorage();
-    const { updateDialogMessages, dialogMessages, file, updateFile } =
+    const { file, updateFile, addFormMessages, formMessages } =
         useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -80,8 +81,9 @@ const Register = ({}: Props) => {
                         await deleteUser(user.user);
                     }
                     setSubmitting(false);
-                    updateDialogMessages(
-                        getFormMessages(err.code, dialogMessages)
+                    addFormMessages(
+                        getFormMessages(err.code),
+                        FormMessageTypes.ERROR
                     );
                 }
             }
@@ -126,7 +128,7 @@ const Register = ({}: Props) => {
             >
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     id="username"
                     type="text"
@@ -137,7 +139,7 @@ const Register = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     id="email"
                     type="email"
@@ -149,7 +151,7 @@ const Register = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     type={showPassword ? "text" : "password"}
                     id="password"
@@ -167,7 +169,7 @@ const Register = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     type={showPassword ? "text" : "password"}
                     id="repeatPassword"
@@ -185,7 +187,7 @@ const Register = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     type="file"
                     id="avatar"

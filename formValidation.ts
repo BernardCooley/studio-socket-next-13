@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { FormMessage, FormMessageTypes } from "./types";
 
 export const LoginFormSchema = z.object({
     email: z.string().email(),
@@ -36,11 +37,8 @@ export const RegisterFormSchema = z
         }
     });
 
-export const getFormMessages = (
-    errorCode: any,
-    formMessages: string[] = []
-) => {
-    const messages: string[] = [];
+export const getFormMessages = (errorCode: any) => {
+    const messages: Set<FormMessage> = new Set();
 
     const errorMessages = [
         {
@@ -83,13 +81,19 @@ export const getFormMessages = (
 
     errorMessages.forEach((message) => {
         if (errorCode === message.code) {
-            messages.push(message.message);
+            messages.add({
+                message: message.message,
+                type: FormMessageTypes.ERROR,
+            });
         }
     });
 
-    if (errorCode && messages.length === 0) {
-        messages.push("An error has occurred. Please try again later");
+    if (errorCode && messages.size === 0) {
+        messages.add({
+            message: "An error has occurred. Please try again later",
+            type: FormMessageTypes.ERROR,
+        });
     }
 
-    return [...formMessages, ...messages];
+    return messages;
 };

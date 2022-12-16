@@ -1142,3 +1142,17 @@ export interface IRoute {
     name: string;
     path: string;
 }
+
+export type FormMessageType = "success" | "error" | "warning" | "info";
+
+export interface FormMessage {
+    message: string;
+    type: FormMessageType;
+}
+
+export enum FormMessageTypes {
+    SUCCESS = "success",
+    ERROR = "error",
+    WARNING = "warning",
+    INFO = "info",
+}

@@ -1,18 +1,21 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
+import { FormMessage, FormMessageType } from "../types";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
 interface FormContextProps {
-    dialogMessages: string[];
     icon: React.ReactNode;
-    updateDialogMessages: (messages: string[]) => void;
     updateIcon: (icon: React.ReactNode) => void;
     file: string;
     updateFile: (value: string) => void;
+    formMessages: Set<FormMessage>;
+    addFormMessages: (
+        messages: Set<FormMessage>,
+        type: FormMessageType
+    ) => void;
+    clearFormMessages: () => void;
 }
 
 export const FormContext = createContext<FormContextProps>({
-    dialogMessages: [],
-    updateDialogMessages: () => {},
     icon: (
         <WarningAmberIcon
             style={{
@@ -24,12 +27,17 @@ export const FormContext = createContext<FormContextProps>({
     updateIcon: () => {},
     file: "",
     updateFile: () => {},
+    formMessages: new Set(),
+    addFormMessages: () => {},
+    clearFormMessages: () => {},
 });
 
 export const useFormContext = () => useContext(FormContext);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
-    const [dialogMessages, setDialogMessages] = useState<string[]>([]);
+    const [formMessages, setFormMessages] = useState<Set<FormMessage>>(
+        new Set()
+    );
     const [file, setFile] = useState<string>("");
     const [icon, setIcon] = useState<React.ReactNode>(
         <WarningAmberIcon
@@ -40,10 +48,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         />
     );
 
-    const updateDialogMessages = (messages: string[]) => {
-        setDialogMessages(messages);
-    };
-
     const updateIcon = (icon: React.ReactNode) => {
         setIcon(icon);
     };
@@ -52,15 +56,36 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setFile(value);
     };
 
+    const addFormMessages = (
+        messages: Set<FormMessage>,
+        type: FormMessageType
+    ) => {
+        const newMessages: Set<FormMessage> = new Set();
+        console.log(JSON.stringify(formMessages));
+        messages.forEach((message) => {
+            newMessages.add({
+                message: message.message,
+                type,
+            });
+        });
+
+        setFormMessages(newMessages);
+    };
+
+    const clearFormMessages = () => {
+        setFormMessages(new Set());
+    };
+
     return (
         <FormContext.Provider
             value={{
-                dialogMessages,
-                updateDialogMessages,
                 icon,
                 updateIcon,
                 file,
                 updateFile,
+                formMessages,
+                addFormMessages,
+                clearFormMessages,
             }}
         >
             {children}

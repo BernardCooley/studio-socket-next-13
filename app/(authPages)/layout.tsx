@@ -8,7 +8,7 @@ import FormDialog from "../../components/FormDialog";
 import { useFormContext } from "../../contexts/FormContext";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-    const { dialogMessages, icon } = useFormContext();
+    const { icon, formMessages } = useFormContext();
     const router = useRouter();
     const currentPage = useSelectedLayoutSegment();
 
@@ -40,10 +40,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <div className="AuthLayout">
-            <FormDialog formMessages={dialogMessages} messageIcon={icon} />
+            <FormDialog messages={formMessages} messageIcon={icon} />
             <div
                 className={`flex flex-col items-center ${
-                    dialogMessages.length > 0 ? "opacity-30" : "opacity-100"
+                    formMessages.size > 0 ? "opacity-30" : "opacity-100"
                 }`}
             >
                 <div

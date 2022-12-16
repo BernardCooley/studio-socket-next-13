@@ -9,10 +9,6 @@ interface Props {}
 const Account = ({}: Props) => {
     const { data: session } = useSession();
 
-    if (session) {
-        console.log("🚀 ~ file: page.tsx:13 ~ Account ~ session", session);
-    }
-
     return (
         <div className="">
             <CustomButton

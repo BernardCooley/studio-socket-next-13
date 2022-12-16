@@ -9,13 +9,15 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useFormContext } from "../../../contexts/FormContext";
 import TogglePassword from "../../../components/TogglePassword";
+import { FormMessage, FormMessageTypes } from "../../../types";
 
 interface Props {}
 
 const SignIn = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { updateDialogMessages, dialogMessages } = useFormContext();
+    const { addFormMessages, formMessages, clearFormMessages } =
+        useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
@@ -24,10 +26,11 @@ const SignIn = ({}: Props) => {
 
     useEffect(() => {
         const messages = getFormMessages(searchParams.getAll("error")[0]);
-        updateDialogMessages(messages);
+        addFormMessages(messages, FormMessageTypes.ERROR);
     }, []);
 
     const clearMessages = () => {
+        clearFormMessages();
         setSubmitting(false);
     };
 
@@ -78,13 +81,11 @@ const SignIn = ({}: Props) => {
                 handleSubmit={handleSubmit}
                 submitButtonDisabled={submitting}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
-                onFormClick={
-                    dialogMessages.length > 0 ? () => router.back() : noop
-                }
+                onFormClick={formMessages.size > 0 ? () => router.back() : noop}
             >
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     id="email"
                     type="email"
@@ -96,7 +97,7 @@ const SignIn = ({}: Props) => {
                 />
                 <CustomTextInput
                     className={`${
-                        dialogMessages.length > 0 ? "pointer-events-none" : ""
+                        formMessages.size > 0 ? "pointer-events-none" : ""
                     }`}
                     type={showPassword ? "text" : "password"}
                     id="password"

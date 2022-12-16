@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { getRoute } from "../utils";
+import { IFirebaseImage } from "../types";
 
 const listItems = [
     "Create a collection of your devices",
@@ -20,8 +21,10 @@ interface Props {}
 
 const Landing = ({}: Props) => {
     const router = useRouter();
-    const [logo, setLogo] = React.useState(undefined);
-    const [tableImage, setTableImage] = React.useState(undefined);
+    const [logo, setLogo] = useState<IFirebaseImage | undefined>(undefined);
+    const [tableImage, setTableImage] = useState<IFirebaseImage | undefined>(
+        undefined
+    );
 
     useEffect(() => {
         getLogo();
