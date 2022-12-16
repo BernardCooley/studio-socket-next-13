@@ -6,6 +6,8 @@ interface AuthContextProps {
     icon: React.ReactNode;
     updateDialogMessages: (messages: string[]) => void;
     updateIcon: (icon: React.ReactNode) => void;
+    file: string;
+    updateFile: (value: string) => void;
 }
 
 export const AuthContext = createContext<AuthContextProps>({
@@ -20,12 +22,15 @@ export const AuthContext = createContext<AuthContextProps>({
         />
     ),
     updateIcon: () => {},
+    file: "",
+    updateFile: () => {},
 });
 
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [dialogMessages, setDialogMessages] = useState<string[]>([]);
+    const [file, setFile] = useState<string>("");
     const [icon, setIcon] = useState<React.ReactNode>(
         <WarningAmberIcon
             style={{
@@ -43,6 +48,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setIcon(icon);
     };
 
+    const updateFile = (value: string) => {
+        setFile(value);
+    };
+
     return (
         <AuthContext.Provider
             value={{
@@ -50,6 +59,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 updateDialogMessages,
                 icon,
                 updateIcon,
+                file,
+                updateFile,
             }}
         >
             {children}

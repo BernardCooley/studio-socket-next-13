@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useRef, useState } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
@@ -10,15 +10,18 @@ import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { auth, db } from "../../../firebase/clientApp";
 import { signIn } from "next-auth/react";
 import { doc, setDoc } from "firebase/firestore";
+import Avatar from "../../../components/Avatar";
 
 interface Props {}
 
 const Register = ({}: Props) => {
-    const { updateDialogMessages, dialogMessages } = useAuthContext();
+    const { updateDialogMessages, dialogMessages, file, updateFile } =
+        useAuthContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const repeatPasswordRef = useRef<HTMLInputElement>(null);
+    const avatarRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
 
@@ -71,6 +74,7 @@ const Register = ({}: Props) => {
 
     const validate = () => {
         try {
+            // TODO: Add avatar validation
             RegisterFormSchema.parse({
                 username: usernameRef.current?.value,
                 email: emailRef.current?.value,
@@ -107,7 +111,6 @@ const Register = ({}: Props) => {
                     ref={usernameRef}
                     errorMessages={getErrorMessages(errors, "username")}
                     onBlur={validate}
-                    defaultValue="test"
                 />
                 <CustomTextInput
                     className={`${
@@ -148,6 +151,32 @@ const Register = ({}: Props) => {
                     onBlur={validate}
                     defaultValue="password"
                 />
+                {file ? (
+                    <Avatar
+                        image={file}
+                        containerClassname="w-3/4 mb-4"
+                        buttonClassname="bg-primary text-primary-light w-24"
+                        onClick={() => updateFile("")}
+                    />
+                ) : (
+                    <CustomTextInput
+                        className={`${
+                            dialogMessages.length > 0
+                                ? "pointer-events-none"
+                                : ""
+                        }`}
+                        type="file"
+                        id="avatar"
+                        label="Avatar"
+                        name="avatar"
+                        ref={avatarRef}
+                        errorMessages={getErrorMessages(errors, "avatar")}
+                        onBlur={validate}
+                        isFile={true}
+                        borderless={true}
+                        scaleLabel={false}
+                    />
+                )}
             </AuthForm>
         </div>
     );

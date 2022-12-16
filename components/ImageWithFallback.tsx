@@ -14,7 +14,6 @@ interface Props {
         width: number;
         height: number;
     };
-    onClick?: () => void;
 }
 
 const ImageWithFallback = ({
@@ -28,10 +27,9 @@ const ImageWithFallback = ({
         width: 200,
         height: 200,
     },
-    onClick,
 }: Props) => {
     return (
-        <div key={title} className={containerClassname} onClick={onClick}>
+        <div key={title} className={`${containerClassname}`}>
             <Image
                 objectFit={fit}
                 src={image ? image.url : FallbackImage}
