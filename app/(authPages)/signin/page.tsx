@@ -9,7 +9,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useFormContext } from "../../../contexts/FormContext";
 import TogglePassword from "../../../components/TogglePassword";
-import { FormMessage, FormMessageTypes } from "../../../types";
+import { FormMessageTypes } from "../../../types";
 
 interface Props {}
 
