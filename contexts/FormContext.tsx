@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 
-interface AuthContextProps {
+interface FormContextProps {
     dialogMessages: string[];
     icon: React.ReactNode;
     updateDialogMessages: (messages: string[]) => void;
@@ -10,7 +10,7 @@ interface AuthContextProps {
     updateFile: (value: string) => void;
 }
 
-export const AuthContext = createContext<AuthContextProps>({
+export const FormContext = createContext<FormContextProps>({
     dialogMessages: [],
     updateDialogMessages: () => {},
     icon: (
@@ -26,7 +26,7 @@ export const AuthContext = createContext<AuthContextProps>({
     updateFile: () => {},
 });
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useFormContext = () => useContext(FormContext);
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [dialogMessages, setDialogMessages] = useState<string[]>([]);
@@ -53,7 +53,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <AuthContext.Provider
+        <FormContext.Provider
             value={{
                 dialogMessages,
                 updateDialogMessages,
@@ -64,6 +64,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
             }}
         >
             {children}
-        </AuthContext.Provider>
+        </FormContext.Provider>
     );
 };

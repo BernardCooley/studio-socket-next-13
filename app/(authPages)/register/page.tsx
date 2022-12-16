@@ -5,7 +5,7 @@ import CustomTextInput from "../../../components/CustomTextInput";
 import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
-import { useAuthContext } from "../../../contexts/AuthContext";
+import { useFormContext } from "../../../contexts/FormContext";
 import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { auth, db } from "../../../firebase/clientApp";
 import { signIn } from "next-auth/react";
@@ -19,7 +19,7 @@ interface Props {}
 const Register = ({}: Props) => {
     const storage = getStorage();
     const { updateDialogMessages, dialogMessages, file, updateFile } =
-        useAuthContext();
+        useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);

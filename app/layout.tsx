@@ -3,7 +3,7 @@
 import Head from "next/head";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { AuthContextProvider } from "../contexts/AuthContext";
+import { AuthContextProvider } from "../contexts/FormContext";
 
 interface Props {
     children: React.ReactNode;

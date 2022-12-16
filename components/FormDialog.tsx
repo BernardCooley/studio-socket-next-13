@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { useAuthContext } from "../contexts/AuthContext";
+import { useFormContext } from "../contexts/FormContext";
 import useOnClickOutside from "../hooks/useClickOutside";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
 
 const FormDialog = ({ formMessages, messageIcon }: Props) => {
     const dialogRef = useRef(null);
-    const { updateDialogMessages } = useAuthContext();
+    const { updateDialogMessages } = useFormContext();
 
     const handleClickOutside = () => {
         updateDialogMessages([]);

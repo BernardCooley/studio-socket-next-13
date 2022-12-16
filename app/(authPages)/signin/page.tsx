@@ -7,7 +7,7 @@ import { getErrorMessages, noop } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuthContext } from "../../../contexts/AuthContext";
+import { useFormContext } from "../../../contexts/FormContext";
 import TogglePassword from "../../../components/TogglePassword";
 
 interface Props {}
@@ -15,7 +15,7 @@ interface Props {}
 const SignIn = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { updateDialogMessages, dialogMessages } = useAuthContext();
+    const { updateDialogMessages, dialogMessages } = useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);

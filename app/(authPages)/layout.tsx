@@ -5,10 +5,10 @@ import ImageWithFallback from "../../components/ImageWithFallback";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import CustomButton from "../../components/CustomButton";
 import FormDialog from "../../components/FormDialog";
-import { useAuthContext } from "../../contexts/AuthContext";
+import { useFormContext } from "../../contexts/FormContext";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-    const { dialogMessages, icon } = useAuthContext();
+    const { dialogMessages, icon } = useFormContext();
     const router = useRouter();
     const currentPage = useSelectedLayoutSegment();
 

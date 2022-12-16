@@ -1,5 +1,5 @@
 import React, { forwardRef, LegacyRef, useEffect, useState } from "react";
-import { useAuthContext } from "../contexts/AuthContext";
+import { useFormContext } from "../contexts/FormContext";
 import { imageToBase65 } from "../utils";
 
 interface Props {
@@ -43,7 +43,7 @@ const CustomTextInput = forwardRef(
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
-        const { updateFile } = useAuthContext();
+        const { updateFile } = useFormContext();
         const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             if (isFile) {
                 if (e.target.files) {
