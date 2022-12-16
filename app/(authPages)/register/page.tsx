@@ -38,8 +38,8 @@ const Register = ({}: Props) => {
     };
 
     const handleSubmit = async (e: FormEvent) => {
-        setSubmitting(true);
         clearMessages();
+        setSubmitting(true);
         e.preventDefault();
 
         if (validate() && errors.length === 0) {
@@ -103,6 +103,7 @@ const Register = ({}: Props) => {
             });
             return true;
         } catch (err: any) {
+            setSubmitting(false);
             setErrors(err.errors);
             return false;
         }

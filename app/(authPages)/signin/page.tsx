@@ -31,6 +31,7 @@ const SignIn = ({}: Props) => {
 
     const handleSubmit = async (e: FormEvent) => {
         clearMessages();
+        setSubmitting(true);
         e.preventDefault();
 
         if (validate() && errors.length === 0) {
@@ -43,6 +44,7 @@ const SignIn = ({}: Props) => {
                         callbackUrl: "/account",
                     });
                 } catch (err: any) {
+                    setSubmitting(false);
                     console.error(err);
                 }
             }
@@ -55,7 +57,6 @@ const SignIn = ({}: Props) => {
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
             });
-            setSubmitting(true);
             return true;
         } catch (err: any) {
             setSubmitting(false);

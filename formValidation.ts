@@ -87,7 +87,7 @@ export const getFormMessages = (
         }
     });
 
-    if (messages.length === 0) {
+    if (errorCode && messages.length === 0) {
         messages.push("An error has occurred. Please try again later");
     }
 
