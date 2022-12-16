@@ -2,8 +2,11 @@ import { routes } from "./routes";
 import { IRoute } from "./types";
 
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
+    if (!errors) return [];
     return errors
-        .filter((error: any) => error.path.includes(fieldName))
+        .filter((error: any) => {
+            error.path.includes(fieldName);
+        })
         .map((error: any) => error.message);
 };
 

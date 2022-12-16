@@ -1,6 +1,5 @@
 import React, { FormEvent } from "react";
 import CustomButton from "./CustomButton";
-import FormDialog from "./FormDialog";
 
 interface Props {
     handleSubmit: (e: FormEvent) => Promise<void>;

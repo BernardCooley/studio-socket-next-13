@@ -30,10 +30,6 @@ const Register = ({}: Props) => {
     const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    useEffect(() => {
-        console.log(errors[0]);
-    }, [errors]);
-
     const clearMessages = () => {
         setErrors([]);
         setSubmitting(false);
