@@ -12,6 +12,7 @@ import { signIn } from "next-auth/react";
 import { doc, setDoc } from "firebase/firestore";
 import Avatar from "../../../components/Avatar";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
+import TogglePassword from "../../../components/TogglePassword";
 
 interface Props {}
 
@@ -27,6 +28,7 @@ const Register = ({}: Props) => {
     const [errors, setErrors] = useState([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
     const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
     useEffect(() => {
         console.log(errors[0]);
@@ -153,25 +155,37 @@ const Register = ({}: Props) => {
                     className={`${
                         dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     label="Password *"
                     name="password"
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
                     defaultValue="password"
+                    fieldIcon={
+                        <TogglePassword
+                            isShowing={showPassword}
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    }
                 />
                 <CustomTextInput
                     className={`${
                         dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="repeatPassword"
                     label="Repeat password *"
                     name="repeatPassword"
                     ref={repeatPasswordRef}
                     errorMessages={getErrorMessages(errors, "repeatPassword")}
                     defaultValue="password"
+                    fieldIcon={
+                        <TogglePassword
+                            isShowing={showPassword}
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    }
                 />
                 <CustomTextInput
                     className={`${

@@ -8,6 +8,7 @@ import AuthForm from "../../../components/AuthForm";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import TogglePassword from "../../../components/TogglePassword";
 
 interface Props {}
 
@@ -19,6 +20,7 @@ const SignIn = ({}: Props) => {
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [showPassword, setShowPassword] = useState<boolean>(false);
 
     useEffect(() => {
         const messages = getFormMessages(searchParams.getAll("error")[0]);
@@ -96,13 +98,19 @@ const SignIn = ({}: Props) => {
                     className={`${
                         dialogMessages.length > 0 ? "pointer-events-none" : ""
                     }`}
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     label="Password"
                     name="password"
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
                     onBlur={validate}
+                    fieldIcon={
+                        <TogglePassword
+                            isShowing={showPassword}
+                            onClick={() => setShowPassword(!showPassword)}
+                        />
+                    }
                 />
             </AuthForm>
         </div>

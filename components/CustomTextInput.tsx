@@ -18,6 +18,7 @@ interface Props {
     scaleLabel?: boolean;
     hide?: boolean;
     resetValue?: boolean;
+    fieldIcon?: React.ReactNode;
 }
 
 const CustomTextInput = forwardRef(
@@ -38,6 +39,7 @@ const CustomTextInput = forwardRef(
             scaleLabel,
             hide,
             resetValue,
+            fieldIcon,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -70,21 +72,26 @@ const CustomTextInput = forwardRef(
                 }`}
             >
                 <div className="relative">
-                    <input
-                        className={`block px-2.5 pb-2.5 pt-5 w-full text-primary text-2xl bg-primary-light border-primary appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${inputClassName} ${
-                            borderless
-                                ? "border-0 border-b-0"
-                                : "border-0 border-b-2"
-                        } ${hide ? "opacity-0 h-0 pointer-events-none" : ""}`}
-                        type={type}
-                        name={name}
-                        id={id}
-                        value={value}
-                        onChange={handleChange}
-                        onBlur={onBlur}
-                        ref={ref}
-                        placeholder=" "
-                    />
+                    <div className="relative">
+                        <input
+                            className={`block px-2.5 pb-2.5 pt-5 w-full text-primary text-2xl bg-primary-light border-primary appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${inputClassName} ${
+                                borderless
+                                    ? "border-0 border-b-0"
+                                    : "border-0 border-b-2"
+                            } ${
+                                hide ? "opacity-0 h-0 pointer-events-none" : ""
+                            }`}
+                            type={type}
+                            name={name}
+                            id={id}
+                            value={value}
+                            onChange={handleChange}
+                            onBlur={onBlur}
+                            ref={ref}
+                            placeholder=" "
+                        />
+                        {fieldIcon}
+                    </div>
                     <label
                         className={`absolute text-2xl text-primary duration-200 transform -translate-y-6 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-50 peer-focus:-translate-y-6 ${labelClasses} ${
                             scaleLabel ? "scale-50 top-4" : "scale-100 top-0"
