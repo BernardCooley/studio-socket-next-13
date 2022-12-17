@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { getRoute } from "../utils";
-import CloseIcon from "@mui/icons-material/Close";
-import Person2Icon from "@mui/icons-material/Person2";
+import Icons from "../icons";
 
 interface Props {}
 
@@ -37,8 +35,9 @@ const Navigation = ({}: Props) => {
                 }`}
             >
                 {!isExpanded ? (
-                    <MenuIcon
-                        className="text-primary-light h-8 w-8"
+                    <Icons
+                        iconType="menu"
+                        className="text-primary-light"
                         onClick={() => setIsexpanded(true)}
                     />
                 ) : (
@@ -47,7 +46,10 @@ const Navigation = ({}: Props) => {
                         href={getRoute("Account").path}
                         onClick={() => setIsexpanded(false)}
                     >
-                        <Person2Icon className="text-primary-light h-8 w-8" />
+                        <Icons
+                            iconType="account"
+                            className="text-primary-light"
+                        />
                     </Link>
                 )}
 
@@ -75,8 +77,9 @@ const Navigation = ({}: Props) => {
                 ))}
             </div>
             {isExpanded && (
-                <CloseIcon
-                    className="text-primary-light h-10 w-10 relative bottom-8"
+                <Icons
+                    iconType="close"
+                    className="text-primary-light relative bottom-8"
                     onClick={() => setIsexpanded(false)}
                 />
             )}

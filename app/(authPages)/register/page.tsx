@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useEffect, useRef, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 import CustomTextInput from "../../../components/CustomTextInput";
 import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
@@ -14,12 +14,15 @@ import Avatar from "../../../components/Avatar";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import TogglePassword from "../../../components/TogglePassword";
 import { FormMessageTypes } from "../../../types";
+import Icons from "../../../icons";
+import { useRouter } from "next/navigation";
 
 interface Props {}
 
 const Register = ({}: Props) => {
+    const router = useRouter();
     const storage = getStorage();
-    const { file, updateFile, addFormMessages, formMessages } =
+    const { file, updateFile, addFormMessages, formMessages, updateIcon } =
         useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const usernameRef = useRef<HTMLInputElement>(null);
@@ -41,13 +44,25 @@ const Register = ({}: Props) => {
         setSubmitting(true);
         e.preventDefault();
 
-        if (validate() && errors.length === 0) {
+        if (validate() && errors?.length === 0) {
             if (
                 usernameRef.current &&
                 emailRef.current &&
                 passwordRef.current &&
                 repeatPasswordRef.current
             ) {
+                addFormMessages(
+                    new Set([
+                        {
+                            message: "Creating account...",
+                            type: FormMessageTypes.INFO,
+                        },
+                    ])
+                );
+                updateIcon(
+                    <Icons iconType="formLoading" className="text-primary" />
+                );
+                router.push("/register", undefined, { scroll: false });
                 let user = null;
                 try {
                     user = await createUserWithEmailAndPassword(
@@ -71,20 +86,35 @@ const Register = ({}: Props) => {
                         );
                     }
 
-                    await signIn("credentials", {
-                        email: emailRef.current.value,
-                        password: passwordRef.current.value,
-                        callbackUrl: "/account",
-                    });
+                    addFormMessages(
+                        new Set([
+                            {
+                                message:
+                                    "Account created. Welcome to Studio Socket",
+                                type: FormMessageTypes.INFO,
+                            },
+                        ])
+                    );
+                    updateIcon(
+                        <Icons
+                            iconType="accountCreated"
+                            className="text-primary"
+                        />
+                    );
+
+                    setTimeout(async () => {
+                        await signIn("credentials", {
+                            email: emailRef.current?.value,
+                            password: passwordRef.current?.value,
+                            callbackUrl: "/account",
+                        });
+                    }, 1000);
                 } catch (err: any) {
                     if (user) {
                         await deleteUser(user.user);
                     }
                     setSubmitting(false);
-                    addFormMessages(
-                        getFormMessages(err.code),
-                        FormMessageTypes.ERROR
-                    );
+                    addFormMessages(getFormMessages(err.code));
                 }
             }
         }
@@ -98,7 +128,7 @@ const Register = ({}: Props) => {
                 password: passwordRef.current?.value,
                 repeatPassword: repeatPasswordRef.current?.value,
                 avatar: avatarRef.current?.files
-                    ? avatarRef.current?.files[0].name
+                    ? avatarRef.current?.files[0]?.name
                     : "",
             });
             return true;

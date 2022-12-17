@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import useOnClickOutside from "../hooks/useClickOutside";
-import { FormMessage } from "../types";
+import { FormMessage, FormMessageType, FormMessageTypes } from "../types";
 
 interface Props {
     messages: Set<FormMessage>;
@@ -18,19 +18,38 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
 
     useOnClickOutside(dialogRef, handleClickOutside);
 
+    const getBorderColour = (type: FormMessageType) => {
+        switch (type) {
+            case FormMessageTypes.ERROR:
+                return "error";
+            case FormMessageTypes.WARNING:
+                return "warning";
+            case FormMessageTypes.SUCCESS:
+                return "success";
+            case FormMessageTypes.INFO:
+                return "primary";
+            default:
+        }
+    };
+
     return (
         <>
             {messages && messages.size > 0 && (
                 <div
                     ref={dialogRef}
-                    className={`w-11/12 border-2 border-error rounded-lg p-4 shadow-2xl z-50 flex items-center absolute bg-primary-light -translate-y-1/2 translate-x-1/2 top-1/2 right-1/2`}
+                    className={`w-11/12 border-2 rounded-lg p-4 shadow-2xl z-50 flex items-center absolute bg-primary-light -translate-y-1/2 translate-x-1/2 top-1/2 right-1/2 border-${getBorderColour(
+                        Array.from(messages)[0].type
+                    )}`}
                 >
                     <div className="min-h-dialog flex items-center pr-4">
                         {messageIcon}
                     </div>
                     <div>
                         {Array.from(messages).map((message) => (
-                            <div key={JSON.stringify(message)}>
+                            <div
+                                className="text-xl"
+                                key={JSON.stringify(message)}
+                            >
                                 {message.message}
                             </div>
                         ))}

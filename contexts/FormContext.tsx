@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { FormMessage, FormMessageType } from "../types";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import { FormMessage } from "../types";
+import Icons from "../icons";
 
 interface FormContextProps {
     icon: React.ReactNode;
@@ -8,22 +8,12 @@ interface FormContextProps {
     file: string;
     updateFile: (value: string) => void;
     formMessages: Set<FormMessage>;
-    addFormMessages: (
-        messages: Set<FormMessage>,
-        type: FormMessageType
-    ) => void;
+    addFormMessages: (messages: Set<FormMessage>) => void;
     clearFormMessages: () => void;
 }
 
 export const FormContext = createContext<FormContextProps>({
-    icon: (
-        <WarningAmberIcon
-            style={{
-                color: "red",
-                fontSize: "132px",
-            }}
-        />
-    ),
+    icon: <Icons iconType="warning" />,
     updateIcon: () => {},
     file: "",
     updateFile: () => {},
@@ -40,12 +30,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     );
     const [file, setFile] = useState<string>("");
     const [icon, setIcon] = useState<React.ReactNode>(
-        <WarningAmberIcon
-            style={{
-                color: "red",
-                fontSize: "132px",
-            }}
-        />
+        <Icons iconType="warning" />
     );
 
     const updateIcon = (icon: React.ReactNode) => {
@@ -56,16 +41,13 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setFile(value);
     };
 
-    const addFormMessages = (
-        messages: Set<FormMessage>,
-        type: FormMessageType
-    ) => {
+    const addFormMessages = (messages: Set<FormMessage>) => {
         const newMessages: Set<FormMessage> = new Set();
         console.log(JSON.stringify(formMessages));
         messages.forEach((message) => {
             newMessages.add({
                 message: message.message,
-                type,
+                type: message.type,
             });
         });
 

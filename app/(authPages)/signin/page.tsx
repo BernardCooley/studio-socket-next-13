@@ -26,7 +26,7 @@ const SignIn = ({}: Props) => {
 
     useEffect(() => {
         const messages = getFormMessages(searchParams.getAll("error")[0]);
-        addFormMessages(messages, FormMessageTypes.ERROR);
+        addFormMessages(messages);
     }, []);
 
     const clearMessages = () => {

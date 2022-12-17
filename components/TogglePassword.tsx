@@ -1,6 +1,5 @@
 import React from "react";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import Icons from "../icons";
 
 interface Props {
     onClick: () => void;
@@ -10,7 +9,11 @@ interface Props {
 const TogglePassword = ({ onClick, isShowing }: Props) => {
     return (
         <div className="absolute right-0 bottom-4" onClick={onClick}>
-            {isShowing ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            {isShowing ? (
+                <Icons iconType="hidePassword" />
+            ) : (
+                <Icons iconType="showPassword" />
+            )}
         </div>
     );
 };
