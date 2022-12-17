@@ -7,6 +7,7 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import LoginIcon from "@mui/icons-material/Login";
 
 interface Props {
     iconType: string;
@@ -90,6 +91,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "accountCreated":
             return (
                 <HowToRegIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "132px",
+                    }}
+                />
+            );
+        case "signIn":
+            return (
+                <LoginIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{

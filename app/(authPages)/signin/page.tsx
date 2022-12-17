@@ -10,13 +10,14 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useFormContext } from "../../../contexts/FormContext";
 import TogglePassword from "../../../components/TogglePassword";
 import { FormMessageTypes } from "../../../types";
+import Icons from "../../../icons";
 
 interface Props {}
 
 const SignIn = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { addFormMessages, formMessages, clearFormMessages } =
+    const { addFormMessages, formMessages, clearFormMessages, updateIcon } =
         useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
@@ -40,6 +41,15 @@ const SignIn = ({}: Props) => {
         e.preventDefault();
 
         if (validate() && errors.length === 0) {
+            addFormMessages(
+                new Set([
+                    {
+                        message: "Signing in...",
+                        type: FormMessageTypes.INFO,
+                    },
+                ])
+            );
+            updateIcon(<Icons iconType="signIn" className="text-primary" />);
             if (emailRef.current && passwordRef.current) {
                 setSubmitting(true);
                 try {
