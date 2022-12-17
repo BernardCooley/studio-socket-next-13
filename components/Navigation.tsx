@@ -25,7 +25,7 @@ const Navigation = ({}: Props) => {
 
     return (
         <div
-            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl ${
+            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl z-20 ${
                 isExpanded ? "h-72" : "h-11"
             }`}
         >

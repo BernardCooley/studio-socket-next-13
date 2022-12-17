@@ -33,6 +33,7 @@ module.exports = {
             "primary-light": "#ECE7E7",
             "light-gray": "#9498A0",
             error: "#FF0000",
+            "primary-light-border": "#cbbdbd",
         },
         fontFamily: {
             default: ["SairaCondensed-Thin", "sans-serif"],
