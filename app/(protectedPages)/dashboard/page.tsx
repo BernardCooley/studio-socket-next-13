@@ -5,7 +5,7 @@ import React from "react";
 interface Props {}
 
 const Dashboard = ({}: Props) => {
-    return <div className="">Dashboard</div>;
+    return <div className=""></div>;
 };
 
 export default Dashboard;

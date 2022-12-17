@@ -56,7 +56,7 @@ const SignIn = ({}: Props) => {
                     await signIn("credentials", {
                         email: emailRef.current.value,
                         password: passwordRef.current.value,
-                        callbackUrl: "/account",
+                        callbackUrl: "/dashboard",
                     });
                 } catch (err: any) {
                     setSubmitting(false);

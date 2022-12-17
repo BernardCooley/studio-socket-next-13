@@ -106,7 +106,7 @@ const Register = ({}: Props) => {
                         await signIn("credentials", {
                             email: emailRef.current?.value,
                             password: passwordRef.current?.value,
-                            callbackUrl: "/account",
+                            callbackUrl: "/dashboard",
                         });
                     }, 1000);
                 } catch (err: any) {
