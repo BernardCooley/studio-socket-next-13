@@ -43,7 +43,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
     const addFormMessages = (messages: Set<FormMessage>) => {
         const newMessages: Set<FormMessage> = new Set();
-        console.log(JSON.stringify(formMessages));
         messages.forEach((message) => {
             newMessages.add({
                 message: message.message,
