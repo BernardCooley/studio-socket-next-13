@@ -16,11 +16,18 @@ export const getDocumentsWhere = async (
     collectionRef: CollectionReference<DocumentData>,
     getBy: string,
     operator: WhereFilterOp,
-    name: string
+    name: string | number,
+    dingleDoc?: boolean
 ) => {
     try {
         const response = query(collectionRef, where(getBy, operator, name));
-        return (await getDocs(response)).docs.map((doc) => doc.data());
+        const docs = (await getDocs(response)).docs.map((doc) => doc.data());
+
+        if (dingleDoc) {
+            return docs[0];
+        }
+
+        return docs;
     } catch (e) {
         console.log(`Error getting docs where ${getBy} is ${name} ${e}`);
     }
@@ -35,7 +42,7 @@ export const getFirebaseImage = async (
     const pathReference = ref(storage, `${folder}/${filename}`);
 
     try {
-        const name = trimFileExtension(filename);
+        const name = filename;
         const url = await getDownloadURL(pathReference);
         return { url, name };
     } catch (e) {
@@ -70,9 +77,22 @@ export const getFirebaseImages = async (
 };
 
 export const getFirebaseDevices = async (
-    amount: number = 0
+    amount: number = 1,
+    filterField?: string,
+    filterType?: WhereFilterOp,
+    filterValue?: string
 ): Promise<DocumentData[] | null> => {
-    const q = query(devicesRef, limit(amount));
+    let q;
+
+    if (filterField && filterValue && filterType) {
+        q = query(
+            devicesRef,
+            limit(amount),
+            where(filterField, filterType, filterValue)
+        );
+    } else {
+        q = query(devicesRef, limit(amount));
+    }
 
     try {
         const data = await getDocs(q);
