@@ -1,7 +1,6 @@
 import Image from "next/legacy/image";
-import React from "react";
+import React, { useState } from "react";
 import { IFirebaseImage } from "../types";
-import FallbackImage from "../public/assets/images/fallbackImage.png";
 
 interface Props {
     image?: IFirebaseImage;
@@ -10,10 +9,7 @@ interface Props {
     layout?: "fill" | "fixed" | "intrinsic" | "responsive";
     containerClassname?: string;
     imageClassname?: string;
-    size?: {
-        width: number;
-        height: number;
-    };
+    fallbackImage?: string;
 }
 
 const ImageWithFallback = ({
@@ -23,21 +19,19 @@ const ImageWithFallback = ({
     layout = "fill",
     containerClassname = "",
     imageClassname = "",
-    size = {
-        width: 200,
-        height: 200,
-    },
+    fallbackImage = "/assets/images/fallbackImage.png",
 }: Props) => {
+    const [src, setSrc] = useState<string | undefined>(image?.url);
+
     return (
         <div key={title} className={`${containerClassname}`}>
             <Image
                 objectFit={fit}
-                src={image ? image.url : FallbackImage}
+                src={src ? src : fallbackImage}
                 alt={title}
                 layout={layout}
                 className={imageClassname}
-                height={size.height}
-                width={size.width}
+                onError={() => setSrc(fallbackImage)}
             ></Image>
         </div>
     );
