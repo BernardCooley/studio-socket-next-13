@@ -59,6 +59,10 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                         fit="contain"
                         layout="responsive"
                         containerClassname="w-full"
+                        size={{
+                            width: 32,
+                            height: 32,
+                        }}
                     />
                 </div>
                 <div className="text-4xl mt-20 capitalize">

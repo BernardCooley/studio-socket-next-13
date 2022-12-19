@@ -24,6 +24,10 @@ const Avatar = ({
                 image={{ name: "", url: image }}
                 imageClassname="rounded-full"
                 fit="cover"
+                size={{
+                    width: 200,
+                    height: 200,
+                }}
             />
             <button
                 onClick={onClick}

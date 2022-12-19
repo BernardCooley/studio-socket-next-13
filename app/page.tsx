@@ -63,6 +63,7 @@ const Landing = ({}: Props) => {
                         fit="contain"
                         layout="responsive"
                         containerClassname="w-full"
+                        size={{ width: 300, height: 300 }}
                     />
                 </div>
                 <div className="Title uppercase text-2xl tracking-widest font-light">
