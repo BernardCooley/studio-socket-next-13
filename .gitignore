@@ -37,3 +37,8 @@ next-env.d.ts
 
 serviceAccount.json
 output.css
+testData/gear_images
+testData/all_devices.ts
+testData/all_devices_sample.ts
+testData/all_device_ids_sample.ts
+public/gear_images
