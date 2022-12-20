@@ -120,7 +120,7 @@ const Devices = ({}: Props) => {
                 ref={scrollElement}
                 className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
-                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative">
+                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative mb-20">
                     <Icons
                         className="absolute top-1 right-14"
                         iconType="chevronRight"
@@ -141,7 +141,7 @@ const Devices = ({}: Props) => {
                             ))}
                     </div>
                 </div>
-                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative">
+                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative mb-20">
                     <Icons
                         className="absolute top-1 left-14"
                         iconType="chevronLeft"
