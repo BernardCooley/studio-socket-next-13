@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import { getRoute } from "../utils";
 import Icons from "../icons";
+import routes from "../routes";
 
 interface Props {}
 
@@ -11,15 +11,15 @@ const Navigation = ({}: Props) => {
     const links = [
         {
             name: "Dashboard",
-            path: getRoute("Dashboard").path,
+            path: routes.dashboard().as,
         },
         {
             name: "Devices",
-            path: getRoute("Devices").path,
+            path: routes.devices().as,
         },
         {
             name: "Studios",
-            path: getRoute("Studios").path,
+            path: routes.studios().as,
         },
     ];
 
@@ -43,7 +43,7 @@ const Navigation = ({}: Props) => {
                 ) : (
                     <Link
                         className=""
-                        href={getRoute("Account").path}
+                        href={routes.account().as}
                         onClick={() => setIsexpanded(false)}
                     >
                         <Icons

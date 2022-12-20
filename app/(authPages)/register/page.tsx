@@ -62,7 +62,7 @@ const Register = ({}: Props) => {
                 updateIcon(
                     <Icons iconType="formLoading" className="text-primary" />
                 );
-                router.push("/register", undefined, { scroll: false });
+
                 let user = null;
                 try {
                     user = await createUserWithEmailAndPassword(

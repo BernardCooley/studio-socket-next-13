@@ -6,34 +6,35 @@ import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import CustomButton from "../../components/CustomButton";
 import FormDialog from "../../components/FormDialog";
 import { useFormContext } from "../../contexts/FormContext";
+import routes from "../../routes";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const { icon, formMessages } = useFormContext();
     const router = useRouter();
     const currentPage = useSelectedLayoutSegment();
 
-    const getPageProps = (page: string | null) => {
+    const pageProps = (page: string | null) => {
         switch (page) {
             case "signin":
                 return {
                     title: "Sign in",
                     buttonText: "Log in",
                     linkText: "Not registered? Register now",
-                    linkTo: "/register",
+                    linkTo: routes.register().as,
                 };
             case "register":
                 return {
                     title: "Register",
                     buttonText: "Register",
                     linkText: "Already registered? Log in",
-                    linkTo: "/signin",
+                    linkTo: routes.signin().as,
                 };
             default:
                 return {
                     title: "Sign in",
                     buttonText: "Log in",
                     linkText: "Not registered? Register now",
-                    linkTo: "/register",
+                    linkTo: routes.register().as,
                 };
         }
     };
@@ -48,7 +49,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             >
                 <div
                     className="absolute top-4 left-4 h-10 w-8"
-                    onClick={() => router.push("/")}
+                    onClick={() => router.push(routes.home().as)}
                 >
                     <ImageWithFallback
                         title=""
@@ -66,17 +67,17 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     />
                 </div>
                 <div className="text-4xl mt-20 capitalize">
-                    {getPageProps(currentPage).title}
+                    {pageProps(currentPage).title}
                 </div>
                 <div className="w-full">{children}</div>
                 <div className="absolute top-4 right-4">
                     <CustomButton
-                        label={getPageProps(currentPage).linkText}
+                        label={pageProps(currentPage).linkText}
                         type="button"
                         buttonClassName=""
                         labelClassName="capitalize"
                         onClick={() =>
-                            router.push(getPageProps(currentPage).linkTo)
+                            router.push(pageProps(currentPage).linkTo)
                         }
                     />
                 </div>

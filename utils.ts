@@ -1,6 +1,3 @@
-import { routes } from "./routes";
-import { IRoute } from "./types";
-
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
     if (!errors || errors.length === 0) return [];
     return errors
@@ -10,10 +7,6 @@ export const getErrorMessages = (errors: any, fieldName: string): string[] => {
                 0
         )
         .map((error: any) => error.message);
-};
-
-export const getRoute = (name: string): IRoute => {
-    return routes.filter((route: any) => route.name === name)[0];
 };
 
 export const trimFileExtension = (filename: string): string => {

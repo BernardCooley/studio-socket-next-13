@@ -6,6 +6,7 @@ import DeviceItem from "../../../components/DeviceItem";
 import PageSection from "../../../components/PageSection";
 import PageTitle from "../../../components/PageTitle";
 import { getFirebaseDevices } from "../../../firebase/functions";
+import routes from "../../../routes";
 
 interface Props {}
 
@@ -39,7 +40,9 @@ const Dashboard = ({}: Props) => {
                         <DeviceItem
                             key={device.id}
                             device={device}
-                            onClick={() => router.push(`/devices/${device.id}`)}
+                            onClick={() =>
+                                router.push(routes.device(device.id).as)
+                            }
                         />
                     ))}
                 <div className="p-6">Page section content</div>

@@ -5,8 +5,8 @@ import { getFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
-import { getRoute } from "../utils";
 import { IFirebaseImage } from "../types";
+import routes from "../routes";
 
 const listItems = [
     "Create a collection of your devices",
@@ -48,12 +48,12 @@ const Landing = ({}: Props) => {
                     <CustomButton
                         label="Sign in"
                         type="button"
-                        onClick={() => router.push(getRoute("SignIn").path)}
+                        onClick={() => router.push(routes.signin().as)}
                     />
                     <CustomButton
                         label="Register"
                         type="button"
-                        onClick={() => router.push(getRoute("Register").path)}
+                        onClick={() => router.push(routes.register().as)}
                     />
                 </div>
                 <div className="Logo w-full flex justify-center">
