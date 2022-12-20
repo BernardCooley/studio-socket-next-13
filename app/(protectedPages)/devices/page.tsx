@@ -82,7 +82,7 @@ const Devices = ({}: Props) => {
     };
 
     const fetchUserDeviceIds = async () => {
-        if (user) {
+        if (user?.user) {
             const userData: UserData | null = await getUserData(
                 doc(db, "users", user.user.id)
             );

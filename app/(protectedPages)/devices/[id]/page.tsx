@@ -24,6 +24,7 @@ import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/clientApp";
 import { useSession } from "next-auth/react";
+import routes from "../../../../routes";
 
 interface Props {
     params: { id: number };
@@ -107,6 +108,7 @@ const Device = ({ params }: Props) => {
             setTimeout(() => {
                 resetIcon();
                 clearFormMessages();
+                router.push(routes.devices().as);
             }, 2000);
         }
     };
