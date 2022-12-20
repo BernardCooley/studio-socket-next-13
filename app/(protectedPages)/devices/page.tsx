@@ -15,10 +15,13 @@ import { doc } from "firebase/firestore";
 import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
 import Icons from "../../../icons";
+import { useFilterContext } from "../../../contexts/FilterContext";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
+    const { showFilter, sortSelected, filterModalShowing, filterKeys } =
+        useFilterContext();
     const { data: user } = useSession();
     const router = useRouter();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
@@ -111,10 +114,32 @@ const Devices = ({}: Props) => {
     };
 
     return (
-        <div className="relative overflow-hidden h-screen">
+        <div
+            className={`relative overflow-hidden h-screen ${
+                filterModalShowing
+                    ? "opacity-40 pointer-events-none"
+                    : "opacity-100 pointer-events-auto"
+            }`}
+        >
             <div className="text-primary absolute w-full flex justify-between px-3 top-1">
-                <Icons iconType="sort" />
-                <Icons iconType="filter" />
+                <Icons
+                    iconType="sort"
+                    className={`z-40 rounded-lg ${
+                        sortSelected.length > 0
+                            ? "bg-primary text-primary-light"
+                            : "bg-primary-light text-primary"
+                    }`}
+                    onClick={() => showFilter("sort")}
+                />
+                <Icons
+                    className={`z-40 ${
+                        filterKeys.length > 0
+                            ? "bg-primary text-primary-light"
+                            : "bg-primary-light text-primary"
+                    }`}
+                    iconType="filter"
+                    onClick={() => showFilter("filter")}
+                />
             </div>
             <div
                 ref={scrollElement}

@@ -38,7 +38,7 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
             {messages && messages.size > 0 && (
                 <div
                     ref={dialogRef}
-                    className={`w-11/12 border-2 rounded-lg p-4 shadow-2xl z-50 flex flex-col items-center absolute bg-primary-light -translate-y-1/2 translate-x-1/2 top-1/2 right-1/2 border-${getBorderColour(
+                    className={`modal border-${getBorderColour(
                         Array.from(messages)[0].type
                     )}`}
                 >

@@ -3,7 +3,7 @@
 import Head from "next/head";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
-import { AuthContextProvider } from "../contexts/FormContext";
+import { FormContextProvider } from "../contexts/FormContext";
 import { usePathname } from "next/navigation";
 
 interface Props {
@@ -27,13 +27,13 @@ export default function RootLayout({ children }: Props) {
                             : ""
                     }`}
                 >
-                    <AuthContextProvider>
+                    <FormContextProvider>
                         <div
                             className={`h-full min-h-screen bg-primary-light font-default`}
                         >
                             {children}
                         </div>
-                    </AuthContextProvider>
+                    </FormContextProvider>
                 </body>
             </SessionProvider>
         </html>

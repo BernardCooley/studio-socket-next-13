@@ -32,7 +32,7 @@ export const FormContext = createContext<FormContextProps>({
 
 export const useFormContext = () => useContext(FormContext);
 
-export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
+export const FormContextProvider = ({ children }: { children: ReactNode }) => {
     const [formMessages, setFormMessages] = useState<Set<FormMessage>>(
         new Set()
     );
