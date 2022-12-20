@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import ImageWithFallback from "../../components/ImageWithFallback";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import CustomButton from "../../components/CustomButton";
 import FormDialog from "../../components/FormDialog";
 import { useFormContext } from "../../contexts/FormContext";
 import routes from "../../routes";
+import BackButton from "../../components/BackButton";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const { icon, formMessages } = useFormContext();
@@ -47,25 +47,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     formMessages.size > 0 ? "opacity-30" : "opacity-100"
                 }`}
             >
-                <div
-                    className="absolute top-4 left-4 h-10 w-8"
-                    onClick={() => router.push(routes.home().as)}
-                >
-                    <ImageWithFallback
-                        title=""
-                        image={{
-                            url: "/assets/icons/back.png",
-                            name: "Back",
-                        }}
-                        fit="contain"
-                        layout="responsive"
-                        containerClassname="w-full"
-                        size={{
-                            width: 32,
-                            height: 32,
-                        }}
-                    />
-                </div>
+                <BackButton onClick={() => router.push(routes.home().as)} />
                 <div className="text-4xl mt-20 capitalize">
                     {pageProps(currentPage).title}
                 </div>

@@ -1,7 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import BackButton from "../../../../components/BackButton";
 import DeviceDetail from "../../../../components/DeviceDetail";
 import ImageWithFallback from "../../../../components/ImageWithFallback";
 import { devicesRef } from "../../../../firebase/firebaseRefs";
@@ -16,6 +18,7 @@ interface Props {
 }
 
 const Device = ({ params }: Props) => {
+    const router = useRouter();
     const [deviceImage, setDeviceImage] = React.useState<
         IFirebaseImage | undefined
     >(undefined);
@@ -50,7 +53,8 @@ const Device = ({ params }: Props) => {
     };
 
     return (
-        <div className="p-8">
+        <div className="p-8 pt-14 relative">
+            <BackButton onClick={() => router.back()} left="10" />
             {device && (
                 <div>
                     <div className="text-2xl mb-4">

@@ -62,13 +62,13 @@ const Navigation = ({}: Props) => {
 
             <div
                 className={`mt-10 font-regular text-primary-light text-3xl w-full flex justify-center items-center flex-col ease-in-out duration-200 ${
-                    isExpanded ? "opacity-100" : "opacity-0"
+                    isExpanded ? "opacity-100" : "opacity-0 h-0 mt-0"
                 }`}
             >
                 {links.map((link) => (
                     <Link
                         key={link.name}
-                        className="my-3"
+                        className={`my-3 ${isExpanded ? "block" : "hidden"}`}
                         href={link.path}
                         onClick={() => setIsexpanded(false)}
                     >

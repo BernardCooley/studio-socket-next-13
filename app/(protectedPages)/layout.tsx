@@ -8,7 +8,7 @@ interface Props {
 
 const ProtectedLayout = ({ children }: Props) => {
     return (
-        <div className="pt-20">
+        <div className="pt-12">
             <Navigation />
             {children}
         </div>
