@@ -20,7 +20,7 @@ export default function RootLayout({ children }: Props) {
                 <body className="relative">
                     <AuthContextProvider>
                         <div
-                            className={`h-screen bg-primary-light font-default`}
+                            className={`h-full min-h-screen bg-primary-light font-default`}
                         >
                             {children}
                         </div>

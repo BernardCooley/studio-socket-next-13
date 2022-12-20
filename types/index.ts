@@ -965,9 +965,9 @@ interface ExternalLink {
     notes: string;
 }
 
-interface Connection {
+export interface Connection {
     connector: string;
-    description?: any[];
+    description?: string[];
     name: string;
 }
 
