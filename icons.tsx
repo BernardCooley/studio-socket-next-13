@@ -11,6 +11,7 @@ import LoginIcon from "@mui/icons-material/Login";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
 interface Props {
     iconType: string;
@@ -124,6 +125,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "chevronRight":
             return (
                 <ArrowForwardIosIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "92px",
+                    }}
+                />
+            );
+        case "chevronLeft":
+            return (
+                <ArrowBackIosNewIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{
