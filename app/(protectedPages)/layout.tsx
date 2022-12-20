@@ -11,7 +11,7 @@ interface Props {
 const ProtectedLayout = ({ children }: Props) => {
     const { icon, formMessages } = useFormContext();
     return (
-        <div className="pt-12">
+        <div className="pt-16">
             <FormDialog messages={formMessages} messageIcon={icon} />
             <Navigation />
             {children}

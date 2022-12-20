@@ -12,7 +12,7 @@ import { devicesRef } from "../../../../firebase/firebaseRefs";
 import {
     getDocumentsWhere,
     getFirebaseImage,
-    getUserDevices,
+    getUserData,
 } from "../../../../firebase/functions";
 import {
     Connection,
@@ -114,7 +114,7 @@ const Device = ({ params }: Props) => {
     const handleClick = async () => {
         if (user && user.user.id) {
             try {
-                const userData: UserData | null = await getUserDevices(
+                const userData: UserData | null = await getUserData(
                     doc(db, "users", user.user.id)
                 );
 

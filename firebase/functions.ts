@@ -36,7 +36,7 @@ export const getDocumentsWhere = async (
     return null;
 };
 
-export const getUserDevices = async (docRef: any): Promise<UserData | null> => {
+export const getUserData = async (docRef: any): Promise<UserData | null> => {
     try {
         const docSnap = await getDoc(docRef);
 
@@ -95,7 +95,7 @@ export const getFirebaseDevices = async (
     amount: number = 1,
     filterField?: string,
     filterType?: WhereFilterOp,
-    filterValue?: string
+    filterValue?: string | string[]
 ): Promise<DocumentData[] | null> => {
     let q;
 

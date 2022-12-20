@@ -28,6 +28,9 @@ module.exports = {
             boxShadow: {
                 "3xl": "0 0 26px 11px #383b43",
             },
+            width: {
+                double: "200%",
+            },
         },
         colors: {
             primary: "#383B43",
