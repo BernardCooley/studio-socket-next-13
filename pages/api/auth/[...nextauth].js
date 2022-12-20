@@ -23,9 +23,10 @@ export default NextAuth({
 
                 const res = await signInPromise;
 
-                if (res.email) {
+                if (res.email && res.uid) {
                     return {
                         email: res.email,
+                        id: res.uid,
                     };
                 }
 

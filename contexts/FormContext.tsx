@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { FormMessage } from "../types";
+import { DialogButton, FormMessage } from "../types";
 import Icons from "../icons";
 
 interface FormContextProps {
@@ -10,6 +10,10 @@ interface FormContextProps {
     formMessages: Set<FormMessage>;
     addFormMessages: (messages: Set<FormMessage>) => void;
     clearFormMessages: () => void;
+    dialogButtons: DialogButton[];
+    updateDialogButtons: (buttons: DialogButton[]) => void;
+    clearDialogButtons: () => void;
+    resetIcon: () => void;
 }
 
 export const FormContext = createContext<FormContextProps>({
@@ -20,6 +24,10 @@ export const FormContext = createContext<FormContextProps>({
     formMessages: new Set(),
     addFormMessages: () => {},
     clearFormMessages: () => {},
+    dialogButtons: [],
+    updateDialogButtons: () => {},
+    clearDialogButtons: () => {},
+    resetIcon: () => {},
 });
 
 export const useFormContext = () => useContext(FormContext);
@@ -32,9 +40,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [icon, setIcon] = useState<React.ReactNode>(
         <Icons iconType="warning" />
     );
+    const [dialogButtons, setDialogButtons] = useState<DialogButton[]>([]);
 
     const updateIcon = (icon: React.ReactNode) => {
         setIcon(icon);
+    };
+
+    const resetIcon = () => {
+        setIcon(<Icons iconType="warning" />);
     };
 
     const updateFile = (value: string) => {
@@ -57,6 +70,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         setFormMessages(new Set());
     };
 
+    const updateDialogButtons = (buttons: DialogButton[]) => {
+        setDialogButtons(buttons);
+    };
+
+    const clearDialogButtons = () => {
+        setDialogButtons([]);
+    };
+
     return (
         <FormContext.Provider
             value={{
@@ -67,6 +88,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
                 formMessages,
                 addFormMessages,
                 clearFormMessages,
+                dialogButtons,
+                updateDialogButtons,
+                clearDialogButtons,
+                resetIcon,
             }}
         >
             {children}

@@ -1156,3 +1156,14 @@ export enum FormMessageTypes {
     WARNING = "warning",
     INFO = "info",
 }
+
+export interface UserData {
+    devices: string[];
+    userName: string;
+}
+
+export interface DialogButton {
+    text: string;
+    onClick: () => void;
+    classes?: string;
+}

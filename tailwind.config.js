@@ -23,6 +23,7 @@ module.exports = {
             },
             minWidth: {
                 formSubmitButton: "324px",
+                dialogButton: "152px",
             },
             boxShadow: {
                 "3xl": "0 0 26px 11px #383b43",

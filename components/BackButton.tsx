@@ -9,16 +9,10 @@ interface Props {
     width?: string;
 }
 
-const BackButton = ({
-    onClick,
-    top = "4",
-    left = "4",
-    height = "10",
-    width = "8",
-}: Props) => {
+const BackButton = ({ onClick, top = "4", left = "4" }: Props) => {
     return (
         <div
-            className={`absolute top-${top} left-${left} h-${height} w-${width}}`}
+            className={`absolute top-${top} left-${left} h-10 w-8`}
             onClick={onClick}
         >
             <ImageWithFallback

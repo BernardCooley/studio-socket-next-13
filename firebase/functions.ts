@@ -1,3 +1,4 @@
+import { DocumentReference } from "firebase-admin/firestore";
 import {
     CollectionReference,
     DocumentData,
@@ -6,9 +7,10 @@ import {
     where,
     WhereFilterOp,
     limit,
+    getDoc,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
-import { IFirebaseImage } from "../types";
+import { IFirebaseImage, UserData } from "../types";
 import { trimFileExtension } from "../utils";
 import { devicesRef } from "./firebaseRefs";
 
@@ -17,19 +19,32 @@ export const getDocumentsWhere = async (
     getBy: string,
     operator: WhereFilterOp,
     name: string | number,
-    dingleDoc?: boolean
+    singleDoc?: boolean
 ) => {
     try {
         const response = query(collectionRef, where(getBy, operator, name));
         const docs = (await getDocs(response)).docs.map((doc) => doc.data());
 
-        if (dingleDoc) {
+        if (singleDoc) {
             return docs[0];
         }
 
         return docs;
     } catch (e) {
         console.log(`Error getting docs where ${getBy} is ${name} ${e}`);
+    }
+    return null;
+};
+
+export const getUserDevices = async (docRef: any): Promise<UserData | null> => {
+    try {
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+            return docSnap.data() as UserData;
+        }
+    } catch (e) {
+        console.log(`Error getting docs`);
     }
     return null;
 };
