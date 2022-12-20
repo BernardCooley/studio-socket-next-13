@@ -8,6 +8,9 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 import LoginIcon from "@mui/icons-material/Login";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
 
 interface Props {
     iconType: string;
@@ -105,6 +108,36 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
                     onClick={onClick}
                     style={{
                         fontSize: fontSize || "132px",
+                    }}
+                />
+            );
+        case "sort":
+            return (
+                <FilterListIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "92px",
+                    }}
+                />
+            );
+        case "chevronRight":
+            return (
+                <ArrowForwardIosIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "92px",
+                    }}
+                />
+            );
+        case "filter":
+            return (
+                <FilterAltIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "92px",
                     }}
                 />
             );

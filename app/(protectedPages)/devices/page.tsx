@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import { doc } from "firebase/firestore";
 import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
+import Icons from "../../../icons";
 
 interface Props {}
 
@@ -100,44 +101,45 @@ const Devices = ({}: Props) => {
     };
 
     return (
-        <div className="">
-            <div className="w-full overflow-x-scroll">
-                <div className="w-double h-screen flex">
-                    <div className="w-full">
-                        <PageTitle title="Your devices" />
-                        <div className="grid gap-4 grid-cols-2 relative m-4">
-                            {userDevices &&
-                                userDevices.length > 0 &&
-                                userDevices.map((device) => (
-                                    <DeviceItem
-                                        key={device.id}
-                                        device={device}
-                                        onClick={() =>
-                                            router.push(
-                                                routes.device(device.id).as
-                                            )
-                                        }
-                                    />
-                                ))}
-                        </div>
+        <div className="relative">
+            <div className="text-primary absolute w-full flex justify-between px-3 top-1">
+                <Icons iconType="sort" />
+                <div>
+                    <Icons iconType="chevronRight" />
+                    <Icons iconType="filter" />
+                </div>
+            </div>
+            <div className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll">
+                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0">
+                    <PageTitle title="Your devices" />
+                    <div className="grid gap-4 grid-cols-2 relative m-4">
+                        {userDevices &&
+                            userDevices.length > 0 &&
+                            userDevices.map((device) => (
+                                <DeviceItem
+                                    key={device.id}
+                                    device={device}
+                                    onClick={() =>
+                                        router.push(routes.device(device.id).as)
+                                    }
+                                />
+                            ))}
                     </div>
-                    <div className="w-full">
-                        <PageTitle title="Our devices" />
-                        <div className="grid gap-4 grid-cols-2 relative m-4">
-                            {allDevices &&
-                                allDevices.length > 0 &&
-                                allDevices.map((device) => (
-                                    <DeviceItem
-                                        key={device.id}
-                                        device={device}
-                                        onClick={() =>
-                                            router.push(
-                                                routes.device(device.id).as
-                                            )
-                                        }
-                                    />
-                                ))}
-                        </div>
+                </div>
+                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0">
+                    <PageTitle title="Our devices" />
+                    <div className="grid gap-4 grid-cols-2 relative m-4">
+                        {allDevices &&
+                            allDevices.length > 0 &&
+                            allDevices.map((device) => (
+                                <DeviceItem
+                                    key={device.id}
+                                    device={device}
+                                    onClick={() =>
+                                        router.push(routes.device(device.id).as)
+                                    }
+                                />
+                            ))}
                     </div>
                 </div>
             </div>
