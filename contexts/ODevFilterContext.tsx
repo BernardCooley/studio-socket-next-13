@@ -1,39 +1,39 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 
-interface FilterContextProps {
+interface ODevFilterContextProps {
     filterModalShowing: boolean;
     showFilter: (type: "sort" | "filter") => void;
     hideFilter: () => void;
     sortOrFilter: "sort" | "filter";
     sortBy: string;
-    updateSortSelected: (value: string) => void;
+    updateSortBy: (value: string) => void;
     filterKeys: string[];
     clearFilterKeys: () => void;
     updateFilterKeys: (keys: string[]) => void;
 }
 
-export const FilterContext = createContext<FilterContextProps>({
+export const ODevFilterContext = createContext<ODevFilterContextProps>({
     filterModalShowing: false,
     showFilter: () => {},
     hideFilter: () => {},
     sortOrFilter: "sort",
     sortBy: "",
-    updateSortSelected: () => {},
+    updateSortBy: () => {},
     filterKeys: [],
     clearFilterKeys: () => {},
     updateFilterKeys: () => {},
 });
 
-export const useFilterContext = () => useContext(FilterContext);
+export const useODevFilterContext = () => useContext(ODevFilterContext);
 
-export const FilterContextProvider = ({
+export const ODevFilterContextProvider = ({
     children,
 }: {
     children: ReactNode;
 }) => {
     const [filterModalShowing, setShowFilterModal] = useState<boolean>(false);
     const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
-    const [sortBy, setSortSelected] = useState<string>("");
+    const [sortBy, setSortBy] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
 
     const showFilter = (type: "sort" | "filter") => {
@@ -45,8 +45,12 @@ export const FilterContextProvider = ({
         setShowFilterModal(false);
     };
 
-    const updateSortSelected = (value: string) => {
-        setSortSelected(value);
+    const updateSortBy = (value: string) => {
+        console.log(
+            "🚀 ~ file: ODevFilterContext.tsx:49 ~ updateSortBy ~ value",
+            value
+        );
+        setSortBy(value);
     };
 
     const clearFilterKeys = () => {
@@ -58,20 +62,20 @@ export const FilterContextProvider = ({
     };
 
     return (
-        <FilterContext.Provider
+        <ODevFilterContext.Provider
             value={{
                 filterModalShowing,
                 showFilter,
                 hideFilter,
                 sortOrFilter,
                 sortBy,
-                updateSortSelected,
+                updateSortBy,
                 filterKeys,
                 clearFilterKeys,
                 updateFilterKeys,
             }}
         >
             {children}
-        </FilterContext.Provider>
+        </ODevFilterContext.Provider>
     );
 };

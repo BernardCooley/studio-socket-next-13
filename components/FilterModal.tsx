@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { filters, sortButtons } from "../consts";
-import { useFilterContext } from "../contexts/FilterContext";
+import { useYDevFilterContext } from "../contexts/YDevFilterContext";
+import { useODevFilterContext } from "../contexts/ODevFilterContext";
 import Icons from "../icons";
 import CustomButton from "./CustomButton";
+import { useNavContext } from "../contexts/NavContext";
 
 interface Props {}
 
@@ -10,43 +12,73 @@ const FilterModal = ({}: Props) => {
     const {
         filterModalShowing,
         hideFilter,
-        updateSortSelected,
-        sortBy,
+        updateSortBy: updateYDevSortBy,
+        sortBy: YDevSortBy,
         sortOrFilter,
-        filterKeys,
-        clearFilterKeys,
-        updateFilterKeys,
-    } = useFilterContext();
+        filterKeys: YDevFilterKeys,
+        clearFilterKeys: clearYDevFilterKeys,
+        updateFilterKeys: updateYDevFilterKeys,
+    } = useYDevFilterContext();
 
-    const [filterList, setFilterList] = useState<string[]>(filterKeys);
-    const [sort, setSort] = useState<string>(sortBy);
+    const {
+        updateSortBy: updateODevSortBy,
+        sortBy: ODevSortBy,
+        filterKeys: ODevFilterKeys,
+        clearFilterKeys: clearODevFilterKeys,
+        updateFilterKeys: updateODevFilterKeys,
+    } = useODevFilterContext();
+
+    const { deviceListInView } = useNavContext();
+
+    const [filterList, setFilterList] = useState<string[]>(
+        deviceListInView === "yours" ? YDevFilterKeys : ODevFilterKeys
+    );
+    const [sort, setSort] = useState<string>(
+        deviceListInView === "yours" ? YDevSortBy : ODevSortBy
+    );
 
     useEffect(() => {
-        if (!filterModalShowing) {
-            setFilterList(filterKeys);
-            setSort(sortBy);
-        }
-    }, [filterModalShowing]);
+        setFilterList(
+            deviceListInView === "yours" ? YDevFilterKeys : ODevFilterKeys
+        );
+        setSort(deviceListInView === "yours" ? YDevSortBy : ODevSortBy);
+    }, [filterModalShowing, deviceListInView]);
 
     const handleClearSort = () => {
         hideFilter();
-        updateSortSelected("");
+        if (deviceListInView === "yours") {
+            updateYDevSortBy("");
+        } else if (deviceListInView === "ours") {
+            updateODevSortBy("");
+        }
     };
 
     const handleClearFilters = () => {
         hideFilter();
-        clearFilterKeys();
+        if (deviceListInView === "yours") {
+            clearYDevFilterKeys();
+        } else if (deviceListInView === "ours") {
+            clearODevFilterKeys();
+        }
         setFilterList([]);
     };
 
     const handleSubmitSort = () => {
         hideFilter();
-        updateSortSelected(sort);
+        if (deviceListInView === "yours") {
+            updateYDevSortBy(sort);
+        } else if (deviceListInView === "ours") {
+            updateODevSortBy(sort);
+        }
     };
 
     const handleSubmitFilters = () => {
         hideFilter();
-        updateFilterKeys(filterList);
+        if (deviceListInView === "yours") {
+            updateYDevFilterKeys(filterList);
+        } else if (deviceListInView === "ours") {
+            updateODevFilterKeys(filterList);
+        }
     };
 
     const Sort = () => {

@@ -15,21 +15,35 @@ import { doc } from "firebase/firestore";
 import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
 import Icons from "../../../icons";
-import { useFilterContext } from "../../../contexts/FilterContext";
+import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
+import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
 import FilterSortLabel from "../../../components/FilterSortLabel";
 import FilterIcons from "../../../components/FilterIcons";
+import { useIsInViewport } from "../../../utils";
+import { useNavContext } from "../../../contexts/NavContext";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
-    const { showFilter, sortBy, filterModalShowing, filterKeys } =
-        useFilterContext();
+    const {
+        showFilter,
+        sortBy: YDevSortBy,
+        filterModalShowing,
+        filterKeys: YDevFilterKeys,
+    } = useYDevFilterContext();
+    const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
+        useODevFilterContext();
+    const { updateDeviceListInView, deviceListInView } = useNavContext();
     const { data: user } = useSession();
     const router = useRouter();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
     const [userDevices, setUserDevices] = useState<any[]>([]);
     const [allDevices, setAllDevices] = useState<any[]>([]);
     const scrollElement = useRef<HTMLDivElement>(null);
+    const yourDevicesRef = useRef<HTMLDivElement>(null);
+    const ourDevicesRef = useRef<HTMLDivElement>(null);
+    const yourDevicesInView = useIsInViewport(yourDevicesRef);
+    const ourDevicesInView = useIsInViewport(ourDevicesRef);
 
     useEffect(() => {
         fetchDevices();
@@ -38,6 +52,15 @@ const Devices = ({}: Props) => {
     useEffect(() => {
         fetchUserDeviceIds();
     }, [user]);
+
+    useEffect(() => {
+        if (yourDevicesInView) {
+            updateDeviceListInView("yours");
+        }
+        if (ourDevicesInView) {
+            updateDeviceListInView("ours");
+        }
+    }, [yourDevicesInView, ourDevicesInView]);
 
     useEffect(() => {
         if (userDeviceIds.length > 0) {
@@ -129,8 +152,16 @@ const Devices = ({}: Props) => {
             >
                 <div className="snapScrollPane mb-20">
                     <FilterIcons
-                        filterKeys={filterKeys}
-                        sortBy={sortBy}
+                        filterKeys={
+                            deviceListInView === "yours"
+                                ? YDevFilterKeys
+                                : ODevFilterKeys
+                        }
+                        sortBy={
+                            deviceListInView === "yours"
+                                ? YDevSortBy
+                                : ODevSortBy
+                        }
                         onFilterClick={() => showFilter("filter")}
                         onSortClick={() => showFilter("sort")}
                     />
@@ -142,10 +173,18 @@ const Devices = ({}: Props) => {
                     <PageTitle title="Your devices" />
                     <div>
                         <FilterSortLabel
-                            filterKeys={filterKeys}
-                            sortBy={sortBy}
+                            filterKeys={
+                                deviceListInView === "yours"
+                                    ? YDevFilterKeys
+                                    : ODevFilterKeys
+                            }
+                            sortBy={
+                                deviceListInView === "yours"
+                                    ? YDevSortBy
+                                    : ODevSortBy
+                            }
                         />
-                        <div className="deviceList">
+                        <div className="deviceList" ref={yourDevicesRef}>
                             {userDevices &&
                                 userDevices.length > 0 &&
                                 userDevices.map((device) => (
@@ -164,8 +203,16 @@ const Devices = ({}: Props) => {
                 </div>
                 <div className="snapScrollPane mb-20">
                     <FilterIcons
-                        filterKeys={filterKeys}
-                        sortBy={sortBy}
+                        filterKeys={
+                            deviceListInView === "yours"
+                                ? YDevFilterKeys
+                                : ODevFilterKeys
+                        }
+                        sortBy={
+                            deviceListInView === "yours"
+                                ? YDevSortBy
+                                : ODevSortBy
+                        }
                         onFilterClick={() => showFilter("filter")}
                         onSortClick={() => showFilter("sort")}
                     />
@@ -175,18 +222,34 @@ const Devices = ({}: Props) => {
                         onClick={() => scroll(false)}
                     />
                     <PageTitle title="Our devices" />
-                    <div className="deviceList">
-                        {allDevices &&
-                            allDevices.length > 0 &&
-                            allDevices.map((device) => (
-                                <DeviceItem
-                                    key={device.id}
-                                    device={device}
-                                    onClick={() =>
-                                        router.push(routes.device(device.id).as)
-                                    }
-                                />
-                            ))}
+                    <div>
+                        <FilterSortLabel
+                            filterKeys={
+                                deviceListInView === "yours"
+                                    ? YDevFilterKeys
+                                    : ODevFilterKeys
+                            }
+                            sortBy={
+                                deviceListInView === "yours"
+                                    ? YDevSortBy
+                                    : ODevSortBy
+                            }
+                        />
+                        <div className="deviceList" ref={ourDevicesRef}>
+                            {allDevices &&
+                                allDevices.length > 0 &&
+                                allDevices.map((device) => (
+                                    <DeviceItem
+                                        key={device.id}
+                                        device={device}
+                                        onClick={() =>
+                                            router.push(
+                                                routes.device(device.id).as
+                                            )
+                                        }
+                                    />
+                                ))}
+                        </div>
                     </div>
                 </div>
             </div>

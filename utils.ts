@@ -1,3 +1,5 @@
+import { RefObject, useEffect, useMemo, useState } from "react";
+
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
     if (!errors || errors.length === 0) return [];
     return errors
@@ -26,4 +28,28 @@ export const imageToBase65 = (
         };
         reader.onerror = (error) => reject(error);
     });
+};
+
+export const useIsInViewport = (ref: RefObject<HTMLDivElement>) => {
+    const [isIntersecting, setIsIntersecting] = useState(false);
+
+    const observer = useMemo(
+        () =>
+            new IntersectionObserver(([entry]) =>
+                setIsIntersecting(entry.isIntersecting)
+            ),
+        []
+    );
+
+    useEffect(() => {
+        if (ref.current) {
+            observer.observe(ref.current);
+        }
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [ref, observer]);
+
+    return isIntersecting;
 };
