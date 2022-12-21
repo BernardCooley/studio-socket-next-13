@@ -1,14 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Icons from "../icons";
 import routes from "../routes";
+import { useNavContext } from "../contexts/NavContext";
 
 interface Props {}
 
 const Navigation = ({}: Props) => {
-    const [isExpanded, setIsexpanded] = useState<boolean>(false);
+    const { navOpen, closeNav, openNav } = useNavContext();
 
-    const links = [
+    const navLinks = [
         {
             name: "Dashboard",
             path: routes.dashboard().as,
@@ -25,26 +26,26 @@ const Navigation = ({}: Props) => {
 
     return (
         <div
-            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl z-20 ${
-                isExpanded ? "h-72" : "h-11"
+            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl z-40 ${
+                navOpen ? "h-72" : "h-11"
             }`}
         >
             <div
                 className={`flex justify-between ${
-                    isExpanded ? "" : "items-center"
+                    navOpen ? "" : "items-center"
                 }`}
             >
-                {!isExpanded ? (
+                {!navOpen ? (
                     <Icons
                         iconType="menu"
                         className="text-primary-light"
-                        onClick={() => setIsexpanded(true)}
+                        onClick={openNav}
                     />
                 ) : (
                     <Link
                         className=""
                         href={routes.account().as}
-                        onClick={() => setIsexpanded(false)}
+                        onClick={closeNav}
                     >
                         <Icons
                             iconType="account"
@@ -62,25 +63,25 @@ const Navigation = ({}: Props) => {
 
             <div
                 className={`mt-10 font-regular text-primary-light text-3xl w-full flex justify-center items-center flex-col ease-in-out duration-200 ${
-                    isExpanded ? "opacity-100" : "opacity-0 h-0 mt-0"
+                    navOpen ? "opacity-100" : "opacity-0 h-0 mt-0"
                 }`}
             >
-                {links.map((link) => (
+                {navLinks.map((link) => (
                     <Link
                         key={link.name}
-                        className={`my-3 ${isExpanded ? "block" : "hidden"}`}
+                        className={`my-3 ${navOpen ? "block" : "hidden"}`}
                         href={link.path}
-                        onClick={() => setIsexpanded(false)}
+                        onClick={closeNav}
                     >
                         {link.name}
                     </Link>
                 ))}
             </div>
-            {isExpanded && (
+            {navOpen && (
                 <Icons
                     iconType="close"
                     className="text-primary-light relative bottom-8"
-                    onClick={() => setIsexpanded(false)}
+                    onClick={closeNav}
                 />
             )}
         </div>

@@ -125,7 +125,7 @@ const Devices = ({}: Props) => {
             <div className="text-primary absolute w-full flex justify-between px-3 top-1">
                 <Icons
                     iconType="sort"
-                    className={`filterSortIcons ${
+                    className={`z-30 rounded-lg shadow-lg ${
                         sortBy.length > 0
                             ? "filterSortIconActive"
                             : "filterSortIconInactive"
@@ -133,7 +133,7 @@ const Devices = ({}: Props) => {
                     onClick={() => showFilter("sort")}
                 />
                 <Icons
-                    className={`filterSortIcons ${
+                    className={`z-30 rounded-lg shadow-lg ${
                         filterKeys.length > 0
                             ? "filterSortIconActive"
                             : "filterSortIconInactive"

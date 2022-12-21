@@ -28,7 +28,7 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
                     className={className}
                     onClick={onClick}
                     style={{
-                        fontSize: "84px",
+                        fontSize: "92px",
                     }}
                 />
             );

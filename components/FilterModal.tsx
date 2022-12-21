@@ -164,7 +164,7 @@ const FilterModal = ({}: Props) => {
                 <div className="absolute modal">
                     <Icons
                         iconType="close"
-                        className="z-40 absolute right-2 top-2"
+                        className="z-30 absolute right-2 top-2"
                         onClick={hideFilter}
                     />
                     <div className="w-full text-2xl mb-4">
