@@ -1,41 +1,33 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import DeviceItem from "../../../components/DeviceItem";
-import PageTitle from "../../../components/PageTitle";
 import {
     getFirebaseDevices,
     getFirebaseImage,
     getUserData,
 } from "../../../firebase/functions";
-import routes from "../../../routes";
 import { useSession } from "next-auth/react";
 import { doc } from "firebase/firestore";
 import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
-import Icons from "../../../icons";
 import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
-import FilterSortLabel from "../../../components/FilterSortLabel";
-import FilterIcons from "../../../components/FilterIcons";
 import { useIsInViewport } from "../../../utils";
 import { useNavContext } from "../../../contexts/NavContext";
+import DeviceList from "../../../components/DeviceList";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
     const {
-        showFilter,
         sortBy: YDevSortBy,
         filterModalShowing,
         filterKeys: YDevFilterKeys,
     } = useYDevFilterContext();
     const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
         useODevFilterContext();
-    const { updateDeviceListInView, deviceListInView } = useNavContext();
+    const { updateDeviceListInView } = useNavContext();
     const { data: user } = useSession();
-    const router = useRouter();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
     const [userDevices, setUserDevices] = useState<any[]>([]);
     const [allDevices, setAllDevices] = useState<any[]>([]);
@@ -150,108 +142,24 @@ const Devices = ({}: Props) => {
                 ref={scrollElement}
                 className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
-                <div className="snapScrollPane mb-20">
-                    <FilterIcons
-                        filterKeys={
-                            deviceListInView === "yours"
-                                ? YDevFilterKeys
-                                : ODevFilterKeys
-                        }
-                        sortBy={
-                            deviceListInView === "yours"
-                                ? YDevSortBy
-                                : ODevSortBy
-                        }
-                        onFilterClick={() => showFilter("filter")}
-                        onSortClick={() => showFilter("sort")}
-                    />
-                    <Icons
-                        className="absolute top-1 right-16"
-                        iconType="chevronRight"
-                        onClick={() => scroll(true)}
-                    />
-                    <PageTitle title="Your devices" />
-                    <div>
-                        <FilterSortLabel
-                            filterKeys={
-                                deviceListInView === "yours"
-                                    ? YDevFilterKeys
-                                    : ODevFilterKeys
-                            }
-                            sortBy={
-                                deviceListInView === "yours"
-                                    ? YDevSortBy
-                                    : ODevSortBy
-                            }
-                        />
-                        <div className="deviceList" ref={yourDevicesRef}>
-                            {userDevices &&
-                                userDevices.length > 0 &&
-                                userDevices.map((device) => (
-                                    <DeviceItem
-                                        key={device.id}
-                                        device={device}
-                                        onClick={() =>
-                                            router.push(
-                                                routes.device(device.id).as
-                                            )
-                                        }
-                                    />
-                                ))}
-                        </div>
-                    </div>
-                </div>
-                <div className="snapScrollPane mb-20">
-                    <FilterIcons
-                        filterKeys={
-                            deviceListInView === "yours"
-                                ? YDevFilterKeys
-                                : ODevFilterKeys
-                        }
-                        sortBy={
-                            deviceListInView === "yours"
-                                ? YDevSortBy
-                                : ODevSortBy
-                        }
-                        onFilterClick={() => showFilter("filter")}
-                        onSortClick={() => showFilter("sort")}
-                    />
-                    <Icons
-                        className="absolute top-1 left-16"
-                        iconType="chevronLeft"
-                        onClick={() => scroll(false)}
-                    />
-                    <PageTitle title="Our devices" />
-                    <div>
-                        <FilterSortLabel
-                            filterKeys={
-                                deviceListInView === "yours"
-                                    ? YDevFilterKeys
-                                    : ODevFilterKeys
-                            }
-                            sortBy={
-                                deviceListInView === "yours"
-                                    ? YDevSortBy
-                                    : ODevSortBy
-                            }
-                        />
-                        <div className="deviceList" ref={ourDevicesRef}>
-                            {allDevices &&
-                                allDevices.length > 0 &&
-                                allDevices.map((device) => (
-                                    <DeviceItem
-                                        key={device.id}
-                                        device={device}
-                                        onClick={() =>
-                                            router.push(
-                                                routes.device(device.id).as
-                                            )
-                                        }
-                                    />
-                                ))}
-                        </div>
-                    </div>
-                </div>
+                <DeviceList
+                    onScrollClick={() => scroll(true)}
+                    elementRef={yourDevicesRef}
+                    userDevices={userDevices}
+                    pageTitle="Your devices"
+                    iconType="right"
+                    sortBy={YDevSortBy}
+                    filterKeys={YDevFilterKeys}
+                />
+                <DeviceList
+                    onScrollClick={() => scroll(false)}
+                    elementRef={ourDevicesRef}
+                    userDevices={userDevices}
+                    pageTitle="Our devices"
+                    iconType="left"
+                    sortBy={ODevSortBy}
+                    filterKeys={ODevFilterKeys}
+                />
             </div>
         </div>
     );
