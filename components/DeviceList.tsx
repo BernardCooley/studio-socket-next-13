@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
+import { useSearchContext } from "../contexts/SearchContext";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import Icons from "../icons";
 import routes from "../routes";
@@ -28,6 +29,7 @@ const DeviceList = ({
     sortBy,
     filterKeys,
 }: Props) => {
+    const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
     const router = useRouter();
 
@@ -53,7 +55,7 @@ const DeviceList = ({
                     iconType === "right" ? "left" : "right"
                 }-16`}
                 iconType="search"
-                onClick={noop}
+                onClick={openSearch}
             />
             <PageTitle title={pageTitle} />
             <div>

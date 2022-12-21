@@ -1,10 +1,10 @@
-import React from "react";
+import React, { FormEvent } from "react";
 
 interface Props {
     label: string | null;
     type: "button" | "submit" | "reset";
     buttonClassName?: string;
-    onClick?: () => void;
+    onClick?: (e: FormEvent) => void;
     labelClassName?: string;
     disabled?: boolean;
 }

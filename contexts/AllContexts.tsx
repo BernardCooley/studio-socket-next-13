@@ -1,6 +1,7 @@
 import React from "react";
 import { NavContextProvider } from "./NavContext";
 import { ODevFilterContextProvider } from "./ODevFilterContext";
+import { SearchContextProvider } from "./SearchContext";
 import { YDevFilterContextProvider } from "./YDevFilterContext";
 
 interface Props {
@@ -9,11 +10,13 @@ interface Props {
 
 const AllContexts = ({ children }: Props) => {
     return (
-        <ODevFilterContextProvider>
-            <YDevFilterContextProvider>
-                <NavContextProvider>{children}</NavContextProvider>
-            </YDevFilterContextProvider>
-        </ODevFilterContextProvider>
+        <SearchContextProvider>
+            <ODevFilterContextProvider>
+                <YDevFilterContextProvider>
+                    <NavContextProvider>{children}</NavContextProvider>
+                </YDevFilterContextProvider>
+            </ODevFilterContextProvider>
+        </SearchContextProvider>
     );
 };
 

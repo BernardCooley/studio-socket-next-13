@@ -37,6 +37,12 @@ export const RegisterFormSchema = z
         }
     });
 
+export const SearchSchema = z.object({
+    search: z
+        .string()
+        .min(3, { message: "Search term must be 3 or more characters" }),
+});
+
 export const getFormMessages = (errorCode: any) => {
     const messages: Set<FormMessage> = new Set();
 

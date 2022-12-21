@@ -13,6 +13,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
+import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 
 interface Props {
     iconType: string;
@@ -106,6 +107,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "signIn":
             return (
                 <LoginIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "132px",
+                    }}
+                />
+            );
+        case "searching":
+            return (
+                <PlagiarismIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{

@@ -15,6 +15,7 @@ import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
 import { useIsInViewport } from "../../../utils";
 import { useNavContext } from "../../../contexts/NavContext";
 import DeviceList from "../../../components/DeviceList";
+import { useSearchContext } from "../../../contexts/SearchContext";
 
 interface Props {}
 
@@ -26,6 +27,7 @@ const Devices = ({}: Props) => {
     } = useYDevFilterContext();
     const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
         useODevFilterContext();
+    const { searchOpen } = useSearchContext();
     const { updateDeviceListInView } = useNavContext();
     const { data: user } = useSession();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
@@ -133,7 +135,7 @@ const Devices = ({}: Props) => {
     return (
         <div
             className={`relative overflow-hidden h-screen ${
-                filterModalShowing
+                filterModalShowing || searchOpen
                     ? "opacity-40 pointer-events-none"
                     : "opacity-100 pointer-events-auto"
             }`}
