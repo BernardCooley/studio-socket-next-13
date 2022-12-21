@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import Icons from "../icons";
 import routes from "../routes";
+import { noop } from "../utils";
 import DeviceItem from "./DeviceItem";
 import FilterIcons from "./FilterIcons";
 import FilterSortLabel from "./FilterSortLabel";
@@ -46,6 +47,13 @@ const DeviceList = ({
                     iconType === "right" ? "chevronRight" : "chevronLeft"
                 }`}
                 onClick={onScrollClick}
+            />
+            <Icons
+                className={`absolute top-1 ${
+                    iconType === "right" ? "left" : "right"
+                }-16`}
+                iconType="search"
+                onClick={noop}
             />
             <PageTitle title={pageTitle} />
             <div>

@@ -10,6 +10,8 @@ interface ODevFilterContextProps {
     filterKeys: string[];
     clearFilterKeys: () => void;
     updateFilterKeys: (keys: string[]) => void;
+    searchQuery: string;
+    updateSearchQuery: (query: string) => void;
 }
 
 export const ODevFilterContext = createContext<ODevFilterContextProps>({
@@ -22,6 +24,8 @@ export const ODevFilterContext = createContext<ODevFilterContextProps>({
     filterKeys: [],
     clearFilterKeys: () => {},
     updateFilterKeys: () => {},
+    searchQuery: "",
+    updateSearchQuery: () => {},
 });
 
 export const useODevFilterContext = () => useContext(ODevFilterContext);
@@ -35,6 +39,7 @@ export const ODevFilterContextProvider = ({
     const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
     const [sortBy, setSortBy] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const showFilter = (type: "sort" | "filter") => {
         setShowFilterModal(true);
@@ -61,6 +66,10 @@ export const ODevFilterContextProvider = ({
         setFilterKeys(filterKeys);
     };
 
+    const updateSearchQuery = (query: string) => {
+        setSearchQuery(query);
+    };
+
     return (
         <ODevFilterContext.Provider
             value={{
@@ -73,6 +82,8 @@ export const ODevFilterContextProvider = ({
                 filterKeys,
                 clearFilterKeys,
                 updateFilterKeys,
+                searchQuery,
+                updateSearchQuery,
             }}
         >
             {children}

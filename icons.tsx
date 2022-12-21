@@ -12,6 +12,7 @@ import FilterListIcon from "@mui/icons-material/FilterList";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import SearchIcon from "@mui/icons-material/Search";
 
 interface Props {
     iconType: string;
@@ -145,6 +146,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "filter":
             return (
                 <FilterAltIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "92px",
+                    }}
+                />
+            );
+        case "search":
+            return (
+                <SearchIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{

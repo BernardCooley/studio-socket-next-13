@@ -10,6 +10,8 @@ interface YDevFilterContextProps {
     filterKeys: string[];
     clearFilterKeys: () => void;
     updateFilterKeys: (keys: string[]) => void;
+    searchQuery: string;
+    updateSearchQuery: (query: string) => void;
 }
 
 export const YDevFilterContext = createContext<YDevFilterContextProps>({
@@ -22,6 +24,8 @@ export const YDevFilterContext = createContext<YDevFilterContextProps>({
     filterKeys: [],
     clearFilterKeys: () => {},
     updateFilterKeys: () => {},
+    searchQuery: "",
+    updateSearchQuery: () => {},
 });
 
 export const useYDevFilterContext = () => useContext(YDevFilterContext);
@@ -35,6 +39,7 @@ export const YDevFilterContextProvider = ({
     const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
     const [sortBy, setSortBy] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const showFilter = (type: "sort" | "filter") => {
         setShowFilterModal(true);
@@ -61,6 +66,10 @@ export const YDevFilterContextProvider = ({
         setFilterKeys(filterKeys);
     };
 
+    const updateSearchQuery = (query: string) => {
+        setSearchQuery(query);
+    };
+
     return (
         <YDevFilterContext.Provider
             value={{
@@ -73,6 +82,8 @@ export const YDevFilterContextProvider = ({
                 filterKeys,
                 clearFilterKeys,
                 updateFilterKeys,
+                searchQuery,
+                updateSearchQuery,
             }}
         >
             {children}
