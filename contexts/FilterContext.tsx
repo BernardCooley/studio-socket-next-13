@@ -5,7 +5,7 @@ interface FilterContextProps {
     showFilter: (type: "sort" | "filter") => void;
     hideFilter: () => void;
     sortOrFilter: "sort" | "filter";
-    sortSelected: string;
+    sortBy: string;
     updateSortSelected: (value: string) => void;
     filterKeys: string[];
     clearFilterKeys: () => void;
@@ -17,7 +17,7 @@ export const FilterContext = createContext<FilterContextProps>({
     showFilter: () => {},
     hideFilter: () => {},
     sortOrFilter: "sort",
-    sortSelected: "",
+    sortBy: "",
     updateSortSelected: () => {},
     filterKeys: [],
     clearFilterKeys: () => {},
@@ -33,7 +33,7 @@ export const FilterContextProvider = ({
 }) => {
     const [filterModalShowing, setShowFilterModal] = useState<boolean>(false);
     const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
-    const [sortSelected, setSortSelected] = useState<string>("");
+    const [sortBy, setSortSelected] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
 
     const showFilter = (type: "sort" | "filter") => {
@@ -64,7 +64,7 @@ export const FilterContextProvider = ({
                 showFilter,
                 hideFilter,
                 sortOrFilter,
-                sortSelected,
+                sortBy,
                 updateSortSelected,
                 filterKeys,
                 clearFilterKeys,

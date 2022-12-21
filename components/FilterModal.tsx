@@ -11,7 +11,7 @@ const FilterModal = ({}: Props) => {
         filterModalShowing,
         hideFilter,
         updateSortSelected,
-        sortSelected,
+        sortBy,
         sortOrFilter,
         filterKeys,
         clearFilterKeys,
@@ -19,12 +19,12 @@ const FilterModal = ({}: Props) => {
     } = useFilterContext();
 
     const [filterList, setFilterList] = useState<string[]>(filterKeys);
-    const [sortBy, setSortBy] = useState<string>(sortSelected);
+    const [sort, setSort] = useState<string>(sortBy);
 
     useEffect(() => {
         if (!filterModalShowing) {
             setFilterList(filterKeys);
-            setSortBy(sortSelected);
+            setSort(sortBy);
         }
     }, [filterModalShowing]);
 
@@ -41,7 +41,7 @@ const FilterModal = ({}: Props) => {
 
     const handleSubmitSort = () => {
         hideFilter();
-        updateSortSelected(sortBy);
+        updateSortSelected(sort);
     };
 
     const handleSubmitFilters = () => {
@@ -56,7 +56,7 @@ const FilterModal = ({}: Props) => {
                     {sortButtons.map((button) => (
                         <CustomButton
                             buttonClassName={`filterSortButton ${
-                                sortBy === button.sortKey
+                                sort === button.sortKey
                                     ? "filterSortButtonActive"
                                     : "filterSortButtonInactive"
                             }`}
@@ -64,13 +64,13 @@ const FilterModal = ({}: Props) => {
                             key={button.sortKey}
                             label={button.label}
                             type="button"
-                            onClick={() => setSortBy(button.sortKey)}
+                            onClick={() => setSort(button.sortKey)}
                         />
                     ))}
                 </div>
                 <div className="flex justify-between w-full">
                     <CustomButton
-                        disabled={sortBy.length === 0}
+                        disabled={sort.length === 0}
                         buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Clear"
@@ -78,7 +78,7 @@ const FilterModal = ({}: Props) => {
                         onClick={handleClearSort}
                     />
                     <CustomButton
-                        disabled={sortBy.length === 0}
+                        disabled={sort.length === 0}
                         buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Show results"

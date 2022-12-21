@@ -21,7 +21,7 @@ import FilterSortLabel from "../../../components/FilterSortLabel";
 interface Props {}
 
 const Devices = ({}: Props) => {
-    const { showFilter, sortSelected, filterModalShowing, filterKeys } =
+    const { showFilter, sortBy, filterModalShowing, filterKeys } =
         useFilterContext();
     const { data: user } = useSession();
     const router = useRouter();
@@ -126,7 +126,7 @@ const Devices = ({}: Props) => {
                 <Icons
                     iconType="sort"
                     className={`filterSortIcons ${
-                        sortSelected.length > 0
+                        sortBy.length > 0
                             ? "filterSortIconActive"
                             : "filterSortIconInactive"
                     }`}
@@ -156,7 +156,7 @@ const Devices = ({}: Props) => {
                     <div>
                         <FilterSortLabel
                             filterKeys={filterKeys}
-                            sortBy={sortSelected}
+                            sortBy={sortBy}
                         />
                         <div className="deviceList">
                             {userDevices &&
