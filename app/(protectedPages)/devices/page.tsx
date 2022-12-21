@@ -16,6 +16,7 @@ import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
 import Icons from "../../../icons";
 import { useFilterContext } from "../../../contexts/FilterContext";
+import FilterSortLabel from "../../../components/FilterSortLabel";
 
 interface Props {}
 
@@ -152,18 +153,26 @@ const Devices = ({}: Props) => {
                         onClick={() => scroll(true)}
                     />
                     <PageTitle title="Your devices" />
-                    <div className="deviceList">
-                        {userDevices &&
-                            userDevices.length > 0 &&
-                            userDevices.map((device) => (
-                                <DeviceItem
-                                    key={device.id}
-                                    device={device}
-                                    onClick={() =>
-                                        router.push(routes.device(device.id).as)
-                                    }
-                                />
-                            ))}
+                    <div>
+                        <FilterSortLabel
+                            filterKeys={filterKeys}
+                            sortBy={sortSelected}
+                        />
+                        <div className="deviceList">
+                            {userDevices &&
+                                userDevices.length > 0 &&
+                                userDevices.map((device) => (
+                                    <DeviceItem
+                                        key={device.id}
+                                        device={device}
+                                        onClick={() =>
+                                            router.push(
+                                                routes.device(device.id).as
+                                            )
+                                        }
+                                    />
+                                ))}
+                        </div>
                     </div>
                 </div>
                 <div className="snapScrollPane mb-20">
