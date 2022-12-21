@@ -87,3 +87,39 @@ input:-webkit-autofill:active {
 .modal {
     @apply w-11/12 border-2 rounded-lg p-4 shadow-2xl z-50 flex flex-col items-center absolute bg-primary-light -translate-y-1/2 translate-x-1/2 top-1/2 right-1/2;
 }
+
+.filterSortIcons {
+    @apply z-40 rounded-lg shadow-lg;
+}
+
+.filterSortIconActive {
+    @apply bg-primary text-primary-light;
+}
+
+.filterSortIconInactive {
+    @apply bg-primary-light text-primary;
+}
+
+.filterSortButton {
+    @apply m-2 p-2 rounded-md border-2 shadow-xl border-primary-light-border;
+}
+
+.filterSortButtonActive {
+    @apply text-primary-light bg-primary border-primary-light;
+}
+
+.filterSortButtonInactive {
+    @apply text-primary bg-primary-light border-primary-light-border;
+}
+
+.filterSortDialogButton {
+    @apply m-2 p-2 rounded-md border-2 text-primary-light bg-primary border-primary min-w-dialogSubmitButton;
+}
+
+.snapScrollPane {
+    @apply w-full snap-start h-screen overflow-y-scroll shrink-0 relative;
+}
+
+.deviceList {
+    @apply grid gap-4 grid-cols-2 relative m-4;
+}

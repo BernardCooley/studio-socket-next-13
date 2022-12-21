@@ -4,26 +4,24 @@ interface FilterContextProps {
     filterModalShowing: boolean;
     showFilter: (type: "sort" | "filter") => void;
     hideFilter: () => void;
-    filterType: "sort" | "filter";
+    sortOrFilter: "sort" | "filter";
     sortSelected: string;
     updateSortSelected: (value: string) => void;
     filterKeys: string[];
-    addToFilterKeys: (key: string) => void;
-    removeFromFilterKeys: (key: string) => void;
     clearFilterKeys: () => void;
+    updateFilterKeys: (keys: string[]) => void;
 }
 
 export const FilterContext = createContext<FilterContextProps>({
     filterModalShowing: false,
     showFilter: () => {},
     hideFilter: () => {},
-    filterType: "sort",
+    sortOrFilter: "sort",
     sortSelected: "",
     updateSortSelected: () => {},
     filterKeys: [],
-    addToFilterKeys: () => {},
-    removeFromFilterKeys: () => {},
     clearFilterKeys: () => {},
+    updateFilterKeys: () => {},
 });
 
 export const useFilterContext = () => useContext(FilterContext);
@@ -34,13 +32,13 @@ export const FilterContextProvider = ({
     children: ReactNode;
 }) => {
     const [filterModalShowing, setShowFilterModal] = useState<boolean>(false);
-    const [filterType, setFilterType] = useState<"sort" | "filter">("sort");
+    const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
     const [sortSelected, setSortSelected] = useState<string>("");
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
 
     const showFilter = (type: "sort" | "filter") => {
         setShowFilterModal(true);
-        setFilterType(type);
+        setSortOrFilter(type);
     };
 
     const hideFilter = () => {
@@ -51,16 +49,12 @@ export const FilterContextProvider = ({
         setSortSelected(value);
     };
 
-    const addToFilterKeys = (key: string) => {
-        setFilterKeys([...filterKeys, key]);
-    };
-
-    const removeFromFilterKeys = (key: string) => {
-        setFilterKeys(filterKeys.filter((filterKey) => filterKey !== key));
-    };
-
     const clearFilterKeys = () => {
         setFilterKeys([]);
+    };
+
+    const updateFilterKeys = (filterKeys: string[]) => {
+        setFilterKeys(filterKeys);
     };
 
     return (
@@ -69,13 +63,12 @@ export const FilterContextProvider = ({
                 filterModalShowing,
                 showFilter,
                 hideFilter,
-                filterType,
+                sortOrFilter,
                 sortSelected,
                 updateSortSelected,
                 filterKeys,
-                addToFilterKeys,
-                removeFromFilterKeys,
                 clearFilterKeys,
+                updateFilterKeys,
             }}
         >
             {children}

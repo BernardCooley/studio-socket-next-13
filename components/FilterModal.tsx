@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { filters, sortButtons } from "../consts";
 import { useFilterContext } from "../contexts/FilterContext";
 import Icons from "../icons";
@@ -12,12 +12,21 @@ const FilterModal = ({}: Props) => {
         hideFilter,
         updateSortSelected,
         sortSelected,
-        filterType,
-        addToFilterKeys,
+        sortOrFilter,
         filterKeys,
-        removeFromFilterKeys,
         clearFilterKeys,
+        updateFilterKeys,
     } = useFilterContext();
+
+    const [filterList, setFilterList] = useState<string[]>(filterKeys);
+    const [sortBy, setSortBy] = useState<string>(sortSelected);
+
+    useEffect(() => {
+        if (!filterModalShowing) {
+            setFilterList(filterKeys);
+            setSortBy(sortSelected);
+        }
+    }, [filterModalShowing]);
 
     const handleClearSort = () => {
         hideFilter();
@@ -27,6 +36,17 @@ const FilterModal = ({}: Props) => {
     const handleClearFilters = () => {
         hideFilter();
         clearFilterKeys();
+        setFilterList([]);
+    };
+
+    const handleSubmitSort = () => {
+        hideFilter();
+        updateSortSelected(sortBy);
+    };
+
+    const handleSubmitFilters = () => {
+        hideFilter();
+        updateFilterKeys(filterList);
     };
 
     const Sort = () => {
@@ -35,27 +55,35 @@ const FilterModal = ({}: Props) => {
                 <div className="mb-10">
                     {sortButtons.map((button) => (
                         <CustomButton
-                            buttonClassName={`m-2 p-2 rounded-md border-2 ${
-                                sortSelected === button.sortKey
-                                    ? "text-primary-light bg-primary border-primary-light"
-                                    : "text-primary bg-primary-light border-primary"
+                            buttonClassName={`filterSortButton ${
+                                sortBy === button.sortKey
+                                    ? "filterSortButtonActive"
+                                    : "filterSortButtonInactive"
                             }`}
                             labelClassName="text-xl"
                             key={button.sortKey}
                             label={button.label}
                             type="button"
-                            onClick={() => updateSortSelected(button.sortKey)}
+                            onClick={() => setSortBy(button.sortKey)}
                         />
                     ))}
                 </div>
                 <div className="flex justify-between w-full">
                     <CustomButton
-                        disabled={sortSelected.length === 0}
-                        buttonClassName={`m-2 p-2 rounded-md border-2 text-primary-light bg-primary border-primary min-w-dialogSubmitButton`}
+                        disabled={sortBy.length === 0}
+                        buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Clear"
                         type="button"
                         onClick={handleClearSort}
+                    />
+                    <CustomButton
+                        disabled={sortBy.length === 0}
+                        buttonClassName="filterSortDialogButton"
+                        labelClassName="text-xl"
+                        label="Show results"
+                        type="button"
+                        onClick={handleSubmitSort}
                     />
                 </div>
             </>
@@ -68,34 +96,39 @@ const FilterModal = ({}: Props) => {
                 <div>
                     {filters.map((filter) => (
                         <div
-                            className="mb-3  border-b-2 border-primary-light-border last-of-type:border-b-0"
+                            className="mb-3 border-b-2 border-primary-light-border last-of-type:border-b-0"
                             key={filter.title}
                         >
                             <div className="mb-2 text-xl">{filter.title}</div>
                             <div className="mb-3">
                                 {filter.buttons.map((button) => (
                                     <CustomButton
-                                        buttonClassName={`m-2 p-2 rounded-md border-2 ${
-                                            filterKeys.includes(
+                                        buttonClassName={`filterSortButton ${
+                                            filterList.includes(
                                                 button.filterKey
                                             )
-                                                ? "text-primary-light bg-primary border-primary-light"
-                                                : "text-primary bg-primary-light border-primary"
+                                                ? "filterSortButtonActive"
+                                                : "filterSortButtonInactive"
                                         }`}
                                         labelClassName="text-xl"
                                         key={button.filterKey}
                                         label={button.label}
                                         type="button"
                                         onClick={() =>
-                                            filterKeys.includes(
+                                            filterList.includes(
                                                 button.filterKey
                                             )
-                                                ? removeFromFilterKeys(
-                                                      button.filterKey
+                                                ? setFilterList(
+                                                      filterList.filter(
+                                                          (filterKey) =>
+                                                              filterKey !==
+                                                              button.filterKey
+                                                      )
                                                   )
-                                                : addToFilterKeys(
-                                                      button.filterKey
-                                                  )
+                                                : setFilterList([
+                                                      ...filterList,
+                                                      button.filterKey,
+                                                  ])
                                         }
                                     />
                                 ))}
@@ -105,12 +138,20 @@ const FilterModal = ({}: Props) => {
                 </div>
                 <div className="flex justify-between w-full">
                     <CustomButton
-                        disabled={filterKeys.length === 0}
-                        buttonClassName={`m-2 p-2 rounded-md border-2 text-primary-light bg-primary border-primary min-w-dialogSubmitButton`}
+                        disabled={filterList.length === 0}
+                        buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Clear"
                         type="button"
                         onClick={handleClearFilters}
+                    />
+                    <CustomButton
+                        disabled={filterList.length === 0}
+                        buttonClassName="filterSortDialogButton"
+                        labelClassName="text-xl"
+                        label="Show results"
+                        type="button"
+                        onClick={handleSubmitFilters}
                     />
                 </div>
             </>
@@ -127,9 +168,9 @@ const FilterModal = ({}: Props) => {
                         onClick={hideFilter}
                     />
                     <div className="w-full text-2xl mb-4">
-                        {filterType === "sort" ? "Sort by" : "Filter by"}
+                        {sortOrFilter === "sort" ? "Sort by" : "Filter by"}
                     </div>
-                    {filterType === "sort" ? <Sort /> : <Filter />}
+                    {sortOrFilter === "sort" ? <Sort /> : <Filter />}
                 </div>
             )}
         </div>

@@ -124,18 +124,18 @@ const Devices = ({}: Props) => {
             <div className="text-primary absolute w-full flex justify-between px-3 top-1">
                 <Icons
                     iconType="sort"
-                    className={`z-40 rounded-lg ${
+                    className={`filterSortIcons ${
                         sortSelected.length > 0
-                            ? "bg-primary text-primary-light"
-                            : "bg-primary-light text-primary"
+                            ? "filterSortIconActive"
+                            : "filterSortIconInactive"
                     }`}
                     onClick={() => showFilter("sort")}
                 />
                 <Icons
-                    className={`z-40 ${
+                    className={`filterSortIcons ${
                         filterKeys.length > 0
-                            ? "bg-primary text-primary-light"
-                            : "bg-primary-light text-primary"
+                            ? "filterSortIconActive"
+                            : "filterSortIconInactive"
                     }`}
                     iconType="filter"
                     onClick={() => showFilter("filter")}
@@ -145,14 +145,14 @@ const Devices = ({}: Props) => {
                 ref={scrollElement}
                 className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
-                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative mb-20">
+                <div className="snapScrollPane mb-20">
                     <Icons
                         className="absolute top-1 right-14"
                         iconType="chevronRight"
                         onClick={() => scroll(true)}
                     />
                     <PageTitle title="Your devices" />
-                    <div className="grid gap-4 grid-cols-2 relative m-4">
+                    <div className="deviceList">
                         {userDevices &&
                             userDevices.length > 0 &&
                             userDevices.map((device) => (
@@ -166,14 +166,14 @@ const Devices = ({}: Props) => {
                             ))}
                     </div>
                 </div>
-                <div className="w-full snap-start h-screen overflow-y-scroll shrink-0 relative mb-20">
+                <div className="snapScrollPane mb-20">
                     <Icons
                         className="absolute top-1 left-14"
                         iconType="chevronLeft"
                         onClick={() => scroll(false)}
                     />
                     <PageTitle title="Our devices" />
-                    <div className="grid gap-4 grid-cols-2 relative m-4">
+                    <div className="deviceList">
                         {allDevices &&
                             allDevices.length > 0 &&
                             allDevices.map((device) => (
