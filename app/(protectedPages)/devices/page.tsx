@@ -17,6 +17,7 @@ import { UserData } from "../../../types";
 import Icons from "../../../icons";
 import { useFilterContext } from "../../../contexts/FilterContext";
 import FilterSortLabel from "../../../components/FilterSortLabel";
+import FilterIcons from "../../../components/FilterIcons";
 
 interface Props {}
 
@@ -122,33 +123,19 @@ const Devices = ({}: Props) => {
                     : "opacity-100 pointer-events-auto"
             }`}
         >
-            <div className="text-primary absolute w-full flex justify-between px-3 top-1">
-                <Icons
-                    iconType="sort"
-                    className={`z-30 rounded-lg shadow-lg ${
-                        sortBy.length > 0
-                            ? "filterSortIconActive"
-                            : "filterSortIconInactive"
-                    }`}
-                    onClick={() => showFilter("sort")}
-                />
-                <Icons
-                    className={`z-30 rounded-lg shadow-lg ${
-                        filterKeys.length > 0
-                            ? "filterSortIconActive"
-                            : "filterSortIconInactive"
-                    }`}
-                    iconType="filter"
-                    onClick={() => showFilter("filter")}
-                />
-            </div>
             <div
                 ref={scrollElement}
                 className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
                 <div className="snapScrollPane mb-20">
+                    <FilterIcons
+                        filterKeys={filterKeys}
+                        sortBy={sortBy}
+                        onFilterClick={() => showFilter("filter")}
+                        onSortClick={() => showFilter("sort")}
+                    />
                     <Icons
-                        className="absolute top-1 right-14"
+                        className="absolute top-1 right-16"
                         iconType="chevronRight"
                         onClick={() => scroll(true)}
                     />
@@ -176,8 +163,14 @@ const Devices = ({}: Props) => {
                     </div>
                 </div>
                 <div className="snapScrollPane mb-20">
+                    <FilterIcons
+                        filterKeys={filterKeys}
+                        sortBy={sortBy}
+                        onFilterClick={() => showFilter("filter")}
+                        onSortClick={() => showFilter("sort")}
+                    />
                     <Icons
-                        className="absolute top-1 left-14"
+                        className="absolute top-1 left-16"
                         iconType="chevronLeft"
                         onClick={() => scroll(false)}
                     />
