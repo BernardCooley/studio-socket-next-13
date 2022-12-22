@@ -1,19 +1,13 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import ImageWithFallback from "./ImageWithFallback";
 
 interface Props {
     image: string;
     containerClassname?: string;
-    buttonClassname?: string;
-    onClick: () => void;
+    icon: ReactNode;
 }
 
-const Avatar = ({
-    image,
-    containerClassname,
-    buttonClassname,
-    onClick,
-}: Props) => {
+const Avatar = ({ image, containerClassname, icon }: Props) => {
     return (
         <div
             className={`w-full flex flex-col justify-center relative items-center ${containerClassname}`}
@@ -29,12 +23,7 @@ const Avatar = ({
                     height: 200,
                 }}
             />
-            <button
-                onClick={onClick}
-                className={`relative bottom-9 border-2 rounded-full text-xl ${buttonClassname}`}
-            >
-                Delete
-            </button>
+            {icon}
         </div>
     );
 };

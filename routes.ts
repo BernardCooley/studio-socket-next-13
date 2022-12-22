@@ -24,6 +24,10 @@ export default {
         href: "/devices/[id]",
         as: `/devices/${id}/`,
     }),
+    addDevice: () => ({
+        href: "/devices/addNew",
+        as: `/devices/addNew/`,
+    }),
     studios: () => ({
         href: "/studios",
         as: "/studios/",

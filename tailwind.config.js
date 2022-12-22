@@ -39,6 +39,8 @@ module.exports = {
             "light-gray": "#9498A0",
             error: "#FF0000",
             "primary-light-border": "#cbbdbd",
+            transparent: "transparent",
+            fieldLabel: "#8A8A8A",
         },
         fontFamily: {
             default: ["SairaCondensed-Thin", "sans-serif"],

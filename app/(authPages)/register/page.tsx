@@ -234,9 +234,14 @@ const Register = ({}: Props) => {
                 {file && (
                     <Avatar
                         image={file}
-                        containerClassname="w-3/4 mb-4"
-                        buttonClassname="bg-primary text-primary-light w-24"
-                        onClick={handleDeleteAvatar}
+                        containerClassname="w-3/4 mb-4 mt-6"
+                        icon={
+                            <Icons
+                                iconType="close"
+                                className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
+                                onClick={handleDeleteAvatar}
+                            />
+                        }
                     />
                 )}
             </AuthForm>

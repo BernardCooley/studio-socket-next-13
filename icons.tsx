@@ -14,6 +14,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 interface Props {
     iconType: string;
@@ -151,6 +152,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
                     onClick={onClick}
                     style={{
                         fontSize: fontSize || "92px",
+                    }}
+                />
+            );
+        case "chevronDown":
+            return (
+                <KeyboardArrowDownIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "72px",
                     }}
                 />
             );

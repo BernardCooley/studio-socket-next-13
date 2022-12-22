@@ -22,7 +22,7 @@ export default function RootLayout({ children }: Props) {
             <SessionProvider>
                 <body
                     className={`relative ${
-                        pathname === "/devices"
+                        pathname?.includes("devices")
                             ? "overflow-hidden h-screen"
                             : ""
                     }`}

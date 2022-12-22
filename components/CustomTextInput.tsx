@@ -1,4 +1,10 @@
-import React, { forwardRef, LegacyRef, useEffect, useState } from "react";
+import React, {
+    ChangeEvent,
+    forwardRef,
+    LegacyRef,
+    useEffect,
+    useState,
+} from "react";
 import { useFormContext } from "../contexts/FormContext";
 import { imageToBase65 } from "../utils";
 
@@ -36,7 +42,7 @@ const CustomTextInput = forwardRef(
             labelClasses,
             isFile,
             borderless,
-            scaleLabel,
+            scaleLabel = true,
             hide,
             resetValue,
             fieldIcon,
@@ -44,7 +50,7 @@ const CustomTextInput = forwardRef(
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
         const { updateFile } = useFormContext();
-        const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
             if (isFile) {
                 if (e.target.files) {
                     const image = await imageToBase65(e.target.files[0]);
@@ -74,13 +80,13 @@ const CustomTextInput = forwardRef(
                 <div className="relative">
                     <div className="relative">
                         <input
-                            className={`block px-2.5 pb-2.5 pt-5 w-full text-primary text-2xl bg-primary-light border-primary appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${inputClassName} ${
+                            className={`block px-2.5 pb-2.5 pt-5 w-full text-2xl text-primary bg-primary-light border-primary border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${
                                 borderless
                                     ? "border-0 border-b-0"
                                     : "border-0 border-b-2"
-                            } ${
-                                hide ? "opacity-0 h-0 pointer-events-none" : ""
-                            }`}
+                            } ${hide ? "opacity-0 h-0 pointer-events-none" : ""}
+                            ${inputClassName}`}
+                            placeholder=" "
                             type={type}
                             name={name}
                             id={id}
@@ -88,18 +94,19 @@ const CustomTextInput = forwardRef(
                             onChange={handleChange}
                             onBlur={onBlur}
                             ref={ref}
-                            placeholder=" "
                         />
                         {fieldIcon}
+                        <label
+                            htmlFor={id}
+                            className={`absolute text-2xl text-fieldLabel duration-300 z-10 ${labelClasses} ${
+                                scaleLabel
+                                    ? "transform -translate-y-6 scale-75 top-4 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-6"
+                                    : "-top-6"
+                            }`}
+                        >
+                            {label}
+                        </label>
                     </div>
-                    <label
-                        className={`absolute text-2xl text-primary duration-200 transform -translate-y-6 z-10 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-50 peer-focus:-translate-y-6 ${labelClasses} ${
-                            scaleLabel ? "scale-50 top-4" : "scale-100 top-0"
-                        }`}
-                        htmlFor={id}
-                    >
-                        {label}
-                    </label>
                 </div>
                 <div className="text-error">
                     {errorMessages.length > 0 &&
