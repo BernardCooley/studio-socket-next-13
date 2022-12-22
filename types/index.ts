@@ -1167,3 +1167,8 @@ export interface DialogButton {
     onClick: () => void;
     classes?: string;
 }
+
+export interface SelectOption {
+    value: string;
+    label: string;
+}

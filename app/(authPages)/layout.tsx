@@ -43,7 +43,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
         <div className="AuthLayout">
             <FormDialog messages={formMessages} messageIcon={icon} />
             <div
-                className={`flex flex-col items-center ${
+                className={`flex flex-col items-center relative ${
                     formMessages.size > 0 ? "opacity-30" : "opacity-100"
                 }`}
             >

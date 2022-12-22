@@ -32,6 +32,9 @@ module.exports = {
             width: {
                 double: "200%",
             },
+            transitionProperty: {
+                height: "height",
+            },
         },
         colors: {
             primary: "#383B43",
