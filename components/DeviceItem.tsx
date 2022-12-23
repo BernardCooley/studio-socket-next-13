@@ -45,10 +45,6 @@ const DeviceItem = ({ device, onClick = noop }: Props) => {
                             title={device.title}
                             fallbackImage="/assets/images/deviceFallbackImage.png"
                             image={deviceImage}
-                            size={{
-                                width: 200,
-                                height: 200,
-                            }}
                         />
                     </div>
                 </div>

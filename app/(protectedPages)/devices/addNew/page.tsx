@@ -22,13 +22,12 @@ import {
     NewDevice,
 } from "../../../../types";
 import { getErrorMessages, noop } from "../../../../utils";
-import { options } from "../../../../testData/testData";
 import Avatar from "../../../../components/Avatar";
 import Icons from "../../../../icons";
 import { useNavContext } from "../../../../contexts/NavContext";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../firebase/clientApp";
-import { deviceTypes } from "../../../../consts";
+import { connectionTypes, deviceTypes } from "../../../../consts";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface Props {}
@@ -336,7 +335,10 @@ const AddNewDevice = ({}: Props) => {
                             errors={connectionErrors}
                             descriptions={descriptions}
                             nameRef={nameRef}
-                            options={options}
+                            options={connectionTypes.map((type) => ({
+                                value: type === "Please select" ? "" : type,
+                                label: type,
+                            }))}
                             onAddConnection={section.onAddConnection}
                             onAddDescription={addDescrption}
                             onDeleteConnection={section.onDeleteConnection}

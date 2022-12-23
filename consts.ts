@@ -187,3 +187,26 @@ export const deviceTypes = [
     "Digital-to-Analog Converter (DAC)",
     "Sequencer",
 ];
+
+export const connectionTypes = [
+    "Please select",
+    "RCA (Phono, Cinch)",
+    "3.5mm Miniature Phone Jack (1/8)",
+    "1/4 Phone Jack (6.35mm)",
+    "DIN",
+    "XLR",
+    "Binding Post",
+    "USB",
+    "Other",
+    "Terminal Block",
+    "Binding Post (Universal)",
+    "Firewire",
+    "BNC",
+    "JIS F05 (Toslink, ADAT Lightpipe)",
+    "D-Sub",
+    "Speakon",
+    "RJ45",
+    "Spring Terminal",
+    "Banana",
+    "Combo XLR / 1/4",
+];
