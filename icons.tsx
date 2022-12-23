@@ -17,6 +17,7 @@ import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import PianoIcon from "@mui/icons-material/Piano";
 
 interface Props {
     iconType: string;
@@ -120,6 +121,16 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "searching":
             return (
                 <PlagiarismIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "132px",
+                    }}
+                />
+            );
+        case "keyboard":
+            return (
+                <PianoIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{

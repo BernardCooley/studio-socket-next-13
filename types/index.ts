@@ -1172,3 +1172,62 @@ export interface SelectOption {
     value: string;
     label: string;
 }
+
+export interface NewDevice {
+    title: string;
+    manufacturer: string;
+    deviceTypes: DeviceType[];
+    connections: Connection[];
+    requiresVerification: boolean;
+}
+
+export type DeviceType =
+    | "Synthesizer"
+    | "Turntable"
+    | "Speaker"
+    | "DJ Mixer"
+    | "Headphones"
+    | "Sampler"
+    | "8-track deck"
+    | "Signal Distribution"
+    | "Effect"
+    | "EQ"
+    | "Turntable Accessory"
+    | "Amplifier, Pre"
+    | "Amplifier, Power"
+    | "Drum Machine"
+    | "Enclosure / Casing"
+    | "Mixing Desk"
+    | "Dynamics"
+    | "CD"
+    | "Audio Interface"
+    | "Instrument Tuner"
+    | "Turntable Cartridge"
+    | "Digital Recorder"
+    | "Power Supply"
+    | "Control Surface"
+    | "Media Player"
+    | "Amplifier, Integrated"
+    | "Cassette Deck"
+    | "Tape Machine"
+    | "Amplifier, Phono"
+    | "Cable"
+    | "Radio Receiver"
+    | "Minidisc"
+    | "Turntable Stylus"
+    | "Turntable Tonearm"
+    | "Receiver"
+    | "Accessory"
+    | "Synchronizer / Clock Generator"
+    | "Microphone"
+    | "Amplifier, Headphone"
+    | "Radio Tuner"
+    | "Amplifier, Guitar"
+    | "Media & Data Storage"
+    | "Amplifier, Microphone"
+    | "Crossover"
+    | "Turntable Spare Part"
+    | "Amplifier, Bass"
+    | "Analog-to-Digital Converter (ADC)"
+    | "Digital-to-Analog Converter (DAC)"
+    | "Sequencer";

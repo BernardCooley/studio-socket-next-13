@@ -13,21 +13,38 @@ import {
     AddDeviceSchema,
     ConnectionDescriptionSchema,
     ConnectionSchema,
+    getFormMessages,
 } from "../../../../formValidation";
-import { Connection } from "../../../../types";
+import {
+    Connection,
+    DeviceType,
+    FormMessageTypes,
+    NewDevice,
+} from "../../../../types";
 import { getErrorMessages, noop } from "../../../../utils";
 import { options } from "../../../../testData/testData";
+import Avatar from "../../../../components/Avatar";
+import Icons from "../../../../icons";
+import { useNavContext } from "../../../../contexts/NavContext";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../../../../firebase/clientApp";
+import { deviceTypes } from "../../../../consts";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface Props {}
 
 const AddNewDevice = ({}: Props) => {
-    const { formMessages } = useFormContext();
+    const storage = getStorage();
+    const { formMessages, file, updateFile, addFormMessages, updateIcon } =
+        useFormContext();
+    const { environment } = useNavContext();
     const titleRef = useRef<HTMLInputElement>(null);
     const manufacturerRef = useRef<HTMLInputElement>(null);
     const deviceTypeRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
     const connectorRef = useRef<HTMLInputElement>(null);
+    const imageRef = useRef<HTMLInputElement>(null);
     const router = useRouter();
     const [errors, setErrors] = useState([]);
     const [connectionErrors, setConnectionErrors] = useState([]);
@@ -39,6 +56,7 @@ const AddNewDevice = ({}: Props) => {
     const [midiConnections, setMidiConnections] = useState<Connection[]>([]);
     const [descriptions, setDescriptions] = useState<string[]>([]);
     const [submitting, setSubmitting] = useState<boolean>(false);
+    const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
 
     const connectionSections = [
         {
@@ -85,23 +103,78 @@ const AddNewDevice = ({}: Props) => {
         }
     };
 
-    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
             AddDeviceSchema.parse({
                 title: titleRef.current?.value,
                 manufacturer: manufacturerRef.current?.value,
                 deviceType: deviceTypeRef.current?.value,
-                name: nameRef.current?.value,
-                description: descriptions,
-                connector: connectorRef.current?.value,
             });
 
             if (
-                nameRef.current &&
-                descriptionRef.current &&
-                connectorRef.current
+                titleRef.current &&
+                manufacturerRef.current &&
+                deviceTypeRef.current
             ) {
+                addFormMessages(
+                    new Set([
+                        {
+                            message: "Adding new device...",
+                            type: FormMessageTypes.INFO,
+                        },
+                    ])
+                );
+                updateIcon(
+                    <Icons iconType="keyboard" className="text-primary" />
+                );
+
+                const newDevice: NewDevice = {
+                    title: titleRef.current?.value,
+                    manufacturer: manufacturerRef.current?.value,
+                    deviceTypes: [deviceTypeRef.current?.value] as DeviceType[],
+                    connections: [...audioConnections, ...midiConnections],
+                    requiresVerification: environment === "prod",
+                };
+
+                try {
+                    const docRef = await addDoc(
+                        collection(
+                            db,
+                            environment === "prod" ? "devices" : "testDevices"
+                        ),
+                        newDevice
+                    );
+
+                    if (imageRef.current?.files) {
+                        const storageRef = ref(
+                            storage,
+                            `${
+                                environment === "prod"
+                                    ? "gear_images"
+                                    : "gear_images_test"
+                            }/${docRef.id}`
+                        );
+                        await uploadBytes(
+                            storageRef,
+                            imageRef.current?.files[0]
+                        );
+                    }
+
+                    addFormMessages(
+                        new Set([
+                            {
+                                message: "Device added",
+                                type: FormMessageTypes.INFO,
+                            },
+                        ])
+                    );
+                    setTimeout(async () => {
+                        addFormMessages(new Set([]));
+                    }, 1000);
+                } catch (err: any) {
+                    addFormMessages(getFormMessages(err.code));
+                }
                 console.log("Add device");
             }
 
@@ -165,6 +238,11 @@ const AddNewDevice = ({}: Props) => {
         }
     };
 
+    const handleDeleteAvatar = () => {
+        updateFile("");
+        setTriggerResetValue(!triggerResetValue);
+    };
+
     return (
         <div className="">
             <div className="w-full flex items-start relative">
@@ -184,7 +262,7 @@ const AddNewDevice = ({}: Props) => {
                         }`}
                         id="title"
                         type="text"
-                        label="Title"
+                        label="Title *"
                         name="title"
                         ref={titleRef}
                         errorMessages={getErrorMessages(errors, "title")}
@@ -195,7 +273,7 @@ const AddNewDevice = ({}: Props) => {
                         }`}
                         id="manufacturer"
                         type="text"
-                        label="Manufacturer"
+                        label="Manufacturer *"
                         name="manufacturer"
                         ref={manufacturerRef}
                         errorMessages={getErrorMessages(errors, "manufacturer")}
@@ -205,11 +283,43 @@ const AddNewDevice = ({}: Props) => {
                             formMessages.size > 0 ? "pointer-events-none" : ""
                         }`}
                         name="deviceType"
-                        options={options}
-                        label="Device type"
+                        options={deviceTypes.map((type) => ({
+                            value: type === "Please select" ? "" : type,
+                            label: type,
+                        }))}
+                        label="Device type *"
                         ref={deviceTypeRef}
                         errorMessages={getErrorMessages(errors, "deviceType")}
                     />
+                    <CustomTextInput
+                        className={`mt-16 ${
+                            formMessages.size > 0 ? "pointer-events-none" : ""
+                        }`}
+                        type="file"
+                        id="avatar"
+                        label="Device image (jpg, jpeg, png)"
+                        name="avatar"
+                        ref={imageRef}
+                        errorMessages={getErrorMessages(errors, "deviceImage")}
+                        isFile={true}
+                        borderless={true}
+                        scaleLabel={false}
+                        resetValue={triggerResetValue}
+                        hide={file.length > 0}
+                    />
+                    {file && (
+                        <Avatar
+                            image={file}
+                            containerClassname="w-3/4 mb-4 mt-6"
+                            icon={
+                                <Icons
+                                    iconType="close"
+                                    className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
+                                    onClick={handleDeleteAvatar}
+                                />
+                            }
+                        />
+                    )}
                     {connectionSections.map((section) => (
                         <AddConnectionSection
                             key={section.title}

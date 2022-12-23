@@ -57,7 +57,7 @@ export const ConnectionSchema = z.object({
         .min(3, { message: "Connection name must be 3 or more characters" }),
     description: z
         .array(z.string())
-        .length(1, { message: "Please add at least 1 description" }),
+        .min(1, { message: "Please add at least 1 description" }),
     connector: z.string().min(1, { message: "Please select a connector" }),
 });
 

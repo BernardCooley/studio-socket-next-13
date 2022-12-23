@@ -1,4 +1,10 @@
-import React, { createContext, ReactNode, useContext, useState } from "react";
+import React, {
+    createContext,
+    ReactNode,
+    useContext,
+    useEffect,
+    useState,
+} from "react";
 
 interface NavContextProps {
     navOpen: boolean;
@@ -6,6 +12,7 @@ interface NavContextProps {
     openNav: () => void;
     deviceListInView: "yours" | "ours";
     updateDeviceListInView: (view: "yours" | "ours") => void;
+    environment: "dev" | "prod";
 }
 
 export const NavContext = createContext<NavContextProps>({
@@ -14,6 +21,7 @@ export const NavContext = createContext<NavContextProps>({
     openNav: () => {},
     deviceListInView: "yours",
     updateDeviceListInView: () => {},
+    environment: "dev",
 });
 
 export const useNavContext = () => useContext(NavContext);
@@ -23,6 +31,7 @@ export const NavContextProvider = ({ children }: { children: ReactNode }) => {
     const [deviceListInView, setDeviceListInView] = useState<"yours" | "ours">(
         "yours"
     );
+    const [environment, setEnvironment] = useState<"dev" | "prod">("dev");
 
     const closeNav = () => {
         setNavOpen(false);
@@ -36,6 +45,15 @@ export const NavContextProvider = ({ children }: { children: ReactNode }) => {
         setDeviceListInView(view);
     };
 
+    useEffect(() => {
+        const env = process.env.NODE_ENV;
+        if (env == "development") {
+            setEnvironment("dev");
+        } else if (env == "production") {
+            setEnvironment("prod");
+        }
+    }, []);
+
     return (
         <NavContext.Provider
             value={{
@@ -44,6 +62,7 @@ export const NavContextProvider = ({ children }: { children: ReactNode }) => {
                 openNav,
                 deviceListInView,
                 updateDeviceListInView,
+                environment,
             }}
         >
             {children}

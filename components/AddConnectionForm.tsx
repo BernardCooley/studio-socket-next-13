@@ -93,14 +93,12 @@ const AddConnectionForm = ({
                             type="button"
                             buttonClassName={`mt-4 buttonSmall`}
                         />
-                        <div>
-                            <CustomButton
-                                onClick={onSubmit}
-                                label="Add"
-                                type="submit"
-                                buttonClassName={`mt-4 buttonSmall`}
-                            />
-                        </div>
+                        <CustomButton
+                            onClick={onSubmit}
+                            label="Add"
+                            type="button"
+                            buttonClassName={`mt-4 buttonSmall`}
+                        />
                     </div>
                 </div>
             </div>
