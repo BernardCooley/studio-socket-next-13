@@ -14,6 +14,8 @@ interface FormContextProps {
     updateDialogButtons: (buttons: DialogButton[]) => void;
     clearDialogButtons: () => void;
     resetIcon: () => void;
+    canCloseDialog: boolean;
+    updateCanCloseDialog: (value: boolean) => void;
 }
 
 export const FormContext = createContext<FormContextProps>({
@@ -28,6 +30,8 @@ export const FormContext = createContext<FormContextProps>({
     updateDialogButtons: () => {},
     clearDialogButtons: () => {},
     resetIcon: () => {},
+    canCloseDialog: false,
+    updateCanCloseDialog: () => {},
 });
 
 export const useFormContext = () => useContext(FormContext);
@@ -41,6 +45,7 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
         <Icons iconType="warning" />
     );
     const [dialogButtons, setDialogButtons] = useState<DialogButton[]>([]);
+    const [canCloseDialog, setCanCloseDialog] = useState<boolean>(false);
 
     const updateIcon = (icon: React.ReactNode) => {
         setIcon(icon);
@@ -78,6 +83,10 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
         setDialogButtons([]);
     };
 
+    const updateCanCloseDialog = (value: boolean) => {
+        setCanCloseDialog(value);
+    };
+
     return (
         <FormContext.Provider
             value={{
@@ -92,6 +101,8 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
                 updateDialogButtons,
                 clearDialogButtons,
                 resetIcon,
+                canCloseDialog,
+                updateCanCloseDialog,
             }}
         >
             {children}

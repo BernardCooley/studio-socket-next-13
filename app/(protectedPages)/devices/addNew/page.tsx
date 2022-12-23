@@ -35,8 +35,14 @@ interface Props {}
 
 const AddNewDevice = ({}: Props) => {
     const storage = getStorage();
-    const { formMessages, file, updateFile, addFormMessages, updateIcon } =
-        useFormContext();
+    const {
+        formMessages,
+        file,
+        updateFile,
+        addFormMessages,
+        updateIcon,
+        updateCanCloseDialog,
+    } = useFormContext();
     const { environment } = useNavContext();
     const titleRef = useRef<HTMLInputElement>(null);
     const manufacturerRef = useRef<HTMLInputElement>(null);
@@ -164,14 +170,13 @@ const AddNewDevice = ({}: Props) => {
                     addFormMessages(
                         new Set([
                             {
-                                message: "Device added",
+                                message:
+                                    "New device has been stored. Please allow some time for our moderators to review the device and add any additional details. You can still use your new device in the mean time.",
                                 type: FormMessageTypes.INFO,
                             },
                         ])
                     );
-                    setTimeout(async () => {
-                        addFormMessages(new Set([]));
-                    }, 1000);
+                    updateCanCloseDialog(true);
                 } catch (err: any) {
                     addFormMessages(getFormMessages(err.code));
                 }

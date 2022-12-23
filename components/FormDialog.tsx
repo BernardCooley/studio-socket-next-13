@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import useOnClickOutside from "../hooks/useClickOutside";
+import Icons from "../icons";
 import { FormMessage, FormMessageType, FormMessageTypes } from "../types";
 import CustomButton from "./CustomButton";
 
@@ -11,7 +12,12 @@ interface Props {
 
 const FormDialog = ({ messages, messageIcon }: Props) => {
     const dialogRef = useRef(null);
-    const { clearFormMessages, dialogButtons } = useFormContext();
+    const {
+        clearFormMessages,
+        dialogButtons,
+        canCloseDialog,
+        addFormMessages,
+    } = useFormContext();
 
     const handleClickOutside = () => {
         clearFormMessages();
@@ -38,10 +44,18 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
             {messages && messages.size > 0 && (
                 <div
                     ref={dialogRef}
-                    className={`modal border-${getBorderColour(
+                    className={`modal realtive border-${getBorderColour(
                         Array.from(messages)[0].type
                     )}`}
                 >
+                    {canCloseDialog && (
+                        <div className="w-full flex justify-end">
+                            <Icons
+                                iconType="close"
+                                onClick={() => addFormMessages(new Set([]))}
+                            />
+                        </div>
+                    )}
                     <div className="flex items-center">
                         <div className="min-h-dialog flex items-center pr-4">
                             {messageIcon}
