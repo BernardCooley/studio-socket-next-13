@@ -15,6 +15,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import SearchIcon from "@mui/icons-material/Search";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface Props {
     iconType: string;
@@ -31,7 +33,7 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
                     className={className}
                     onClick={onClick}
                     style={{
-                        fontSize: "92px",
+                        fontSize: fontSize || "92px",
                     }}
                 />
             );
@@ -158,6 +160,26 @@ const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
         case "chevronDown":
             return (
                 <KeyboardArrowDownIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "72px",
+                    }}
+                />
+            );
+        case "add":
+            return (
+                <AddIcon
+                    className={`${className}`}
+                    onClick={onClick}
+                    style={{
+                        fontSize: fontSize || "72px",
+                    }}
+                />
+            );
+        case "edit":
+            return (
+                <EditIcon
                     className={`${className}`}
                     onClick={onClick}
                     style={{

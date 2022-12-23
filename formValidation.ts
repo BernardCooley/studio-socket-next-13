@@ -43,6 +43,30 @@ export const SearchSchema = z.object({
         .min(3, { message: "Search term must be 3 or more characters" }),
 });
 
+export const AddDeviceSchema = z.object({
+    title: z.string().min(3, { message: "Title must be 3 or more characters" }),
+    manufacturer: z
+        .string()
+        .min(3, { message: "Manufacturermust be 3 or more characters" }),
+    deviceType: z.string().min(1, { message: "Please select a device type" }),
+});
+
+export const ConnectionSchema = z.object({
+    name: z
+        .string()
+        .min(3, { message: "Connection name must be 3 or more characters" }),
+    description: z
+        .array(z.string())
+        .length(1, { message: "Please add at least 1 description" }),
+    connector: z.string().min(1, { message: "Please select a connector" }),
+});
+
+export const ConnectionDescriptionSchema = z.object({
+    description: z
+        .string()
+        .min(3, { message: "Description name must be 3 or more characters" }),
+});
+
 export const getFormMessages = (errorCode: any) => {
     const messages: Set<FormMessage> = new Set();
 

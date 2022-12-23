@@ -20,13 +20,7 @@ export default function RootLayout({ children }: Props) {
                 <meta name="viewport" />
             </Head>
             <SessionProvider>
-                <body
-                    className={`relative ${
-                        pathname?.includes("devices")
-                            ? "overflow-hidden h-screen"
-                            : ""
-                    }`}
-                >
+                <body>
                     <FormContextProvider>
                         <div
                             className={`h-full min-h-screen bg-primary-light font-default`}

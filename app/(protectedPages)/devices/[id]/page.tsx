@@ -14,17 +14,13 @@ import {
     getFirebaseImage,
     getUserData,
 } from "../../../../firebase/functions";
-import {
-    Connection,
-    FormMessageTypes,
-    IFirebaseImage,
-    UserData,
-} from "../../../../types";
+import { FormMessageTypes, IFirebaseImage, UserData } from "../../../../types";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/clientApp";
 import { useSession } from "next-auth/react";
 import routes from "../../../../routes";
+import Connections from "../../../../components/Connections";
 
 interface Props {
     params: { id: number };
@@ -205,55 +201,9 @@ const Device = ({ params }: Props) => {
                             title="Country"
                             subtitle={device.country_of_manufacture}
                         />
-                        {device.connections &&
-                            device.connections.length > 0 && (
-                                <>
-                                    <div className="text-3xl">Connections</div>
-                                    <table className="table-fixed w-full text-xl mb-4 border-2 border-separate rounded-xl shadow-2xl">
-                                        <tbody>
-                                            <tr className="font-medium">
-                                                <th className="border-primary border-b-2">
-                                                    Name
-                                                </th>
-                                                <th className="border-primary border-b-2">
-                                                    Type
-                                                </th>
-                                                <th className="border-primary border-b-2">
-                                                    Description
-                                                </th>
-                                            </tr>
-                                            {device &&
-                                                device.connections &&
-                                                device.connections.map(
-                                                    (
-                                                        connection: Connection,
-                                                        index: number
-                                                    ) => (
-                                                        <tr
-                                                            key={
-                                                                connection.name
-                                                            }
-                                                        >
-                                                            <td className="text-center capitalize border-primary">
-                                                                {connection.name.toLowerCase()}
-                                                            </td>
-                                                            <td className="text-center border-primary">
-                                                                {
-                                                                    connection.connector
-                                                                }
-                                                            </td>
-                                                            <td className="text-center border-primary">
-                                                                {connection.description?.join(
-                                                                    ", "
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                )}
-                                        </tbody>
-                                    </table>
-                                </>
-                            )}
+                        {device.connections && (
+                            <Connections connections={device.connections} />
+                        )}
                     </div>
                     <CustomButton
                         label="Add to your devices"

@@ -15,14 +15,14 @@ import { noop } from "../utils";
 interface Props {
     options: SelectOption[];
     name: string;
-    id: string;
     label: string;
     className?: string;
+    errorMessages: string[];
 }
 
 const CustomSelect = forwardRef(
     (
-        { options, id, label, className }: Props,
+        { options, label, className, errorMessages }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
         const containerRef = useRef<HTMLDivElement>(null);
@@ -47,10 +47,7 @@ const CustomSelect = forwardRef(
 
         return (
             <div className={`w-full ${className}`} ref={containerRef}>
-                <label
-                    className="w-full text-2xl text-fieldLabel z-10 mb-4"
-                    htmlFor={id}
-                >
+                <label className="w-full text-2xl text-primary z-10 mb-4">
                     {label}
                 </label>
                 <div className="relative w-full mb-8 text-2xl">
@@ -66,7 +63,7 @@ const CustomSelect = forwardRef(
                         <Icons iconType="chevronDown" />
                     </div>
                     <div
-                        className={`w-full absolute bg-primary-light transition-height duration-300 ease-in-out overflow-scroll rounded-b-md ${
+                        className={`w-full absolute z-50 bg-primary-light transition-height duration-300 ease-in-out overflow-scroll rounded-b-md ${
                             optionsDisplayed
                                 ? "h-52 border-4 border-primary"
                                 : "h-0"
@@ -86,6 +83,13 @@ const CustomSelect = forwardRef(
                             </div>
                         ))}
                     </div>
+                </div>
+                <div className="text-error relative -top-8">
+                    {errorMessages &&
+                        errorMessages.length > 0 &&
+                        errorMessages.map((error) => (
+                            <div key={JSON.stringify(error)}>{error}</div>
+                        ))}
                 </div>
                 <input
                     className="opacity-0 absolute top-0 left-0"

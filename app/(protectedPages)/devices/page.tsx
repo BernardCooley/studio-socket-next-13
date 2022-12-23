@@ -32,6 +32,7 @@ const Devices = ({}: Props) => {
     const { data: user } = useSession();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
     const [userDevices, setUserDevices] = useState<any[]>([]);
+    console.log("🚀 ~ file: page.tsx:35 ~ Devices ~ userDevices", userDevices);
     const [allDevices, setAllDevices] = useState<any[]>([]);
     const scrollElement = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
