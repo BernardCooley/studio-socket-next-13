@@ -157,7 +157,7 @@ const Devices = ({}: Props) => {
                 <DeviceList
                     onScrollClick={() => scroll(false)}
                     elementRef={ourDevicesRef}
-                    userDevices={userDevices}
+                    userDevices={allDevices}
                     pageTitle="Our devices"
                     iconType="left"
                     sortBy={ODevSortBy}
