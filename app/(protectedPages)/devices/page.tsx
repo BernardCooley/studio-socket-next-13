@@ -12,12 +12,12 @@ import { db } from "../../../firebase/clientApp";
 import { UserData } from "../../../types";
 import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
-import { useIsInViewport } from "../../../utils";
 import { useNavContext } from "../../../contexts/NavContext";
 import DeviceList from "../../../components/DeviceList";
 import { useSearchContext } from "../../../contexts/SearchContext";
 import { devicesRef } from "../../../firebase/firebaseRefs";
 import { allDevicesTest, userDevicesTest } from "../../../testData/testData";
+import useIntersectionObserver from "@react-hook/intersection-observer";
 
 interface Props {}
 
@@ -38,8 +38,7 @@ const Devices = ({}: Props) => {
     const scrollElementRef = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
-    const yourDevicesInView = useIsInViewport(yourDevicesRef);
-    const ourDevicesInView = useIsInViewport(ourDevicesRef);
+    const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
 
     useEffect(() => {
         fetchDevices();
@@ -60,13 +59,12 @@ const Devices = ({}: Props) => {
     }, [userDeviceIds]);
 
     useEffect(() => {
-        if (yourDevicesInView) {
+        if (isIntersecting) {
             updateDeviceListInView("yours");
-        }
-        if (ourDevicesInView) {
+        } else {
             updateDeviceListInView("ours");
         }
-    }, [yourDevicesInView, ourDevicesInView]);
+    }, [isIntersecting]);
 
     useEffect(() => {
         if (userDevices.length > 0) {
