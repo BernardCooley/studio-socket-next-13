@@ -1,17 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useRouter, useSelectedLayoutSegment } from "next/navigation";
 import CustomButton from "../../components/CustomButton";
 import FormDialog from "../../components/FormDialog";
 import { useFormContext } from "../../contexts/FormContext";
 import routes from "../../routes";
 import BackButton from "../../components/BackButton";
+import { useSession } from "next-auth/react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+    const { data: user } = useSession();
     const { icon, formMessages } = useFormContext();
     const router = useRouter();
     const currentPage = useSelectedLayoutSegment();
+
+    useEffect(() => {
+        if (user?.user) {
+            router.push(routes.dashboard().as);
+        }
+    }, [user]);
 
     const pageProps = (page: string | null) => {
         switch (page) {
