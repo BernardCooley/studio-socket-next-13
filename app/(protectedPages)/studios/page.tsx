@@ -62,11 +62,15 @@ const Studios = ({}: Props) => {
         if (userStudios.length > 0) {
             const studioImages = await Promise.all(
                 userStudios.map(async (studio) => {
-                    const studioImage = await getFirebaseImage(
-                        "studios",
-                        studio.id
-                    );
-                    return studioImage;
+                    try {
+                        const studioImage = await getFirebaseImage(
+                            "studios",
+                            studio.id
+                        );
+                        return studioImage;
+                    } catch (err) {
+                        return null;
+                    }
                 })
             );
             const newStudios = userStudios.map((studio, index) => {

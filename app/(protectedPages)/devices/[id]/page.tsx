@@ -37,7 +37,7 @@ const Device = ({ params }: Props) => {
         resetIcon,
     } = useFormContext();
     const router = useRouter();
-    const [deviceImage, setDeviceImage] = useState<IFirebaseImage | undefined>(
+    const [deviceImage, setDeviceImage] = useState<IFirebaseImage | void>(
         undefined
     );
     const [device, setDevice] = useState<any | null>(null);
@@ -64,10 +64,13 @@ const Device = ({ params }: Props) => {
     };
 
     const getImage = async () => {
-        const image = await getFirebaseImage("gear_images", `${device.id}.png`);
-        if (image) {
+        try {
+            const image = await getFirebaseImage(
+                "gear_images",
+                `${device.id}.png`
+            );
             setDeviceImage(image);
-        }
+        } catch (err) {}
     };
 
     const setErrorMessage = () => {
@@ -173,7 +176,7 @@ const Device = ({ params }: Props) => {
                             <ImageWithFallback
                                 fit="contain"
                                 title={device.title}
-                                fallbackImage="/assets/images/deviceFallbackImage.png"
+                                fallbackImage="/assets/images/image_not_found.png"
                                 image={deviceImage}
                                 size={{
                                     width: 200,

@@ -21,10 +21,8 @@ interface Props {}
 
 const Landing = ({}: Props) => {
     const router = useRouter();
-    const [logo, setLogo] = useState<IFirebaseImage | undefined>(undefined);
-    const [tableImage, setTableImage] = useState<IFirebaseImage | undefined>(
-        undefined
-    );
+    const [logo, setLogo] = useState<IFirebaseImage | void>();
+    const [tableImage, setTableImage] = useState<IFirebaseImage | void>();
 
     useEffect(() => {
         getLogo();
@@ -32,13 +30,17 @@ const Landing = ({}: Props) => {
     }, []);
 
     const getLogo = async () => {
-        const logo = await getFirebaseImage("brand", "logo.png");
-        setLogo(logo);
+        try {
+            const logo = await getFirebaseImage("brand", "logo.png");
+            setLogo(logo);
+        } catch (err) {}
     };
 
     const getTableImage = async () => {
-        const tableImage = await getFirebaseImage("brand", "table.png");
-        setTableImage(tableImage);
+        try {
+            const tableImage = await getFirebaseImage("brand", "table.png");
+            setTableImage(tableImage);
+        } catch (err) {}
     };
 
     return (

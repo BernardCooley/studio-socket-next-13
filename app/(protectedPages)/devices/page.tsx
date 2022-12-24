@@ -130,9 +130,14 @@ const Devices = ({}: Props) => {
     };
 
     const getImage = async (deviceId: string) => {
-        const image = await getFirebaseImage("gear_images", `${deviceId}.png`);
-        if (image) {
+        try {
+            const image = await getFirebaseImage(
+                "gear_images",
+                `${deviceId}.png`
+            );
             return image;
+        } catch (err) {
+            return null;
         }
     };
 

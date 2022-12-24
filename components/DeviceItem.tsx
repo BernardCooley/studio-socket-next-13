@@ -11,19 +11,22 @@ interface Props {
 }
 
 const DeviceItem = ({ device, onClick = noop }: Props) => {
-    const [deviceImage, setDeviceImage] = React.useState<
-        IFirebaseImage | undefined
-    >(undefined);
+    const [deviceImage, setDeviceImage] = React.useState<IFirebaseImage | void>(
+        undefined
+    );
 
     useEffect(() => {
         getImage();
     }, [device]);
 
     const getImage = async () => {
-        const image = await getFirebaseImage("gear_images", `${device.id}.png`);
-        if (image) {
+        try {
+            const image = await getFirebaseImage(
+                "gear_images",
+                `${device.id}.png`
+            );
             setDeviceImage(image);
-        }
+        } catch (err) {}
     };
 
     return (
@@ -43,7 +46,7 @@ const DeviceItem = ({ device, onClick = noop }: Props) => {
                         <ImageWithFallback
                             fit="cover"
                             title={device.title}
-                            fallbackImage="/assets/images/deviceFallbackImage.png"
+                            fallbackImage="/assets/images/image_not_found.png"
                             image={deviceImage}
                         />
                     </div>
