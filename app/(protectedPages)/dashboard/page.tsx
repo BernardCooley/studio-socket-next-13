@@ -5,13 +5,16 @@ import React, { useEffect, useState } from "react";
 import DeviceItem from "../../../components/DeviceItem";
 import PageSection from "../../../components/PageSection";
 import PageTitle from "../../../components/PageTitle";
+import { useNavContext } from "../../../contexts/NavContext";
 import { devicesRef } from "../../../firebase/firebaseRefs";
 import { getFirebaseData } from "../../../firebase/functions";
 import routes from "../../../routes";
+import { userDevicesTest } from "../../../testData/testData";
 
 interface Props {}
 
 const Dashboard = ({}: Props) => {
+    const { environment } = useNavContext();
     const router = useRouter();
     const [devices, setDevices] = useState<any[]>([]);
 
@@ -20,15 +23,13 @@ const Dashboard = ({}: Props) => {
     }, []);
 
     const fetchDevices = async () => {
-        const devices = await getFirebaseData(
-            devicesRef,
-            10,
-            "deviceTypes",
-            "array-contains",
-            "Synthesizer"
-        );
-        if (devices) {
-            setDevices(devices);
+        if (environment === "prod") {
+            const devices = await getFirebaseData(devicesRef, 20);
+            if (devices) {
+                setDevices(devices);
+            }
+        } else {
+            setDevices(userDevicesTest);
         }
     };
 
