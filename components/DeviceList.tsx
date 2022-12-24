@@ -12,7 +12,7 @@ import PageTitle from "./PageTitle";
 
 interface Props {
     onScrollClick: () => void;
-    elementRef: React.RefObject<HTMLDivElement>;
+    ref: React.RefObject<HTMLDivElement>;
     userDevices: any[];
     pageTitle: string;
     iconType: "left" | "right";
@@ -22,7 +22,7 @@ interface Props {
 
 const DeviceList = ({
     onScrollClick,
-    elementRef,
+    ref,
     userDevices,
     pageTitle,
     iconType,
@@ -60,7 +60,7 @@ const DeviceList = ({
             <PageTitle title={pageTitle} />
             <div>
                 <FilterSortLabel filterKeys={filterKeys} sortBy={sortBy} />
-                <div className="deviceList" ref={elementRef}>
+                <div className="deviceList" ref={ref}>
                     {userDevices &&
                         userDevices.length > 0 &&
                         userDevices.map((device) => (

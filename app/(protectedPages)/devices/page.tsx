@@ -17,6 +17,7 @@ import { useNavContext } from "../../../contexts/NavContext";
 import DeviceList from "../../../components/DeviceList";
 import { useSearchContext } from "../../../contexts/SearchContext";
 import { devicesRef } from "../../../firebase/firebaseRefs";
+import { allDevicesTest, userDevicesTest } from "../../../testData/testData";
 
 interface Props {}
 
@@ -29,12 +30,12 @@ const Devices = ({}: Props) => {
     const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
         useODevFilterContext();
     const { searchOpen } = useSearchContext();
-    const { updateDeviceListInView } = useNavContext();
+    const { updateDeviceListInView, environment } = useNavContext();
     const { data: user } = useSession();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
     const [userDevices, setUserDevices] = useState<any[]>([]);
     const [allDevices, setAllDevices] = useState<any[]>([]);
-    const scrollElement = useRef<HTMLDivElement>(null);
+    const scrollElementRef = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
     const yourDevicesInView = useIsInViewport(yourDevicesRef);
@@ -45,8 +46,18 @@ const Devices = ({}: Props) => {
     }, []);
 
     useEffect(() => {
-        fetchUserDeviceIds();
+        if (environment === "prod") {
+            fetchUserDeviceIds();
+        } else {
+            fetchUserDevices();
+        }
     }, [user]);
+
+    useEffect(() => {
+        if (userDeviceIds.length > 0) {
+            fetchUserDevices();
+        }
+    }, [userDeviceIds]);
 
     useEffect(() => {
         if (yourDevicesInView) {
@@ -56,12 +67,6 @@ const Devices = ({}: Props) => {
             updateDeviceListInView("ours");
         }
     }, [yourDevicesInView, ourDevicesInView]);
-
-    useEffect(() => {
-        if (userDeviceIds.length > 0) {
-            fetchUserDevices();
-        }
-    }, [userDeviceIds]);
 
     useEffect(() => {
         if (userDevices.length > 0) {
@@ -86,24 +91,32 @@ const Devices = ({}: Props) => {
     }, [allDevices]);
 
     const fetchDevices = async () => {
-        const devices = await getFirebaseData(devicesRef, 20);
-        if (devices) {
-            setAllDevices(devices);
+        if (environment === "prod") {
+            const devices = await getFirebaseData(devicesRef, 20);
+            if (devices) {
+                setAllDevices(devices);
+            }
+        } else {
+            setAllDevices(allDevicesTest);
         }
     };
 
     const fetchUserDevices = async () => {
-        if (userDeviceIds.length > 0) {
-            const devices = await getFirebaseData(
-                devicesRef,
-                20,
-                "id",
-                "in",
-                userDeviceIds
-            );
-            if (devices) {
-                setUserDevices(devices);
+        if (environment === "prod") {
+            if (userDeviceIds.length > 0) {
+                const devices = await getFirebaseData(
+                    devicesRef,
+                    20,
+                    "id",
+                    "in",
+                    userDeviceIds
+                );
+                if (devices) {
+                    setUserDevices(devices);
+                }
             }
+        } else {
+            setUserDevices(userDevicesTest);
         }
     };
 
@@ -126,8 +139,8 @@ const Devices = ({}: Props) => {
     };
 
     const scroll = (toLeft: boolean) => {
-        if (scrollElement.current) {
-            scrollElement.current.scrollTo({
+        if (scrollElementRef.current) {
+            scrollElementRef.current.scrollTo({
                 behavior: "smooth",
                 left: toLeft ? 600 : -600,
             });
@@ -143,12 +156,12 @@ const Devices = ({}: Props) => {
             }`}
         >
             <div
-                ref={scrollElement}
+                ref={scrollElementRef}
                 className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
                 <DeviceList
                     onScrollClick={() => scroll(true)}
-                    elementRef={yourDevicesRef}
+                    ref={yourDevicesRef}
                     userDevices={userDevices}
                     pageTitle="Your devices"
                     iconType="right"
@@ -157,7 +170,7 @@ const Devices = ({}: Props) => {
                 />
                 <DeviceList
                     onScrollClick={() => scroll(false)}
-                    elementRef={ourDevicesRef}
+                    ref={ourDevicesRef}
                     userDevices={allDevices}
                     pageTitle="Our devices"
                     iconType="left"
