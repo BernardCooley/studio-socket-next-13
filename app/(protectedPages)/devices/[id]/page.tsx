@@ -37,9 +37,7 @@ const Device = ({ params }: Props) => {
         resetIcon,
     } = useFormContext();
     const router = useRouter();
-    const [deviceImage, setDeviceImage] = useState<IFirebaseImage | void>(
-        undefined
-    );
+    const [deviceImage, setDeviceImage] = useState<IFirebaseImage | null>(null);
     const [device, setDevice] = useState<any | null>(null);
 
     useEffect(() => {

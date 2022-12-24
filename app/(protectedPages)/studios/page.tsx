@@ -7,7 +7,7 @@ import {
     getFirebaseData,
     getFirebaseImage,
 } from "../../../firebase/functions";
-import { Studio } from "../../../types";
+import { IFirebaseImage, Studio } from "../../../types";
 import { studiosRef } from "../../../firebase/firebaseRefs";
 import routes from "../../../routes";
 import { testStudios } from "../../../testData/testData";
@@ -63,10 +63,8 @@ const Studios = ({}: Props) => {
             const studioImages = await Promise.all(
                 userStudios.map(async (studio) => {
                     try {
-                        const studioImage = await getFirebaseImage(
-                            "studios",
-                            studio.id
-                        );
+                        const studioImage: IFirebaseImage | null =
+                            await getFirebaseImage("studios", studio.id);
                         return studioImage;
                     } catch (err) {
                         return null;

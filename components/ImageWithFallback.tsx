@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { IFirebaseImage } from "../types";
 
 interface Props {
-    image?: IFirebaseImage | void;
+    image?: IFirebaseImage | null;
     title: string;
     fit?: "contain" | "cover" | "fill";
     layout?: "fill" | "fixed" | "intrinsic" | "responsive";

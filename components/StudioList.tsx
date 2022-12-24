@@ -28,7 +28,7 @@ const StudioList = ({ studios, onScrollClick, title, iconType }: Props) => {
                 <StudioItem
                     key={studio.id}
                     id={studio.id}
-                    image={studio.image}
+                    image={studio.image || null}
                     title={studio.title}
                 />
             ))}

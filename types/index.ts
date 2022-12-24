@@ -1259,7 +1259,7 @@ export interface Studio {
     title: string;
     devices: StudioDevice[];
     userId: string;
-    image?: IFirebaseImage;
+    image?: IFirebaseImage | null;
     createdAt: Date;
 }
 

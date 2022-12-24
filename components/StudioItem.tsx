@@ -6,7 +6,7 @@ import ImageWithFallback from "./ImageWithFallback";
 
 interface Props {
     title: string;
-    image: IFirebaseImage | void;
+    image: IFirebaseImage | null;
     id: string;
 }
 

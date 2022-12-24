@@ -21,8 +21,8 @@ interface Props {}
 
 const Landing = ({}: Props) => {
     const router = useRouter();
-    const [logo, setLogo] = useState<IFirebaseImage | void>();
-    const [tableImage, setTableImage] = useState<IFirebaseImage | void>();
+    const [logo, setLogo] = useState<IFirebaseImage | null>();
+    const [tableImage, setTableImage] = useState<IFirebaseImage | null>();
 
     useEffect(() => {
         getLogo();

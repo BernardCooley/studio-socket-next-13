@@ -11,8 +11,8 @@ interface Props {
 }
 
 const DeviceItem = ({ device, onClick = noop }: Props) => {
-    const [deviceImage, setDeviceImage] = React.useState<IFirebaseImage | void>(
-        undefined
+    const [deviceImage, setDeviceImage] = React.useState<IFirebaseImage | null>(
+        null
     );
 
     useEffect(() => {

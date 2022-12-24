@@ -51,15 +51,17 @@ export const getUserData = async (docRef: any): Promise<UserData | null> => {
 export const getFirebaseImage = async (
     folder: string,
     filename: string
-): Promise<IFirebaseImage | void> => {
+): Promise<IFirebaseImage | null> => {
     const storage = getStorage();
 
     const pathReference = ref(storage, `${folder}/${filename}`);
-    return getDownloadURL(pathReference)
-        .then((url) => {
-            return { url, name: filename };
-        })
-        .catch(() => {});
+
+    try {
+        const url = await getDownloadURL(pathReference);
+        return { url, name: filename };
+    } catch (err) {}
+
+    return null;
 };
 
 export const getFirebaseImages = async (
