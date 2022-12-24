@@ -102,7 +102,7 @@ const Studios = ({}: Props) => {
             />
             <div
                 ref={scrollElement}
-                className="w-full h-screen flex snap-mandatory snap-x mx:auto overflow-y-scroll"
+                className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
                 <StudioList
                     iconType="right"

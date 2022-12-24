@@ -9,7 +9,7 @@ interface Props {}
 
 const Account = ({}: Props) => {
     return (
-        <div className="">
+        <div className="pt-16">
             <PageTitle title="Account" />
             <CustomButton
                 label={"Sign out"}

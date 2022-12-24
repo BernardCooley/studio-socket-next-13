@@ -16,7 +16,7 @@ const FilterIcons = ({
 }: Props) => {
     return (
         <div>
-            <div className="text-primary absolute w-full flex justify-between px-3 top-1">
+            <div className="text-primary absolute w-full flex justify-between px-3 top-16">
                 <Icons
                     iconType="sort"
                     className={`z-30 rounded-lg shadow-lg ${

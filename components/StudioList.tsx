@@ -13,14 +13,14 @@ interface Props {
 
 const StudioList = ({ studios, onScrollClick, title, iconType }: Props) => {
     return (
-        <div className="snapScrollPane mb-20">
+        <div className="snapScrollPane mb-20 pt-16 pb-8">
             <div className="flex items-center">
                 <PageTitle title={title} />
                 <Icons
                     iconType={`chevron${
                         iconType === "right" ? "Right" : "Left"
                     }`}
-                    className={`absolute ${iconType}-2`}
+                    className={`absolute top-16 ${iconType}-2`}
                     onClick={onScrollClick}
                 />
             </div>

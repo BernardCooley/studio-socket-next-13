@@ -34,7 +34,7 @@ const Dashboard = ({}: Props) => {
     };
 
     return (
-        <div className="flex flex-col items-center bg-primary-light pb-10">
+        <div className="flex flex-col items-center bg-primary-light pb-10 pt-16">
             <PageTitle title="Dashboard" />
             <PageSection title="Your top devices">
                 {devices &&

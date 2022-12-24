@@ -92,7 +92,7 @@ const AddNewStudio = ({}: Props) => {
     };
 
     return (
-        <div className="">
+        <div className="pt-16">
             <div className="w-full flex items-start relative">
                 <BackButton onClick={() => router.back()} left="10" />
             </div>

@@ -36,7 +36,7 @@ const DeviceList = ({
     useEffect(() => {}, []);
 
     return (
-        <div className="snapScrollPane mb-20">
+        <div className="snapScrollPane mb-20 pt-16 pb-8">
             <FilterIcons
                 filterKeys={filterKeys}
                 sortBy={sortBy}
@@ -44,14 +44,14 @@ const DeviceList = ({
                 onSortClick={() => showFilter("sort")}
             />
             <Icons
-                className={`absolute top-1 ${iconType}-16`}
+                className={`absolute top-16 ${iconType}-16`}
                 iconType={`${
                     iconType === "right" ? "chevronRight" : "chevronLeft"
                 }`}
                 onClick={onScrollClick}
             />
             <Icons
-                className={`absolute top-1 ${
+                className={`absolute top-16 ${
                     iconType === "right" ? "left" : "right"
                 }-16`}
                 iconType="search"

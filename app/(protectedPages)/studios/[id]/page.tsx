@@ -5,7 +5,7 @@ interface Props {
 }
 
 const Studio = ({ params }: Props) => {
-    return <div className="">{params.id}</div>;
+    return <div className="pt-16">{params.id}</div>;
 };
 
 export default Studio;

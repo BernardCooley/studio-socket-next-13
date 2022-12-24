@@ -5,7 +5,7 @@ interface Props {}
 
 const Settings = ({}: Props) => {
     return (
-        <div className="">
+        <div className="pt-16">
             <PageTitle title="Settings" />
         </div>
     );
