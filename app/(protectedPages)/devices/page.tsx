@@ -161,7 +161,7 @@ const Devices = ({}: Props) => {
             >
                 <DeviceList
                     onScrollClick={() => scroll(true)}
-                    ref={yourDevicesRef}
+                    elementRef={yourDevicesRef}
                     userDevices={userDevices}
                     pageTitle="Your devices"
                     iconType="right"
@@ -170,7 +170,7 @@ const Devices = ({}: Props) => {
                 />
                 <DeviceList
                     onScrollClick={() => scroll(false)}
-                    ref={ourDevicesRef}
+                    elementRef={ourDevicesRef}
                     userDevices={allDevices}
                     pageTitle="Our devices"
                     iconType="left"
