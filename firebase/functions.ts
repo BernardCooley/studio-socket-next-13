@@ -1,4 +1,3 @@
-import { DocumentReference } from "firebase-admin/firestore";
 import {
     CollectionReference,
     DocumentData,
@@ -8,11 +7,11 @@ import {
     WhereFilterOp,
     limit,
     getDoc,
+    Query,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
 import { IFirebaseImage, UserData } from "../types";
 import { trimFileExtension } from "../utils";
-import { devicesRef } from "./firebaseRefs";
 
 export const getDocumentsWhere = async (
     collectionRef: CollectionReference<DocumentData>,
@@ -91,7 +90,8 @@ export const getFirebaseImages = async (
     return undefined;
 };
 
-export const getFirebaseDevices = async (
+export const getFirebaseData = async (
+    ref: Query<DocumentData>,
     amount: number = 1,
     filterField?: string,
     filterType?: WhereFilterOp,
@@ -101,12 +101,12 @@ export const getFirebaseDevices = async (
 
     if (filterField && filterValue && filterType) {
         q = query(
-            devicesRef,
+            ref,
             limit(amount),
             where(filterField, filterType, filterValue)
         );
     } else {
-        q = query(devicesRef, limit(amount));
+        q = query(ref, limit(amount));
     }
 
     try {

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import {
-    getFirebaseDevices,
+    getFirebaseData,
     getFirebaseImage,
     getUserData,
 } from "../../../firebase/functions";
@@ -16,6 +16,7 @@ import { useIsInViewport } from "../../../utils";
 import { useNavContext } from "../../../contexts/NavContext";
 import DeviceList from "../../../components/DeviceList";
 import { useSearchContext } from "../../../contexts/SearchContext";
+import { devicesRef } from "../../../firebase/firebaseRefs";
 
 interface Props {}
 
@@ -85,7 +86,7 @@ const Devices = ({}: Props) => {
     }, [allDevices]);
 
     const fetchDevices = async () => {
-        const devices = await getFirebaseDevices(20);
+        const devices = await getFirebaseData(devicesRef, 20);
         if (devices) {
             setAllDevices(devices);
         }
@@ -93,7 +94,8 @@ const Devices = ({}: Props) => {
 
     const fetchUserDevices = async () => {
         if (userDeviceIds.length > 0) {
-            const devices = await getFirebaseDevices(
+            const devices = await getFirebaseData(
+                devicesRef,
                 20,
                 "id",
                 "in",

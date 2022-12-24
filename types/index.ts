@@ -1160,6 +1160,7 @@ export enum FormMessageTypes {
 export interface UserData {
     devices: string[];
     userName: string;
+    studios?: Studio[];
 }
 
 export interface DialogButton {
@@ -1252,3 +1253,32 @@ export type ConnectionTypes =
     | "Spring Terminal"
     | "Banana"
     | "Combo XLR / 1/4";
+
+export interface Studio {
+    id: string;
+    title: string;
+    devices: StudioDevice[];
+    userId: string;
+    image?: IFirebaseImage;
+    createdAt: Date;
+}
+
+export interface StudioDevice {
+    id: string;
+    name: string;
+    connections: StudioConnection[];
+}
+
+export interface StudioConnection {
+    connector: string;
+    description?: string[];
+    name: string;
+    connectedTo: string[];
+}
+
+export interface NewStudio {
+    title: string;
+    devices: StudioDevice[];
+    userId: string;
+    createdAt: Date;
+}

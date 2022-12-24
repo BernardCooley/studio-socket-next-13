@@ -33,8 +33,12 @@ export default {
         as: "/studios/",
     }),
     studio: (id: string) => ({
-        href: "/studio/[id]",
-        as: `/studio/${id}/`,
+        href: "/studios/[id]",
+        as: `/studios/${id}/`,
+    }),
+    addStudio: () => ({
+        href: "/studios/addNew",
+        as: `/studios/addNew/`,
     }),
     account: () => ({
         href: "/account",

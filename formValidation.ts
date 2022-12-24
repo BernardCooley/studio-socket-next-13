@@ -67,6 +67,12 @@ export const ConnectionDescriptionSchema = z.object({
         .min(3, { message: "Description name must be 3 or more characters" }),
 });
 
+export const StudioSchema = z.object({
+    title: z
+        .string()
+        .min(3, { message: "Studio title must be 3 or more characters" }),
+});
+
 export const getFormMessages = (errorCode: any) => {
     const messages: Set<FormMessage> = new Set();
 
