@@ -15,11 +15,11 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
     const router = useRouter();
     const currentPage = useSelectedLayoutSegment();
 
-    useEffect(() => {
-        if (user?.user) {
-            router.push(routes.dashboard().as);
-        }
-    }, [user]);
+    // useEffect(() => {
+    //     if (user?.user) {
+    //         router.push(routes.dashboard().as);
+    //     }
+    // }, [user]);
 
     const pageProps = (page: string | null) => {
         switch (page) {
