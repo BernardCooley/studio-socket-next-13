@@ -163,7 +163,7 @@ const Devices = ({}: Props) => {
             {!isIntersecting && (
                 <Icons
                     iconType="add"
-                    className="absolute bottom-4 right-4 border-8 text-primary-light bg-primary rounded-full z-50"
+                    className="absolute bottom-16 right-4 border-8 text-primary-light bg-primary rounded-full z-50"
                     fontSize="142px"
                     href={routes.addDevice().as}
                 />
