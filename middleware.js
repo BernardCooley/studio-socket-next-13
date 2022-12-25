@@ -8,9 +8,4 @@ export const config = {
         "/account/:path*",
         "/settings/:path*",
     ],
-    callbacks: {
-        authorized({ req, token }) {
-            if (token) return true;
-        },
-    },
 };
