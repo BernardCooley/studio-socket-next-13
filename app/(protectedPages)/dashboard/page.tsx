@@ -43,9 +43,7 @@ const Dashboard = ({}: Props) => {
                         <DeviceItem
                             key={device.id}
                             device={device}
-                            onClick={() =>
-                                router.push(routes.device(device.id).as)
-                            }
+                            href={routes.device(device.id).as}
                         />
                     ))}
                 <div className="p-6">Page section content</div>

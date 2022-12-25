@@ -67,9 +67,7 @@ const DeviceList = ({
                             <DeviceItem
                                 key={device.id}
                                 device={device}
-                                onClick={() =>
-                                    router.push(routes.device(device.id).as)
-                                }
+                                href={routes.device(device.id).as}
                             />
                         ))}
                 </div>

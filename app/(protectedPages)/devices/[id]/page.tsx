@@ -159,13 +159,13 @@ const Device = ({ params }: Props) => {
     };
 
     return (
-        <div className="p-8 pt-16 relative flex flex-col items-center">
+        <div className="p-8 pt-28 relative flex flex-col items-center">
             <div className="w-full flex items-start">
-                <BackButton onClick={() => router.back()} left="10" />
+                <BackButton onClick={() => router.back()} left="10" top="16" />
             </div>
             {device && (
                 <>
-                    <div>
+                    <div className="w-full">
                         <div className="text-2xl mb-4">
                             {device.manufacturers.join(", ")}
                         </div>
