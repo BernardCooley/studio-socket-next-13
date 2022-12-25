@@ -123,3 +123,11 @@ input:-webkit-autofill:active {
 .buttonSmall {
     @apply bg-primary text-primary-light p-2 px-4 rounded-lg;
 }
+
+.clickEffectPrimary {
+    @apply active:bg-primary active:text-primary-light;
+}
+
+.clickEffectPrimaryLight {
+    @apply active:bg-primary-light active:text-primary;
+}

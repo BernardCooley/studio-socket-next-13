@@ -14,12 +14,14 @@ import { testStudios } from "../../../testData/testData";
 import Icons from "../../../icons";
 import { useRouter } from "next/navigation";
 import StudioList from "../../../components/StudioList";
+import { useNavContext } from "../../../contexts/NavContext";
 
 interface Props {}
 
 const Studios = ({}: Props) => {
     // TODO: test when db is back up
     const router = useRouter();
+    const { environment } = useNavContext();
     const { data: user } = useSession();
     const [allStudios, setAllStudios] = useState<Studio[]>([]);
     const [userStudios, setUserStudios] = useState<Studio[]>([]);
@@ -38,46 +40,51 @@ const Studios = ({}: Props) => {
     }, [user]);
 
     const fetchUserStudios = async () => {
-        if (user?.user) {
-            const studios = await getDocumentsWhere(
-                studiosRef,
-                "userId",
-                "==",
-                user.user.id
-            );
-            if (studios) {
-                setUserStudios(studios as Studio[]);
+        if (environment === "prod") {
+            if (user?.user) {
+                const studios = await getDocumentsWhere(
+                    studiosRef,
+                    "userId",
+                    "==",
+                    user.user.id
+                );
+                if (studios) {
+                    setUserStudios(studios as Studio[]);
+                }
             }
+        } else {
+            setUserStudios(testStudios);
         }
     };
 
     const fetchStudios = async () => {
-        const studios = await getFirebaseData(studiosRef, 20);
-        if (studios) {
-            setAllStudios(studios as Studio[]);
+        if (environment === "prod") {
+            const studios = await getFirebaseData(studiosRef, 20);
+            if (studios) {
+                setAllStudios(studios as Studio[]);
+            }
+        } else {
+            setAllStudios(testStudios);
+        }
+    };
+
+    const getImage = async (studioId: string) => {
+        try {
+            const image = await getFirebaseImage("studios", `${studioId}.png`);
+            return image;
+        } catch (err) {
+            return null;
         }
     };
 
     const fetchUserStudioImages = async () => {
         if (userStudios.length > 0) {
-            const studioImages = await Promise.all(
-                userStudios.map(async (studio) => {
-                    try {
-                        const studioImage: IFirebaseImage | null =
-                            await getFirebaseImage("studios", studio.id);
-                        return studioImage;
-                    } catch (err) {
-                        return null;
-                    }
-                })
-            );
-            const newStudios = userStudios.map((studio, index) => {
-                return {
-                    ...studio,
-                    image: studioImages[index],
-                };
+            userStudios.forEach(async (studio) => {
+                const image = await getImage(studio.id);
+                if (image) {
+                    studio.image = image;
+                }
             });
-            setUserStudios(newStudios);
         }
     };
 
@@ -96,7 +103,7 @@ const Studios = ({}: Props) => {
                 iconType="add"
                 className="fixed bottom-4 right-4 border-8 text-primary-light bg-primary rounded-full z-50"
                 fontSize="142px"
-                onClick={() => router.push(routes.addStudio().as)}
+                href={routes.addStudio().as}
             />
             <div
                 ref={scrollElement}

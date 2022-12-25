@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import Person2Icon from "@mui/icons-material/Person2";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -18,205 +18,277 @@ import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import PianoIcon from "@mui/icons-material/Piano";
+import { noop } from "./utils";
+import Link from "next/link";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 interface Props {
     iconType: string;
     className?: string;
     onClick?: () => void;
     fontSize?: string;
+    href?: string;
 }
 
-const Icons = ({ iconType, className, onClick, fontSize }: Props) => {
+interface IconProps {
+    children: ReactNode;
+}
+
+const Icons = ({
+    iconType,
+    className,
+    onClick = noop,
+    fontSize,
+    href = "",
+}: Props) => {
+    const Icon = ({ children }: IconProps) => {
+        if (href) {
+            return <Link href={href}>{children}</Link>;
+        }
+
+        return <>{children}</>;
+    };
+
     switch (iconType) {
         case "close":
             return (
-                <CloseIcon
-                    className={className}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <CloseIcon
+                        className={className}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         case "account":
             return (
-                <Person2Icon
-                    className={className}
-                    onClick={onClick}
-                    style={{
-                        fontSize: "84px",
-                    }}
-                />
+                <Icon>
+                    <Person2Icon
+                        className={className}
+                        onClick={onClick}
+                        style={{
+                            fontSize: "84px",
+                        }}
+                    />
+                </Icon>
             );
         case "menu":
             return (
-                <MenuIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "72px",
-                    }}
-                />
+                <Icon>
+                    <MenuIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "72px",
+                        }}
+                    />
+                </Icon>
             );
         case "showPassword":
             return (
-                <VisibilityIcon
-                    className={`text-primary ${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "62px",
-                    }}
-                />
+                <Icon>
+                    <VisibilityIcon
+                        className={`text-primary ${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "62px",
+                        }}
+                    />
+                </Icon>
             );
         case "hidePassword":
             return (
-                <VisibilityOffIcon
-                    className={`text-primary ${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "62px",
-                    }}
-                />
+                <Icon>
+                    <VisibilityOffIcon
+                        className={`text-primary ${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "62px",
+                        }}
+                    />
+                </Icon>
             );
         case "warning":
             return (
-                <WarningAmberIcon
-                    className={`text-error ${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <WarningAmberIcon
+                        className={`text-error ${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "formLoading":
             return (
-                <AutorenewIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <AutorenewIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "accountCreated":
             return (
-                <HowToRegIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <HowToRegIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "signIn":
             return (
-                <LoginIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <LoginIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "searching":
             return (
-                <PlagiarismIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <PlagiarismIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "keyboard":
             return (
-                <PianoIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "132px",
-                    }}
-                />
+                <Icon>
+                    <PianoIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "132px",
+                        }}
+                    />
+                </Icon>
             );
         case "sort":
             return (
-                <FilterListIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <FilterListIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         case "chevronRight":
             return (
-                <ArrowForwardIosIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <ArrowForwardIosIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         case "chevronLeft":
             return (
-                <ArrowBackIosNewIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <ArrowBackIosNewIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         case "chevronDown":
             return (
-                <KeyboardArrowDownIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "72px",
-                    }}
-                />
+                <Icon>
+                    <KeyboardArrowDownIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "72px",
+                        }}
+                    />
+                </Icon>
             );
         case "add":
             return (
-                <AddIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "72px",
-                    }}
-                />
+                <Icon>
+                    <AddIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "72px",
+                        }}
+                    />
+                </Icon>
             );
         case "edit":
             return (
-                <EditIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "72px",
-                    }}
-                />
+                <Icon>
+                    <EditIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "72px",
+                        }}
+                    />
+                </Icon>
             );
         case "filter":
             return (
-                <FilterAltIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <FilterAltIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         case "search":
             return (
-                <SearchIcon
-                    className={`${className}`}
-                    onClick={onClick}
-                    style={{
-                        fontSize: fontSize || "92px",
-                    }}
-                />
+                <Icon>
+                    <SearchIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
+            );
+        case "back":
+            return (
+                <Icon>
+                    <ArrowBackIcon
+                        className={`${className}`}
+                        onClick={onClick}
+                        style={{
+                            fontSize: fontSize || "92px",
+                        }}
+                    />
+                </Icon>
             );
         default:
             return null;

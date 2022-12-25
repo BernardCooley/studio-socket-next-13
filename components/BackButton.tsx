@@ -1,5 +1,6 @@
 import React from "react";
-import ImageWithFallback from "./ImageWithFallback";
+import Icons from "../icons";
+import { noop } from "../utils";
 
 interface Props {
     onClick: () => void;
@@ -9,26 +10,13 @@ interface Props {
     width?: string;
 }
 
-const BackButton = ({ onClick, top = "4", left = "4" }: Props) => {
+const BackButton = ({ onClick = noop, top = "4", left = "4" }: Props) => {
     return (
         <div
-            className={`absolute top-${top} left-${left} h-10 w-8`}
+            className={`absolute top-${top} left-${left} h-10 w-8 clickEffectPrimary`}
             onClick={onClick}
         >
-            <ImageWithFallback
-                title=""
-                image={{
-                    url: "/assets/icons/back.png",
-                    name: "Back",
-                }}
-                fit="contain"
-                layout="responsive"
-                containerClassname="w-full"
-                size={{
-                    width: 32,
-                    height: 32,
-                }}
-            />
+            <Icons iconType="back" onClick={onClick} />
         </div>
     );
 };
