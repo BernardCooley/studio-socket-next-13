@@ -14,7 +14,6 @@ const BackButton = ({ onClick = noop, top = "4", left = "4" }: Props) => {
     return (
         <div
             className={`absolute top-${top} left-${left} h-10 w-8 clickEffectPrimary`}
-            onClick={onClick}
         >
             <Icons iconType="back" onClick={onClick} />
         </div>
