@@ -1,10 +1,8 @@
-import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { useSearchContext } from "../contexts/SearchContext";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import Icons from "../icons";
 import routes from "../routes";
-import { noop } from "../utils";
 import DeviceItem from "./DeviceItem";
 import FilterIcons from "./FilterIcons";
 import FilterSortLabel from "./FilterSortLabel";
@@ -31,7 +29,6 @@ const DeviceList = ({
 }: Props) => {
     const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
-    const router = useRouter();
 
     useEffect(() => {}, []);
 

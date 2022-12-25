@@ -160,8 +160,8 @@ const Device = ({ params }: Props) => {
 
     return (
         <div className="p-8 pt-28 relative flex flex-col items-center">
-            <div className="w-full flex items-start">
-                <BackButton onClick={() => router.back()} left="10" top="16" />
+            <div className="absolute left-6 top-16">
+                <BackButton />
             </div>
             {device && (
                 <>

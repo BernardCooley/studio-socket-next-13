@@ -92,9 +92,9 @@ const AddNewStudio = ({}: Props) => {
     };
 
     return (
-        <div className="pt-16">
-            <div className="w-full flex items-start relative">
-                <BackButton onClick={() => router.back()} left="10" />
+        <div className="pt-16 relative">
+            <div className="absolute left-6">
+                <BackButton />
             </div>
             <PageTitle title="Add new studio" />
             <form

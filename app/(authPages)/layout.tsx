@@ -55,7 +55,9 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
                     formMessages.size > 0 ? "opacity-30" : "opacity-100"
                 }`}
             >
-                <BackButton onClick={() => router.push(routes.home().as)} />
+                <div className="left-4 top-4">
+                    <BackButton />
+                </div>
                 <div className="text-4xl mt-20 capitalize">
                     {pageProps(currentPage).title}
                 </div>

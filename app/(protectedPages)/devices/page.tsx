@@ -18,6 +18,8 @@ import { useSearchContext } from "../../../contexts/SearchContext";
 import { devicesRef } from "../../../firebase/firebaseRefs";
 import { allDevicesTest, userDevicesTest } from "../../../testData/testData";
 import useIntersectionObserver from "@react-hook/intersection-observer";
+import Icons from "../../../icons";
+import routes from "../../../routes";
 
 interface Props {}
 
@@ -158,6 +160,14 @@ const Devices = ({}: Props) => {
                     : "opacity-100 pointer-events-auto"
             }`}
         >
+            {!isIntersecting && (
+                <Icons
+                    iconType="add"
+                    className="absolute bottom-4 right-4 border-8 text-primary-light bg-primary rounded-full z-50"
+                    fontSize="142px"
+                    href={routes.addDevice().as}
+                />
+            )}
             <div
                 ref={scrollElementRef}
                 className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
