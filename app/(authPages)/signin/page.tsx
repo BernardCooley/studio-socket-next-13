@@ -30,17 +30,13 @@ const SignIn = ({}: Props) => {
         addFormMessages(messages);
     }, []);
 
-    const clearMessages = () => {
-        clearFormMessages();
-        setSubmitting(false);
-    };
+    const validateAndSignin = async () => {
+        try {
+            LoginFormSchema.parse({
+                email: emailRef.current?.value,
+                password: passwordRef.current?.value,
+            });
 
-    const handleSubmit = async (e: FormEvent) => {
-        clearMessages();
-        setSubmitting(true);
-        e.preventDefault();
-
-        if (validate() && errors.length === 0) {
             addFormMessages(
                 new Set([
                     {
@@ -63,20 +59,9 @@ const SignIn = ({}: Props) => {
                     console.error(err);
                 }
             }
-        }
-    };
-
-    const validate = () => {
-        try {
-            LoginFormSchema.parse({
-                email: emailRef.current?.value,
-                password: passwordRef.current?.value,
-            });
-            return true;
         } catch (err: any) {
             setSubmitting(false);
             setErrors(err.errors);
-            return false;
         }
     };
 
@@ -88,7 +73,7 @@ const SignIn = ({}: Props) => {
             data-testid="signin-page"
         >
             <AuthForm
-                handleSubmit={handleSubmit}
+                handleSubmit={validateAndSignin}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
                 onFormClick={formMessages.size > 0 ? () => router.back() : noop}
             >
@@ -102,7 +87,6 @@ const SignIn = ({}: Props) => {
                     name="email"
                     ref={emailRef}
                     errorMessages={getErrorMessages(errors, "email")}
-                    onBlur={validate}
                 />
                 <CustomTextInput
                     className={`${
@@ -114,7 +98,6 @@ const SignIn = ({}: Props) => {
                     name="password"
                     ref={passwordRef}
                     errorMessages={getErrorMessages(errors, "password")}
-                    onBlur={validate}
                     fieldIcon={
                         <TogglePassword
                             isShowing={showPassword}
