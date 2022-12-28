@@ -30,12 +30,15 @@ const SignIn = ({}: Props) => {
         addFormMessages(messages);
     }, []);
 
-    const validateAndSignin = async () => {
+    const validateAndSignin = async (e: FormEvent) => {
+        e.preventDefault();
+
         try {
             LoginFormSchema.parse({
                 email: emailRef.current?.value,
                 password: passwordRef.current?.value,
             });
+            setSubmitting(true);
 
             addFormMessages(
                 new Set([
@@ -47,7 +50,6 @@ const SignIn = ({}: Props) => {
             );
             updateIcon(<Icons iconType="signIn" className="text-primary" />);
             if (emailRef.current && passwordRef.current) {
-                setSubmitting(true);
                 try {
                     await signIn("credentials", {
                         email: emailRef.current.value,
@@ -56,11 +58,13 @@ const SignIn = ({}: Props) => {
                     });
                 } catch (err: any) {
                     setSubmitting(false);
+                    addFormMessages(new Set([]));
                     console.error(err);
                 }
             }
         } catch (err: any) {
             setSubmitting(false);
+            addFormMessages(new Set([]));
             setErrors(err.errors);
         }
     };
