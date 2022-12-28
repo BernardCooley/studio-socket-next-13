@@ -1,6 +1,9 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+    sendEmailVerification,
+    signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth } from "../../../firebase/clientApp";
 
 export default NextAuth({
@@ -23,11 +26,14 @@ export default NextAuth({
 
                 const res = await signInPromise;
 
-                if (res.email && res.uid) {
+                if (res.email && res.uid && res.emailVerified) {
                     return {
                         email: res.email,
                         id: res.uid,
                     };
+                }
+                if (!res.emailVerified) {
+                    await sendEmailVerification(auth.currentUser);
                 }
 
                 return null;

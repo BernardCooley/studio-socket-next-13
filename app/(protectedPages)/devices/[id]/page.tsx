@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import BackButton from "../../../../components/BackButton";
 import CustomButton from "../../../../components/CustomButton";
-import DeviceDetail from "../../../../components/DeviceDetail";
+import DetailItem from "../../../../components/DetailItem";
 import ImageWithFallback from "../../../../components/ImageWithFallback";
 import { useFormContext } from "../../../../contexts/FormContext";
 import { devicesRef } from "../../../../firebase/firebaseRefs";
@@ -182,23 +182,23 @@ const Device = ({ params }: Props) => {
                                 }}
                             />
                         </div>
-                        <DeviceDetail
+                        <DetailItem
                             title="Type"
                             subtitle={device.deviceTypes.join(", ")}
                         />
-                        <DeviceDetail
+                        <DetailItem
                             title="Form factor"
                             subtitle={device.form_factor}
                         />
-                        <DeviceDetail
+                        <DetailItem
                             title="Signal path"
                             subtitle={device.signal_path}
                         />
-                        <DeviceDetail
+                        <DetailItem
                             title="Year"
                             subtitle={device.dates_produced}
                         />
-                        <DeviceDetail
+                        <DetailItem
                             title="Country"
                             subtitle={device.country_of_manufacture}
                         />

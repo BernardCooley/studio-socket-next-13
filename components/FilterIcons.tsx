@@ -25,6 +25,7 @@ const FilterIcons = ({
                             : "filterSortIconInactive"
                     }`}
                     onClick={onSortClick}
+                    fontSize="92px"
                 />
                 <Icons
                     className={`z-30 rounded-lg shadow-lg ${
@@ -34,6 +35,7 @@ const FilterIcons = ({
                     }`}
                     iconType="filter"
                     onClick={onFilterClick}
+                    fontSize="92px"
                 />
             </div>
         </div>

@@ -198,6 +198,7 @@ const FilterModal = ({}: Props) => {
                         iconType="close"
                         className="z-30 absolute right-2 top-2"
                         onClick={hideFilter}
+                        fontSize="92px"
                     />
                     <div className="w-full text-2xl mb-4">
                         {sortOrFilter === "sort" ? "Sort by" : "Filter by"}

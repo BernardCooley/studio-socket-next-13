@@ -131,7 +131,11 @@ const AddNewDevice = ({}: Props) => {
                     ])
                 );
                 updateIcon(
-                    <Icons iconType="keyboard" className="text-primary" />
+                    <Icons
+                        iconType="keyboard"
+                        className="text-primary"
+                        fontSize="132px"
+                    />
                 );
 
                 const newDevice: NewDevice = {
@@ -179,7 +183,6 @@ const AddNewDevice = ({}: Props) => {
                 } catch (err: any) {
                     addFormMessages(getFormMessages(err.code));
                 }
-                console.log("Add device");
             }
 
             return true;
@@ -320,6 +323,7 @@ const AddNewDevice = ({}: Props) => {
                                     iconType="close"
                                     className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
                                     onClick={handleDeleteAvatar}
+                                    fontSize="92px"
                                 />
                             }
                         />
@@ -350,8 +354,6 @@ const AddNewDevice = ({}: Props) => {
                         label="Save"
                         type="submit"
                         buttonClassName={`authSubmitButton mt-10`}
-                        // TODO: Fix disabled button
-                        // disabled={submitButtonDisabled}
                     />
                 </div>
             </form>

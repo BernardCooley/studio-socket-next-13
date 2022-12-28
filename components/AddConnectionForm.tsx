@@ -65,7 +65,11 @@ const AddConnectionForm = ({
                                     "description"
                                 )}
                             />
-                            <Icons iconType="add" onClick={onAddDescription} />
+                            <Icons
+                                iconType="add"
+                                onClick={onAddDescription}
+                                fontSize="72px"
+                            />
                         </div>
                         <ul className="relative -top-12 pl-4">
                             {descriptions &&

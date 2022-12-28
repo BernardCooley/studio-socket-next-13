@@ -46,6 +46,7 @@ const DeviceList = ({
                     iconType === "right" ? "chevronRight" : "chevronLeft"
                 }`}
                 onClick={onScrollClick}
+                fontSize="92px"
             />
             <Icons
                 className={`absolute top-16 ${
@@ -53,6 +54,7 @@ const DeviceList = ({
                 }-16`}
                 iconType="search"
                 onClick={openSearch}
+                fontSize="92px"
             />
             <PageTitle title={pageTitle} />
             <div>

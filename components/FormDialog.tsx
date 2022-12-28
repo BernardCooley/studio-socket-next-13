@@ -44,7 +44,7 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
             {messages && messages.size > 0 && (
                 <div
                     ref={dialogRef}
-                    className={`modal realtive border-${getBorderColour(
+                    className={`modal z-50 realtive border-${getBorderColour(
                         Array.from(messages)[0].type
                     )}`}
                 >
@@ -53,6 +53,7 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
                             <Icons
                                 iconType="close"
                                 onClick={() => addFormMessages(new Set([]))}
+                                fontSize="92px"
                             />
                         </div>
                     )}

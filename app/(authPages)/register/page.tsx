@@ -6,7 +6,11 @@ import { getFormMessages, RegisterFormSchema } from "../../../formValidation";
 import { getErrorMessages } from "../../../utils";
 import AuthForm from "../../../components/AuthForm";
 import { useFormContext } from "../../../contexts/FormContext";
-import { createUserWithEmailAndPassword, deleteUser } from "firebase/auth";
+import {
+    createUserWithEmailAndPassword,
+    deleteUser,
+    sendEmailVerification,
+} from "firebase/auth";
 import { auth, db } from "../../../firebase/clientApp";
 import { signIn } from "next-auth/react";
 import { doc, setDoc } from "firebase/firestore";
@@ -16,10 +20,12 @@ import TogglePassword from "../../../components/TogglePassword";
 import { FormMessageTypes } from "../../../types";
 import Icons from "../../../icons";
 import { useRouter } from "next/navigation";
+import routes from "../../../routes";
 
 interface Props {}
 
 const Register = ({}: Props) => {
+    const router = useRouter();
     const storage = getStorage();
     const { file, updateFile, addFormMessages, formMessages, updateIcon } =
         useFormContext();
@@ -52,7 +58,11 @@ const Register = ({}: Props) => {
                     ])
                 );
                 updateIcon(
-                    <Icons iconType="formLoading" className="text-primary" />
+                    <Icons
+                        iconType="formLoading"
+                        className="text-primary"
+                        fontSize="132px"
+                    />
                 );
 
                 let user = null;
@@ -78,29 +88,29 @@ const Register = ({}: Props) => {
                         );
                     }
 
-                    addFormMessages(
-                        new Set([
-                            {
-                                message:
-                                    "Account created. Welcome to Studio Socket",
-                                type: FormMessageTypes.INFO,
-                            },
-                        ])
-                    );
-                    updateIcon(
-                        <Icons
-                            iconType="accountCreated"
-                            className="text-primary"
-                        />
-                    );
+                    if (auth.currentUser) {
+                        await sendEmailVerification(auth.currentUser);
 
-                    setTimeout(async () => {
-                        await signIn("credentials", {
-                            email: emailRef.current?.value,
-                            password: passwordRef.current?.value,
-                            callbackUrl: "/dashboard",
-                        });
-                    }, 1000);
+                        addFormMessages(
+                            new Set([
+                                {
+                                    message: `Account created. Welcome to Studio Socket. A confirmation email has been sent to ${emailRef.current.value}. Please check your inbox and spam folder.`,
+                                    type: FormMessageTypes.INFO,
+                                },
+                            ])
+                        );
+                        updateIcon(
+                            <Icons
+                                iconType="accountCreated"
+                                className="text-primary"
+                                fontSize="132px"
+                            />
+                        );
+
+                        setTimeout(async () => {
+                            router.push(routes.signin().as);
+                        }, 5000);
+                    }
                 } catch (err: any) {
                     if (user) {
                         await deleteUser(user.user);
@@ -226,6 +236,7 @@ const Register = ({}: Props) => {
                                 iconType="close"
                                 className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
                                 onClick={handleDeleteAvatar}
+                                fontSize="92px"
                             />
                         }
                     />

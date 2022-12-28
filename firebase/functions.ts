@@ -8,10 +8,12 @@ import {
     limit,
     getDoc,
     Query,
+    doc,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
 import { IFirebaseImage, UserData } from "../types";
 import { trimFileExtension } from "../utils";
+import { db } from "./clientApp";
 
 export const getDocumentsWhere = async (
     collectionRef: CollectionReference<DocumentData>,
@@ -59,7 +61,9 @@ export const getFirebaseImage = async (
     try {
         const url = await getDownloadURL(pathReference);
         return { url, name: filename };
-    } catch (err) {}
+    } catch (err) {
+        console.log(err);
+    }
 
     return null;
 };
@@ -117,4 +121,18 @@ export const getFirebaseData = async (
     }
 
     return null;
+};
+
+export const getSingleDocument = async (
+    refKey: string,
+    id: string
+): Promise<DocumentData | undefined> => {
+    try {
+        const docRef = doc(db, refKey, id);
+        const docSnap = await getDoc(docRef);
+        return docSnap.data();
+    } catch (e) {
+        console.log(e);
+    }
+    return undefined;
 };

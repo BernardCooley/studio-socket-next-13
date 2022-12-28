@@ -22,6 +22,7 @@ const StudioList = ({ studios, onScrollClick, title, iconType }: Props) => {
                     }`}
                     className={`absolute top-16 ${iconType}-2`}
                     onClick={onScrollClick}
+                    fontSize="92px"
                 />
             </div>
             {studios.map((studio) => (

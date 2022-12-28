@@ -7,7 +7,7 @@ interface Props {
     icon: ReactNode;
 }
 
-const Avatar = ({ image, containerClassname, icon }: Props) => {
+const Avatar = ({ image = "", containerClassname, icon }: Props) => {
     return (
         <div
             className={`w-full flex flex-col justify-center relative items-center ${containerClassname}`}

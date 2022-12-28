@@ -10,9 +10,17 @@ const TogglePassword = ({ onClick, isShowing }: Props) => {
     return (
         <div className="absolute right-0 bottom-4" onClick={onClick}>
             {isShowing ? (
-                <Icons iconType="hidePassword" />
+                <Icons
+                    iconType="hidePassword"
+                    className="text-primary"
+                    fontSize="62px"
+                />
             ) : (
-                <Icons iconType="showPassword" />
+                <Icons
+                    iconType="showPassword"
+                    className="text-primary"
+                    fontSize="62px"
+                />
             )}
         </div>
     );

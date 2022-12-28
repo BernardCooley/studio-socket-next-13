@@ -47,6 +47,7 @@ const AddConnectionSection = ({
                             onClick={onShowForm}
                             iconType="add"
                             className="border-2 rounded-full"
+                            fontSize="72px"
                         />
                     </div>
                 )}

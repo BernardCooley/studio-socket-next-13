@@ -60,7 +60,11 @@ const CustomSelect = forwardRef(
                         onClick={() => setOptionsDisplayed(!optionsDisplayed)}
                     >
                         <span>{value.label}</span>
-                        <Icons iconType="chevronDown" />
+                        <Icons
+                            iconType="chevronDown"
+                            className="text-primary"
+                            fontSize="72px"
+                        />
                     </div>
                     <div
                         className={`w-full absolute z-50 bg-primary-light transition-height duration-300 ease-in-out overflow-scroll rounded-b-md ${

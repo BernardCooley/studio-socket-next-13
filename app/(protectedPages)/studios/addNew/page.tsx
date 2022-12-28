@@ -47,7 +47,11 @@ const AddNewStudio = ({}: Props) => {
                     ])
                 );
                 updateIcon(
-                    <Icons iconType="keyboard" className="text-primary" />
+                    <Icons
+                        iconType="keyboard"
+                        className="text-primary"
+                        fontSize="132px"
+                    />
                 );
 
                 const newStudio: NewStudio = {

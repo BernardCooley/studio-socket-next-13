@@ -1159,8 +1159,10 @@ export enum FormMessageTypes {
 
 export interface UserData {
     devices: string[];
-    userName: string;
+    username: string;
     studios?: Studio[];
+    imageUrl?: string;
+    email?: string;
 }
 
 export interface DialogButton {
@@ -1281,4 +1283,9 @@ export interface NewStudio {
     devices: StudioDevice[];
     userId: string;
     createdAt: Date;
+}
+
+export interface UserData {
+    username: string;
+    devices: string[];
 }

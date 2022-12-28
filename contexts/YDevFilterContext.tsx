@@ -51,10 +51,6 @@ export const YDevFilterContextProvider = ({
     };
 
     const updateSortBy = (value: string) => {
-        console.log(
-            "🚀 ~ file: YDevFilterContext.tsx:49 ~ updateSortBy ~ value",
-            value
-        );
         setSortBy(value);
     };
 

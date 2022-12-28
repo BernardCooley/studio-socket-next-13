@@ -21,17 +21,24 @@ import PianoIcon from "@mui/icons-material/Piano";
 import { noop } from "./utils";
 import Link from "next/link";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import DoneIcon from "@mui/icons-material/Done";
+import LogoutIcon from "@mui/icons-material/Logout";
+import PasswordIcon from "@mui/icons-material/Password";
 
 interface Props {
     iconType: string;
     className?: string;
     onClick?: () => void;
-    fontSize?: string;
+    fontSize: string;
     href?: string;
 }
 
 interface IconProps {
     children: ReactNode;
+}
+
+interface IIcons {
+    [key: string]: JSX.Element;
 }
 
 const Icons = ({
@@ -49,250 +56,41 @@ const Icons = ({
         return <>{children}</>;
     };
 
-    switch (iconType) {
-        case "close":
-            return (
-                <Icon>
-                    <CloseIcon
-                        className={className}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "account":
-            return (
-                <Icon>
-                    <Person2Icon
-                        className={className}
-                        onClick={onClick}
-                        style={{
-                            fontSize: "84px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "menu":
-            return (
-                <Icon>
-                    <MenuIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "72px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "showPassword":
-            return (
-                <Icon>
-                    <VisibilityIcon
-                        className={`text-primary ${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "62px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "hidePassword":
-            return (
-                <Icon>
-                    <VisibilityOffIcon
-                        className={`text-primary ${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "62px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "warning":
-            return (
-                <Icon>
-                    <WarningAmberIcon
-                        className={`text-error ${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "formLoading":
-            return (
-                <Icon>
-                    <AutorenewIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "accountCreated":
-            return (
-                <Icon>
-                    <HowToRegIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "signIn":
-            return (
-                <Icon>
-                    <LoginIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "searching":
-            return (
-                <Icon>
-                    <PlagiarismIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "keyboard":
-            return (
-                <Icon>
-                    <PianoIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "132px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "sort":
-            return (
-                <Icon>
-                    <FilterListIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "chevronRight":
-            return (
-                <Icon>
-                    <ArrowForwardIosIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "chevronLeft":
-            return (
-                <Icon>
-                    <ArrowBackIosNewIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "chevronDown":
-            return (
-                <Icon>
-                    <KeyboardArrowDownIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "72px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "add":
-            return (
-                <Icon>
-                    <AddIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "72px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "edit":
-            return (
-                <Icon>
-                    <EditIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "72px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "filter":
-            return (
-                <Icon>
-                    <FilterAltIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "search":
-            return (
-                <Icon>
-                    <SearchIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        case "back":
-            return (
-                <Icon>
-                    <ArrowBackIcon
-                        className={`${className}`}
-                        onClick={onClick}
-                        style={{
-                            fontSize: fontSize || "92px",
-                        }}
-                    />
-                </Icon>
-            );
-        default:
-            return null;
-    }
+    const attributes = {
+        style: {
+            fontSize: fontSize,
+        },
+        className: className ? className : "",
+        onClick: onClick,
+    };
+
+    const icons: IIcons = {
+        close: <CloseIcon {...attributes} />,
+        account: <Person2Icon {...attributes} />,
+        logout: <LogoutIcon {...attributes} />,
+        menu: <MenuIcon {...attributes} />,
+        showPassword: <VisibilityIcon {...attributes} />,
+        hidePassword: <VisibilityOffIcon {...attributes} />,
+        warning: <WarningAmberIcon {...attributes} />,
+        formLoading: <AutorenewIcon {...attributes} />,
+        accountCreated: <HowToRegIcon {...attributes} />,
+        signIn: <LoginIcon {...attributes} />,
+        searching: <PlagiarismIcon {...attributes} />,
+        keyboard: <PianoIcon {...attributes} />,
+        sort: <FilterListIcon {...attributes} />,
+        chevronRight: <ArrowForwardIosIcon {...attributes} />,
+        chevronLeft: <ArrowBackIosNewIcon {...attributes} />,
+        chevronDown: <KeyboardArrowDownIcon {...attributes} />,
+        add: <AddIcon {...attributes} />,
+        edit: <EditIcon {...attributes} />,
+        tick: <DoneIcon {...attributes} />,
+        filter: <FilterAltIcon {...attributes} />,
+        search: <SearchIcon {...attributes} />,
+        back: <ArrowBackIcon {...attributes} />,
+        password: <PasswordIcon {...attributes} />,
+    };
+
+    return <Icon>{icons[iconType]}</Icon>;
 };
 
 export default Icons;

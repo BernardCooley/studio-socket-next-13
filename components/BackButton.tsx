@@ -7,7 +7,11 @@ const BackButton = () => {
 
     return (
         <div className={`absolute h-10 w-8 clickEffectPrimary`}>
-            <Icons iconType="back" onClick={() => router.back()} />
+            <Icons
+                iconType="back"
+                onClick={() => router.back()}
+                fontSize="92px"
+            />
         </div>
     );
 };

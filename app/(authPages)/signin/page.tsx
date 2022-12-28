@@ -11,14 +11,15 @@ import { useFormContext } from "../../../contexts/FormContext";
 import TogglePassword from "../../../components/TogglePassword";
 import { FormMessageTypes } from "../../../types";
 import Icons from "../../../icons";
+import { auth } from "../../../firebase/clientApp";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 interface Props {}
 
 const SignIn = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { addFormMessages, formMessages, clearFormMessages, updateIcon } =
-        useFormContext();
+    const { addFormMessages, formMessages, updateIcon } = useFormContext();
     const emailRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
@@ -48,9 +49,20 @@ const SignIn = ({}: Props) => {
                     },
                 ])
             );
-            updateIcon(<Icons iconType="signIn" className="text-primary" />);
+            updateIcon(
+                <Icons
+                    iconType="signIn"
+                    className="text-primary"
+                    fontSize="132px"
+                />
+            );
             if (emailRef.current && passwordRef.current) {
                 try {
+                    await signInWithEmailAndPassword(
+                        auth,
+                        emailRef.current.value,
+                        passwordRef.current.value
+                    );
                     await signIn("credentials", {
                         email: emailRef.current.value,
                         password: passwordRef.current.value,
@@ -58,7 +70,14 @@ const SignIn = ({}: Props) => {
                     });
                 } catch (err: any) {
                     setSubmitting(false);
-                    addFormMessages(new Set([]));
+                    updateIcon(
+                        <Icons
+                            iconType="warning"
+                            className="text-error"
+                            fontSize="132px"
+                        />
+                    );
+                    addFormMessages(getFormMessages(err.code));
                     console.error(err);
                 }
             }

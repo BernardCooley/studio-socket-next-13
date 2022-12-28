@@ -73,6 +73,16 @@ export const StudioSchema = z.object({
         .min(3, { message: "Studio title must be 3 or more characters" }),
 });
 
+export const UpdateUsernameSchema = z.object({
+    username: z
+        .string()
+        .min(3, { message: "Username must be 3 or more characters" }),
+});
+
+export const UpdateEmailSchema = z.object({
+    email: z.string().email(),
+});
+
 export const getFormMessages = (errorCode: any) => {
     const messages: Set<FormMessage> = new Set();
 
@@ -90,28 +100,32 @@ export const getFormMessages = (errorCode: any) => {
             message: "Sometghing went wrong. Please try again later.",
         },
         {
-            code: "Firebase: Error (auth/user-not-found).",
+            code: "auth/user-not-found",
             message: "Email/password incorrect.",
         },
         {
-            code: "Firebase: Error (auth/wrong-password).",
+            code: "auth/wrong-password",
             message: "Email/password incorrect.",
         },
         {
-            code: "Firebase: Error (auth/too-many-requests).",
+            code: "auth/too-many-requests",
             message: "Too many attempts. Please try again later.",
         },
         {
-            code: "Firebase: Error (auth/email-already-exists).",
+            code: "auth/email-already-exists",
             message: "User already exists.",
         },
         {
-            code: "Firebase: Error (auth/email-already-in-use).",
+            code: "auth/email-already-in-use",
             message: "User already exists.",
         },
         {
-            code: "Firebase: Error (auth/internal-error).",
+            code: "auth/internal-error",
             message: "An error has occurred. Please try again later",
+        },
+        {
+            code: "CredentialsSignin",
+            message: "Email address not verified. Please check your inbox.",
         },
     ];
 

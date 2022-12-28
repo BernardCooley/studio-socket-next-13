@@ -36,6 +36,9 @@ module.exports = {
             transitionProperty: {
                 height: "height",
             },
+            height: {
+                accountAvatar: "632px",
+            },
         },
         colors: {
             primary: "#383B43",

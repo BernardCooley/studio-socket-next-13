@@ -51,10 +51,6 @@ export const ODevFilterContextProvider = ({
     };
 
     const updateSortBy = (value: string) => {
-        console.log(
-            "🚀 ~ file: ODevFilterContext.tsx:49 ~ updateSortBy ~ value",
-            value
-        );
         setSortBy(value);
     };
 

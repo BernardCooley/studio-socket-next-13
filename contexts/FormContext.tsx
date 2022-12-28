@@ -19,7 +19,7 @@ interface FormContextProps {
 }
 
 export const FormContext = createContext<FormContextProps>({
-    icon: <Icons iconType="warning" />,
+    icon: <Icons iconType="warning" className="text-error" fontSize="132px" />,
     updateIcon: () => {},
     file: "",
     updateFile: () => {},
@@ -42,7 +42,7 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
     );
     const [file, setFile] = useState<string>("");
     const [icon, setIcon] = useState<React.ReactNode>(
-        <Icons iconType="warning" />
+        <Icons iconType="warning" className="text-error" fontSize="132px" />
     );
     const [dialogButtons, setDialogButtons] = useState<DialogButton[]>([]);
     const [canCloseDialog, setCanCloseDialog] = useState<boolean>(false);
@@ -52,7 +52,9 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const resetIcon = () => {
-        setIcon(<Icons iconType="warning" />);
+        setIcon(
+            <Icons iconType="warning" className="text-error" fontSize="132px" />
+        );
     };
 
     const updateFile = (value: string) => {

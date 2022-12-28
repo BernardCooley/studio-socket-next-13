@@ -40,6 +40,7 @@ const Navigation = ({}: Props) => {
                         iconType="menu"
                         className="text-primary-light"
                         onClick={openNav}
+                        fontSize="72px"
                     />
                 ) : (
                     <Link
@@ -50,6 +51,7 @@ const Navigation = ({}: Props) => {
                         <Icons
                             iconType="account"
                             className="text-primary-light"
+                            fontSize="84px"
                         />
                     </Link>
                 )}
@@ -82,6 +84,7 @@ const Navigation = ({}: Props) => {
                     iconType="close"
                     className="text-primary-light relative bottom-8"
                     onClick={closeNav}
+                    fontSize="92px"
                 />
             )}
         </div>
