@@ -20,7 +20,6 @@ import { useRouter } from "next/navigation";
 interface Props {}
 
 const Register = ({}: Props) => {
-    const router = useRouter();
     const storage = getStorage();
     const { file, updateFile, addFormMessages, formMessages, updateIcon } =
         useFormContext();
@@ -30,18 +29,11 @@ const Register = ({}: Props) => {
     const repeatPasswordRef = useRef<HTMLInputElement>(null);
     const avatarRef = useRef<HTMLInputElement>(null);
     const [errors, setErrors] = useState([]);
-    const [submitting, setSubmitting] = useState<boolean>(false);
     const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
-    const clearMessages = () => {
-        setErrors([]);
-        setSubmitting(false);
-    };
-
     const handleSubmit = async (e: FormEvent) => {
-        clearMessages();
-        setSubmitting(true);
+        setErrors([]);
         e.preventDefault();
 
         if (validate() && errors?.length === 0) {
@@ -113,7 +105,6 @@ const Register = ({}: Props) => {
                     if (user) {
                         await deleteUser(user.user);
                     }
-                    setSubmitting(false);
                     addFormMessages(getFormMessages(err.code));
                 }
             }
@@ -133,7 +124,6 @@ const Register = ({}: Props) => {
             });
             return true;
         } catch (err: any) {
-            setSubmitting(false);
             setErrors(err.errors);
             return false;
         }
@@ -147,15 +137,11 @@ const Register = ({}: Props) => {
     return (
         <div
             className={`register pt-14 flex flex-col items-center ${
-                submitting ? "opacity-40 pointer-events-none" : ""
+                formMessages.size > 0 ? "opacity-40 pointer-events-none" : ""
             }`}
             data-testid="register-page"
         >
-            <AuthForm
-                handleSubmit={handleSubmit}
-                submitButtonDisabled={submitting}
-                buttonLabel="Register"
-            >
+            <AuthForm handleSubmit={handleSubmit} buttonLabel="Register">
                 <CustomTextInput
                     className={`${
                         formMessages.size > 0 ? "pointer-events-none" : ""
