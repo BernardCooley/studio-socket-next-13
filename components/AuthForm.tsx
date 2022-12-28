@@ -4,7 +4,6 @@ import CustomButton from "./CustomButton";
 interface Props {
     handleSubmit: (e: FormEvent) => Promise<void>;
     onFormClick?: () => void;
-    submitButtonDisabled: boolean;
     children: React.ReactNode;
     buttonLabel: string;
 }
@@ -12,7 +11,6 @@ interface Props {
 const AuthForm = ({
     handleSubmit,
     onFormClick,
-    submitButtonDisabled,
     children,
     buttonLabel,
 }: Props) => {
@@ -29,7 +27,6 @@ const AuthForm = ({
                     label={buttonLabel}
                     type="submit"
                     buttonClassName={`authSubmitButton`}
-                    disabled={submitButtonDisabled}
                 />
             </div>
         </form>
