@@ -89,7 +89,6 @@ const SignIn = ({}: Props) => {
         >
             <AuthForm
                 handleSubmit={handleSubmit}
-                submitButtonDisabled={submitting}
                 buttonLabel={submitting ? "Signing in..." : `Sign in`}
                 onFormClick={formMessages.size > 0 ? () => router.back() : noop}
             >
