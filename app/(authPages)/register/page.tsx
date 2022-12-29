@@ -110,6 +110,16 @@ const Register = ({}: Props) => {
                         setTimeout(async () => {
                             router.push(routes.signin().as);
                         }, 5000);
+                    } else {
+                        addFormMessages(
+                            new Set([
+                                {
+                                    message:
+                                        "Error creating account. Please try again.",
+                                    type: FormMessageTypes.INFO,
+                                },
+                            ])
+                        );
                     }
                 } catch (err: any) {
                     if (user) {
