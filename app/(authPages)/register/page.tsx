@@ -140,7 +140,7 @@ const Register = ({}: Props) => {
                 repeatPassword: repeatPasswordRef.current?.value,
                 avatar: avatarRef.current?.files
                     ? avatarRef.current?.files[0]?.name
-                    : "",
+                    : null,
             });
             return true;
         } catch (err: any) {
