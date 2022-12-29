@@ -78,26 +78,25 @@ const Register = ({}: Props) => {
                     });
 
                     if (avatarRef.current?.files) {
-                        try {
-                            const storageRef = ref(
-                                storage,
-                                `users/avatars/${user.user.uid}_${avatarRef.current?.files[0].name}`
-                            );
-                            await uploadBytes(
-                                storageRef,
-                                avatarRef.current?.files[0]
-                            );
-                        } catch (err: any) {
-                            console.log(err);
-                            addFormMessages(
-                                new Set([
-                                    {
-                                        message: err.message,
-                                        type: FormMessageTypes.ERROR,
-                                    },
-                                ])
-                            );
-                        }
+                        const storageRef = ref(
+                            storage,
+                            `users/avatars/${user.user.uid}_${avatarRef.current?.files[0].name}`
+                        );
+                        uploadBytes(storageRef, avatarRef.current?.files[0])
+                            .then((snapshot) => {
+                                console.log(snapshot);
+                            })
+                            .catch((err) => {
+                                console.log(err);
+                                addFormMessages(
+                                    new Set([
+                                        {
+                                            message: err.message,
+                                            type: FormMessageTypes.ERROR,
+                                        },
+                                    ])
+                                );
+                            });
                     }
 
                     if (user.user) {
