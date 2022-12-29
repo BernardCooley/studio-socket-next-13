@@ -1,4 +1,5 @@
 import React, { forwardRef, LegacyRef, useEffect } from "react";
+import Icons from "../icons";
 
 interface Props {
     title: string;
@@ -6,10 +7,14 @@ interface Props {
     clasName?: string;
     showIcons: boolean;
     iconNotEditing?: JSX.Element;
-    iconEditing?: JSX.Element;
     editing?: boolean;
     defaultValue?: string;
     errorMessages?: string[];
+    iconsEditing?: {
+        iconType: string;
+        onClick: () => void;
+        fontSize: string;
+    }[];
 }
 
 const EditableDetailItem = forwardRef(
@@ -19,11 +24,11 @@ const EditableDetailItem = forwardRef(
             subtitle,
             clasName,
             iconNotEditing,
-            iconEditing,
             editing = false,
             defaultValue,
             showIcons,
             errorMessages,
+            iconsEditing,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -44,7 +49,7 @@ const EditableDetailItem = forwardRef(
                                     <input
                                         value={value}
                                         type="text"
-                                        className="bg-transparent w-full"
+                                        className="bg-transparent w-full text-2xl"
                                         onChange={(e) =>
                                             setValue(e.target.value)
                                         }
@@ -67,7 +72,26 @@ const EditableDetailItem = forwardRef(
                             )}
                             {showIcons && (
                                 <div>
-                                    {editing ? iconEditing : iconNotEditing}
+                                    {editing ? (
+                                        <div className="flex">
+                                            {iconsEditing?.map((icon) => (
+                                                <div
+                                                    className="mx-1"
+                                                    key={icon.iconType}
+                                                >
+                                                    <Icons
+                                                        iconType={icon.iconType}
+                                                        onClick={() =>
+                                                            icon.onClick()
+                                                        }
+                                                        fontSize={icon.fontSize}
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div>{iconNotEditing}</div>
+                                    )}
                                 </div>
                             )}
                         </div>

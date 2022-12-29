@@ -11,6 +11,7 @@ import {
     doc,
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
+import { Session } from "next-auth";
 import { IFirebaseImage, UserData } from "../types";
 import { trimFileExtension } from "../utils";
 import { db } from "./clientApp";
@@ -135,4 +136,30 @@ export const getSingleDocument = async (
         console.log(e);
     }
     return undefined;
+};
+
+export const fetchUserData = async (
+    user: Session | null
+): Promise<UserData | null> => {
+    try {
+        const userData = await getSingleDocument("users", user?.user.id);
+        if (userData) {
+            userData.email = user?.user.email || "";
+
+            const image = await getFirebaseImage(
+                "users/avatars",
+                `${user?.user.id}`
+            );
+
+            if (image) {
+                userData.imageUrl = image.url;
+            }
+
+            return userData as UserData;
+        }
+    } catch (err) {
+        console.error(err);
+    }
+
+    return null;
 };

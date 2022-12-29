@@ -5,10 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Avatar from "../../../components/Avatar";
 import PageTitle from "../../../components/PageTitle";
 import { FormMessageTypes, UserData } from "../../../types";
-import {
-    getFirebaseImage,
-    getSingleDocument,
-} from "../../../firebase/functions";
 import Icons from "../../../icons";
 import { db, auth } from "../../../firebase/clientApp";
 import EditableDetailItem from "../../../components/EditableDetailItem";
@@ -25,6 +21,7 @@ import {
     updateEmail,
 } from "firebase/auth";
 import DetailItem from "../../../components/DetailItem";
+import { fetchUserData } from "../../../firebase/functions";
 
 interface Props {}
 
@@ -41,6 +38,36 @@ const Account = ({}: Props) => {
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
 
+    const editingIcons = [
+        {
+            iconType: "tick",
+            onClick: () => updateItem("username"),
+            fontSize: "82px",
+        },
+        {
+            iconType: "close",
+            onClick: () => setEditing(""),
+            fontSize: "82px",
+        },
+    ];
+
+    const editableDetailItems = [
+        {
+            title: "Username",
+            subtitle: userData.username,
+            name: "username",
+            defaultValue: userData.username,
+            ref: usernameRef,
+        },
+        {
+            title: "Email",
+            subtitle: userData.email,
+            name: "email",
+            defaultValue: userData.email,
+            ref: emailRef,
+        },
+    ];
+
     useEffect(() => {
         setErrors([]);
         if (user?.user && db) {
@@ -49,23 +76,10 @@ const Account = ({}: Props) => {
     }, [user, db, auth]);
 
     const getUserData = async () => {
-        try {
-            const userData = await getSingleDocument("users", user?.user.id);
-            if (userData) {
-                userData.email = user?.user.email || "";
-
-                const image = await getFirebaseImage(
-                    "users/avatars",
-                    `${user?.user.id}`
-                );
-
-                if (image) {
-                    userData.imageUrl = image.url;
-                }
-
-                setUserData(userData as UserData);
-            }
-        } catch (err) {}
+        if (user) {
+            const data = await fetchUserData(user);
+            setUserData(data as UserData);
+        }
     };
 
     const editIcon = (type: string) => {
@@ -84,39 +98,40 @@ const Account = ({}: Props) => {
         }
     };
 
-    const updateUsername = async () => {
+    const updateUserDetail = async (
+        type: string,
+        validation: () => void,
+        preFormMessage: string,
+        icon: string,
+        updateFunction: () => Promise<void>,
+        postFormMessage: string
+    ) => {
         try {
-            UpdateUsernameSchema.parse({
-                username: usernameRef?.current?.value,
-            });
-
+            validation();
             setErrors([]);
 
             addFormMessages(
                 new Set([
                     {
-                        message: "Updating username",
+                        message: preFormMessage,
                         type: FormMessageTypes.INFO,
                     },
                 ])
             );
             updateIcon(
                 <Icons
-                    iconType="accountCreated"
+                    iconType={icon}
                     className="text-primary"
                     fontSize="132px"
                 />
             );
 
-            const userRef = doc(db, "users", user?.user.id);
+            await updateFunction();
 
-            await updateDoc(userRef, {
-                username: usernameRef?.current?.value,
-            });
             addFormMessages(
                 new Set([
                     {
-                        message: "Username updated",
+                        message: postFormMessage,
                         type: FormMessageTypes.INFO,
                     },
                 ])
@@ -127,55 +142,7 @@ const Account = ({}: Props) => {
                 setEditing("");
             }, 2000);
         } catch (err: any) {
-            setErrors(getErrorMessages(err.errors, "username"));
-        }
-    };
-
-    const updateEmailAddress = async () => {
-        try {
-            UpdateEmailSchema.parse({
-                email: emailRef?.current?.value,
-            });
-
-            setErrors([]);
-
-            addFormMessages(
-                new Set([
-                    {
-                        message: "Updating email",
-                        type: FormMessageTypes.INFO,
-                    },
-                ])
-            );
-            updateIcon(
-                <Icons
-                    iconType="accountCreated"
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            );
-
-            if (auth.currentUser && emailRef?.current?.value) {
-                await updateEmail(auth.currentUser, emailRef.current.value);
-                await sendEmailVerification(auth.currentUser);
-
-                addFormMessages(
-                    new Set([
-                        {
-                            message:
-                                "Email sddress updated. Please check your inbox and confirm your new email address.",
-                            type: FormMessageTypes.INFO,
-                        },
-                    ])
-                );
-            }
-
-            setTimeout(() => {
-                addFormMessages(new Set([]));
-                setEditing("");
-            }, 5000);
-        } catch (err: any) {
-            setErrors(getErrorMessages(err.errors, "email"));
+            setErrors(getErrorMessages(err.errors, type));
         }
     };
 
@@ -246,10 +213,54 @@ const Account = ({}: Props) => {
     const updateItem = (type: String) => {
         switch (type) {
             case "username":
-                updateUsername();
+                updateUserDetail(
+                    "username",
+                    () =>
+                        UpdateUsernameSchema.parse({
+                            username: usernameRef?.current?.value,
+                        }),
+                    "Updating username",
+                    "accountCreated",
+                    async () => {
+                        const userRef = doc(db, "users", user?.user.id);
+
+                        await updateDoc(userRef, {
+                            username: usernameRef?.current?.value,
+                        });
+                    },
+                    "Username updated"
+                );
                 break;
             case "email":
-                updateEmailAddress();
+                updateUserDetail(
+                    "email",
+                    () =>
+                        UpdateEmailSchema.parse({
+                            email: emailRef?.current?.value,
+                        }),
+                    "Updating email",
+                    "accountCreated",
+                    async () => {
+                        if (auth.currentUser && emailRef?.current?.value) {
+                            await updateEmail(
+                                auth.currentUser,
+                                emailRef.current.value
+                            );
+                            await sendEmailVerification(auth.currentUser);
+
+                            addFormMessages(
+                                new Set([
+                                    {
+                                        message:
+                                            "Email sddress updated. Please check your inbox and confirm your new email address.",
+                                        type: FormMessageTypes.INFO,
+                                    },
+                                ])
+                            );
+                        }
+                    },
+                    "Email address updated"
+                );
                 break;
             case "password":
                 passwordReset();
@@ -284,54 +295,27 @@ const Account = ({}: Props) => {
             </div>
             {userData && (
                 <div className="w-full">
-                    <EditableDetailItem
-                        clasName="w-full"
-                        title="Username"
-                        subtitle={userData.username}
-                        iconNotEditing={
-                            <Icons
-                                iconType="edit"
-                                onClick={() => editIcon("username")}
-                                fontSize="72px"
-                            />
-                        }
-                        iconEditing={
-                            <Icons
-                                iconType="tick"
-                                onClick={() => updateItem("username")}
-                                fontSize="72px"
-                            />
-                        }
-                        editing={editing === "username"}
-                        defaultValue={userData.username}
-                        ref={usernameRef}
-                        showIcons={true}
-                        errorMessages={errors}
-                    />
-                    <EditableDetailItem
-                        clasName="w-full"
-                        title="Email address"
-                        subtitle={userData.email || ""}
-                        iconNotEditing={
-                            <Icons
-                                iconType="edit"
-                                onClick={() => editIcon("email")}
-                                fontSize="72px"
-                            />
-                        }
-                        iconEditing={
-                            <Icons
-                                iconType="tick"
-                                onClick={() => updateItem("email")}
-                                fontSize="72px"
-                            />
-                        }
-                        editing={editing === "email"}
-                        defaultValue={userData.email || ""}
-                        ref={emailRef}
-                        showIcons={true}
-                        errorMessages={errors}
-                    />
+                    {editableDetailItems.map((item) => (
+                        <EditableDetailItem
+                            key={item.name}
+                            clasName="w-full"
+                            title={item.title}
+                            subtitle={item.subtitle || ""}
+                            iconNotEditing={
+                                <Icons
+                                    iconType="edit"
+                                    onClick={() => editIcon(item.name)}
+                                    fontSize="72px"
+                                />
+                            }
+                            iconsEditing={editingIcons}
+                            editing={editing === item.name}
+                            defaultValue={item.defaultValue}
+                            ref={item.ref}
+                            showIcons={true}
+                            errorMessages={errors}
+                        />
+                    ))}
                     <DetailItem
                         clasName="w-full"
                         title="password"
