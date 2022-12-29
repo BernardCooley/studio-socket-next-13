@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useRef } from "react";
 import Link from "next/link";
 import Icons from "../icons";
 import routes from "../routes";
 import { useNavContext } from "../contexts/NavContext";
+import useOnClickOutside from "../hooks/useClickOutside";
 
 interface Props {}
 
 const Navigation = ({}: Props) => {
     const { navOpen, closeNav, openNav } = useNavContext();
+    const navigationRef = useRef<HTMLDivElement>(null);
+    useOnClickOutside(navigationRef, closeNav);
 
     const navLinks = [
         {
@@ -29,6 +32,7 @@ const Navigation = ({}: Props) => {
             className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl z-40 ${
                 navOpen ? "h-72" : "h-11"
             }`}
+            ref={navigationRef}
         >
             <div
                 className={`flex justify-between ${

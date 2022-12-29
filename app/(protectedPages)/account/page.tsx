@@ -24,6 +24,7 @@ import {
 import DetailItem from "../../../components/DetailItem";
 import { fetchUserData } from "../../../firebase/functions";
 import CustomButton from "../../../components/CustomButton";
+import { useNavContext } from "../../../contexts/NavContext";
 
 interface Props {}
 
@@ -39,6 +40,7 @@ const Account = ({}: Props) => {
     const [errors, setErrors] = useState<string[]>([]);
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
+    const { navOpen } = useNavContext();
 
     const editingIcons = [
         {
@@ -349,7 +351,11 @@ const Account = ({}: Props) => {
     };
 
     return (
-        <div className="px-8 pt-16 flex flex-col items-center relative h-screen">
+        <div
+            className={`px-8 pt-16 flex flex-col items-center relative h-screen ${
+                navOpen ? "disable" : ""
+            }`}
+        >
             <PageTitle title="Account" />
             <Icons
                 iconType="logout"

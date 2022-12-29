@@ -32,7 +32,7 @@ const Devices = ({}: Props) => {
     const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
         useODevFilterContext();
     const { searchOpen } = useSearchContext();
-    const { updateDeviceListInView, environment } = useNavContext();
+    const { updateDeviceListInView, environment, navOpen } = useNavContext();
     const { data: user } = useSession();
     const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
     const [userDevices, setUserDevices] = useState<any[]>([]);
@@ -158,7 +158,7 @@ const Devices = ({}: Props) => {
                 filterModalShowing || searchOpen
                     ? "opacity-40 pointer-events-none"
                     : "opacity-100 pointer-events-auto"
-            }`}
+            } ${navOpen ? "disable" : ""}`}
         >
             {!isIntersecting && (
                 <Icons

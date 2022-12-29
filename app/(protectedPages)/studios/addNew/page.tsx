@@ -22,7 +22,7 @@ interface Props {}
 const AddNewStudio = ({}: Props) => {
     // TODO: Test when db is back up
     const { formMessages, addFormMessages, updateIcon } = useFormContext();
-    const { environment } = useNavContext();
+    const { environment, navOpen } = useNavContext();
     const router = useRouter();
     const [errors, setErrors] = useState([]);
     const titleRef = useRef<HTMLInputElement>(null);
@@ -96,7 +96,7 @@ const AddNewStudio = ({}: Props) => {
     };
 
     return (
-        <div className="pt-16 relative">
+        <div className={`pt-16 relative ${navOpen ? "disable" : ""}`}>
             <div className="absolute left-6">
                 <BackButton />
             </div>

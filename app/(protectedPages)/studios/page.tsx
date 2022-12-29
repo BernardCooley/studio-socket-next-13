@@ -21,7 +21,7 @@ interface Props {}
 const Studios = ({}: Props) => {
     // TODO: test when db is back up
     const router = useRouter();
-    const { environment } = useNavContext();
+    const { environment, navOpen } = useNavContext();
     const { data: user } = useSession();
     const [allStudios, setAllStudios] = useState<Studio[]>([]);
     const [userStudios, setUserStudios] = useState<Studio[]>([]);
@@ -98,7 +98,11 @@ const Studios = ({}: Props) => {
     };
 
     return (
-        <div className="relative overflow-hidden h-screen">
+        <div
+            className={`relative overflow-hidden h-screen ${
+                navOpen ? "disable" : ""
+            }`}
+        >
             <Icons
                 iconType="add"
                 className="fixed bottom-4 right-4 border-8 text-primary-light bg-primary rounded-full z-50"

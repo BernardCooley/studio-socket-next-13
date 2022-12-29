@@ -42,7 +42,7 @@ const AddNewDevice = ({}: Props) => {
         updateIcon,
         updateCanCloseDialog,
     } = useFormContext();
-    const { environment } = useNavContext();
+    const { environment, navOpen } = useNavContext();
     const titleRef = useRef<HTMLInputElement>(null);
     const manufacturerRef = useRef<HTMLInputElement>(null);
     const deviceTypeRef = useRef<HTMLInputElement>(null);
@@ -251,7 +251,7 @@ const AddNewDevice = ({}: Props) => {
     };
 
     return (
-        <div className="pt-16 relative">
+        <div className={`pt-16 relative ${navOpen ? "disable" : ""}`}>
             <div className="absolute left-6">
                 <BackButton />
             </div>

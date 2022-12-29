@@ -131,3 +131,7 @@ input:-webkit-autofill:active {
 .clickEffectPrimaryLight {
     @apply active:bg-primary-light active:text-primary;
 }
+
+.disable {
+    @apply opacity-50 pointer-events-none;
+}

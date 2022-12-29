@@ -21,12 +21,14 @@ import { db } from "../../../../firebase/clientApp";
 import { useSession } from "next-auth/react";
 import routes from "../../../../routes";
 import Connections from "../../../../components/Connections";
+import { useNavContext } from "../../../../contexts/NavContext";
 
 interface Props {
     params: { id: number };
 }
 
 const Device = ({ params }: Props) => {
+    const { navOpen } = useNavContext();
     const { data: user } = useSession();
     const {
         addFormMessages,
@@ -159,7 +161,11 @@ const Device = ({ params }: Props) => {
     };
 
     return (
-        <div className="p-8 pt-28 relative flex flex-col items-center">
+        <div
+            className={`p-8 pt-28 relative flex flex-col items-center ${
+                navOpen ? "disable" : ""
+            }`}
+        >
             <div className="absolute left-6 top-16">
                 <BackButton />
             </div>

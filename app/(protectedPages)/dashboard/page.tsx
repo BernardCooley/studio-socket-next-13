@@ -14,7 +14,7 @@ import { userDevicesTest } from "../../../testData/testData";
 interface Props {}
 
 const Dashboard = ({}: Props) => {
-    const { environment } = useNavContext();
+    const { environment, navOpen } = useNavContext();
     const router = useRouter();
     const [devices, setDevices] = useState<any[]>([]);
 
@@ -34,7 +34,11 @@ const Dashboard = ({}: Props) => {
     };
 
     return (
-        <div className="flex flex-col items-center bg-primary-light pb-10 pt-16">
+        <div
+            className={`flex flex-col items-center bg-primary-light pb-10 pt-16 ${
+                navOpen ? "disable" : ""
+            }`}
+        >
             <PageTitle title="Dashboard" />
             <PageSection title="Your top devices">
                 {devices &&

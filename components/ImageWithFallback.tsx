@@ -42,7 +42,12 @@ const ImageWithFallback = ({
     }, [src]);
 
     return (
-        <div key={title} className={`${containerClassname}`}>
+        <div
+            key={title}
+            className={`${containerClassname} ${
+                errorOverlay.length > 0 ? "opacity-50" : ""
+            }`}
+        >
             <Image
                 objectFit={fit}
                 src={src ? src : fallbackImage}
