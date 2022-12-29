@@ -88,8 +88,8 @@ const Register = ({}: Props) => {
                         );
                     }
 
-                    if (auth.currentUser) {
-                        await sendEmailVerification(auth.currentUser);
+                    if (user.user) {
+                        await sendEmailVerification(user.user);
 
                         addFormMessages(
                             new Set([
