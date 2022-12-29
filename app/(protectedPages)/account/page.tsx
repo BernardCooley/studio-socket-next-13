@@ -13,15 +13,17 @@ import {
     UpdateUsernameSchema,
 } from "../../../formValidation";
 import { useFormContext } from "../../../contexts/FormContext";
-import { doc, updateDoc } from "firebase/firestore";
+import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { getErrorMessages } from "../../../utils";
 import {
+    deleteUser,
     sendEmailVerification,
     sendPasswordResetEmail,
     updateEmail,
 } from "firebase/auth";
 import DetailItem from "../../../components/DetailItem";
 import { fetchUserData } from "../../../firebase/functions";
+import CustomButton from "../../../components/CustomButton";
 
 interface Props {}
 
@@ -268,8 +270,86 @@ const Account = ({}: Props) => {
         }
     };
 
+    const deleteAccount = async () => {
+        addFormMessages(
+            new Set([
+                {
+                    message:
+                        "Are you sure you want to delete your account? This cannot be undone.",
+                    type: FormMessageTypes.ERROR,
+                },
+            ])
+        );
+
+        updateIcon(
+            <Icons
+                iconType="deleteAccount"
+                className="text-error"
+                fontSize="132px"
+            />
+        );
+
+        updateDialogButtons([
+            {
+                text: "Yes",
+                onClick: async () => {
+                    try {
+                        if (auth.currentUser) {
+                            addFormMessages(
+                                new Set([
+                                    {
+                                        message: "Deleting account",
+                                        type: FormMessageTypes.INFO,
+                                    },
+                                ])
+                            );
+
+                            await deleteDoc(
+                                doc(db, "users", auth.currentUser.uid)
+                            );
+                            await deleteUser(auth.currentUser);
+                        }
+
+                        updateDialogButtons([]);
+
+                        addFormMessages(
+                            new Set([
+                                {
+                                    message:
+                                        "Your account has now been deleted. We are sorry to see you go.",
+                                    type: FormMessageTypes.INFO,
+                                },
+                            ])
+                        );
+                        setTimeout(() => {
+                            addFormMessages(new Set([]));
+                            setEditing("");
+                            signOut({ callbackUrl: "/" });
+                        }, 5000);
+                    } catch (err: any) {
+                        console.log(
+                            "🚀 ~ file: page.tsx:189 ~ passwordReset ~ error",
+                            err
+                        );
+                        const errorCode = err.code;
+                        const errorMessage = err.message;
+                    }
+                },
+                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+            },
+            {
+                text: "No",
+                onClick: () => {
+                    addFormMessages(new Set([]));
+                    updateDialogButtons([]);
+                },
+                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+            },
+        ]);
+    };
+
     return (
-        <div className="px-8 pt-16 flex flex-col items-center relative">
+        <div className="px-8 pt-16 flex flex-col items-center relative h-screen">
             <PageTitle title="Account" />
             <Icons
                 iconType="logout"
@@ -330,6 +410,12 @@ const Account = ({}: Props) => {
                     />
                 </div>
             )}
+            <CustomButton
+                label="Delete account"
+                type="button"
+                onClick={() => deleteAccount()}
+                buttonClassName="text-error text-xl absolute bottom-4 right-4"
+            />
         </div>
     );
 };

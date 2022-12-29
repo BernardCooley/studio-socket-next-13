@@ -24,6 +24,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DoneIcon from "@mui/icons-material/Done";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PasswordIcon from "@mui/icons-material/Password";
+import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 
 interface Props {
     iconType: string;
@@ -67,6 +68,7 @@ const Icons = ({
     const icons: IIcons = {
         close: <CloseIcon {...attributes} />,
         account: <Person2Icon {...attributes} />,
+        deleteAccount: <PersonRemoveIcon {...attributes} />,
         logout: <LogoutIcon {...attributes} />,
         menu: <MenuIcon {...attributes} />,
         showPassword: <VisibilityIcon {...attributes} />,
