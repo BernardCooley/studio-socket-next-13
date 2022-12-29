@@ -78,14 +78,18 @@ const Register = ({}: Props) => {
                     });
 
                     if (avatarRef.current?.files) {
-                        const storageRef = ref(
-                            storage,
-                            `users/avatars/${user.user.uid}`
-                        );
-                        await uploadBytes(
-                            storageRef,
-                            avatarRef.current?.files[0]
-                        );
+                        try {
+                            const storageRef = ref(
+                                storage,
+                                `users/avatars/${user.user.uid}_${avatarRef.current?.files[0].name}`
+                            );
+                            await uploadBytes(
+                                storageRef,
+                                avatarRef.current?.files[0]
+                            );
+                        } catch (err) {
+                            console.log(err);
+                        }
                     }
 
                     if (user.user) {
