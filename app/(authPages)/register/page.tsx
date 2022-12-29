@@ -83,12 +83,20 @@ const Register = ({}: Props) => {
                                 storage,
                                 `users/avatars/${user.user.uid}_${avatarRef.current?.files[0].name}`
                             );
-                            // await uploadBytes(
-                            //     storageRef,
-                            //     avatarRef.current?.files[0]
-                            // );
-                        } catch (err) {
+                            await uploadBytes(
+                                storageRef,
+                                avatarRef.current?.files[0]
+                            );
+                        } catch (err: any) {
                             console.log(err);
+                            addFormMessages(
+                                new Set([
+                                    {
+                                        message: err.message,
+                                        type: FormMessageTypes.ERROR,
+                                    },
+                                ])
+                            );
                         }
                     }
 
