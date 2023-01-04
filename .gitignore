@@ -42,3 +42,5 @@ testData/all_devices.ts
 testData/all_devices_sample.ts
 testData/all_device_ids_sample.ts
 public/gear_images
+.env
+prisma/migrations/

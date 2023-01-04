@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id String @id @default(cuid())
+  userName String
+  devices Device[]
+}
+
+model Device {
+  id String @id @default(cuid())
+  deviceId String
+  title String
+  manufacturers Manufacturer[]
+  deviceTypes DeviceType[]
+  formFactor FormFactor @relation(fields: [formFactorId], references: [id])
+  formFactorId String
+  signalPath SignalPath @relation(fields: [signalPathId], references: [id])
+  signalPathId String
+  datesProduced String
+  countryOfManufacturer String
+  users User[]
+  connections Connection[]
+}
+
+model Manufacturer {
+  id String @id @default(cuid())
+  name String
+  devices Device[]
+}
+
+model DeviceType {
+  id String @id @default(cuid())
+  name String
+  devices Device[]
+}
+
+model FormFactor {
+  id String @id @default(cuid())
+  name String
+  devices Device[]
+}
+
+model SignalPath {
+  id String @id @default(cuid())
+  name String
+  devices Device[]
+}
+
+model Connection {
+  id String @id @default(cuid())
+  name String
+  connector Connector @relation(fields: [connectorId], references: [id])
+  connectorId String
+  description ConnectionDescription[]
+  devices Device[]
+}
+
+model Connector {
+  id String @id @default(cuid())
+  name String
+  connections Connection[]
+}
+
+model ConnectionDescription {
+  id String @id @default(cuid())
+  name String
+  connections Connection[]
+}
