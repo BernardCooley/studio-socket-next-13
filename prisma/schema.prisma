@@ -22,14 +22,15 @@ model Device {
   title String
   manufacturers Manufacturer[]
   deviceTypes DeviceType[]
-  formFactor FormFactor @relation(fields: [formFactorId], references: [id])
-  formFactorId String
-  signalPath SignalPath @relation(fields: [signalPathId], references: [id])
-  signalPathId String
-  datesProduced String
-  countryOfManufacturer String
+  formFactor FormFactor? @relation(fields: [formFactorId], references: [id])
+  formFactorId String?
+  signalPath SignalPath? @relation(fields: [signalPathId], references: [id])
+  signalPathId String?
+  datesProduced String?
+  countryOfManufacturer String?
   users User[]
   connections Connection[]
+  slug String
 }
 
 model Manufacturer {
@@ -59,10 +60,11 @@ model SignalPath {
 model Connection {
   id String @id @default(cuid())
   name String
-  connector Connector @relation(fields: [connectorId], references: [id])
-  connectorId String
+  connector Connector? @relation(fields: [connectorId], references: [id])
+  connectorId String?
   description ConnectionDescription[]
   devices Device[]
+  deviceId String
 }
 
 model Connector {
