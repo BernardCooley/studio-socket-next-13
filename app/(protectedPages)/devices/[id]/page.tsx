@@ -11,7 +11,7 @@ import { useFormContext } from "../../../../contexts/FormContext";
 import { devicesRef } from "../../../../firebase/firebaseRefs";
 import {
     getDocumentsWhere,
-    getFirebaseImage,
+    fetchFirebaseImage,
     getUserData,
 } from "../../../../firebase/functions";
 import { FormMessageTypes, IFirebaseImage, UserData } from "../../../../types";
@@ -48,7 +48,13 @@ const Device = ({ params }: Props) => {
 
     useEffect(() => {
         if (device) {
-            getImage();
+            (async () => {
+                const image = await fetchFirebaseImage(
+                    "gear_images",
+                    device.id
+                );
+                setDeviceImage(image);
+            })();
         }
     }, [device]);
 
@@ -61,16 +67,6 @@ const Device = ({ params }: Props) => {
             true
         );
         setDevice(device);
-    };
-
-    const getImage = async () => {
-        try {
-            const image = await getFirebaseImage(
-                "gear_images",
-                `${device.id}.png`
-            );
-            setDeviceImage(image);
-        } catch (err) {}
     };
 
     const setErrorMessage = () => {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { getFirebaseImage } from "../firebase/functions";
+import { fetchFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
@@ -31,14 +31,14 @@ const Landing = ({}: Props) => {
 
     const getLogo = async () => {
         try {
-            const logo = await getFirebaseImage("brand", "logo.png");
+            const logo = await fetchFirebaseImage("brand", "logo.png");
             setLogo(logo);
         } catch (err) {}
     };
 
     const getTableImage = async () => {
         try {
-            const tableImage = await getFirebaseImage("brand", "table.png");
+            const tableImage = await fetchFirebaseImage("brand", "table.png");
             setTableImage(tableImage);
         } catch (err) {}
     };

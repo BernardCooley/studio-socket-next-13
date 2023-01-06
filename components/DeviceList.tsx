@@ -17,6 +17,7 @@ interface Props {
     iconType: "left" | "right";
     sortBy: string;
     filterKeys: string[];
+    onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
 }
 
 const DeviceList = ({
@@ -27,6 +28,7 @@ const DeviceList = ({
     iconType,
     sortBy,
     filterKeys,
+    onScroll,
 }: Props) => {
     const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
@@ -34,7 +36,7 @@ const DeviceList = ({
     useEffect(() => {}, []);
 
     return (
-        <div className="snapScrollPane mb-20 pt-16 pb-8">
+        <div className="snapScrollPane mb-20 pt-16 pb-8" onScroll={onScroll}>
             <FilterIcons
                 filterKeys={filterKeys}
                 sortBy={sortBy}

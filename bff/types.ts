@@ -9,6 +9,7 @@ export interface IOrderBy {
 }
 
 export interface IFetchDevicesBody {
+    skip: number;
     take?: number;
     select: {
         id: boolean;

@@ -5,9 +5,9 @@ import React, { useEffect, useRef, useState } from "react";
 import {
     getDocumentsWhere,
     getFirebaseData,
-    getFirebaseImage,
+    fetchFirebaseImage,
 } from "../../../firebase/functions";
-import { IFirebaseImage, Studio } from "../../../types";
+import { Studio } from "../../../types";
 import { studiosRef } from "../../../firebase/firebaseRefs";
 import routes from "../../../routes";
 import { testStudios } from "../../../testData/testData";
@@ -68,19 +68,10 @@ const Studios = ({}: Props) => {
         }
     };
 
-    const getImage = async (studioId: string) => {
-        try {
-            const image = await getFirebaseImage("studios", `${studioId}.png`);
-            return image;
-        } catch (err) {
-            return null;
-        }
-    };
-
     const fetchUserStudioImages = async () => {
         if (userStudios.length > 0) {
             userStudios.forEach(async (studio) => {
-                const image = await getImage(studio.id);
+                const image = await fetchFirebaseImage("studios", studio.id);
                 if (image) {
                     studio.image = image;
                 }

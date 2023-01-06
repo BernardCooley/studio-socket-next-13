@@ -51,7 +51,7 @@ export const getUserData = async (docRef: any): Promise<UserData | null> => {
     return null;
 };
 
-export const getFirebaseImage = async (
+export const fetchFirebaseImage = async (
     folder: string,
     filename: string
 ): Promise<IFirebaseImage | null> => {
@@ -144,7 +144,7 @@ export const fetchUserData = async (
         if (userData) {
             userData.email = user?.user.email || "";
 
-            const image = await getFirebaseImage(
+            const image = await fetchFirebaseImage(
                 "users/avatars",
                 `${user?.user.id}`
             );
