@@ -1,3 +1,5 @@
+import { IFetchDevicesBody, IOrderBy } from "./types";
+
 export class GoneError extends Error {
     statusCode = 410;
 }
@@ -50,4 +52,32 @@ export const fetchWithErrorHandling = async <T>(
         throw e;
     }
     return null;
+};
+
+export const buildQuery = (
+    body: IFetchDevicesBody,
+    limit: number | null = null,
+    filters: any = null,
+    andOr: "AND" | "OR" = "OR",
+    orderBy: IOrderBy[] | null = null
+) => {
+    if (limit) {
+        body["take"] = limit;
+    }
+
+    if (filters && andOr === "OR") {
+        body["where"] = {
+            OR: filters,
+        };
+    } else if (filters && andOr === "AND") {
+        body["where"] = {
+            AND: filters,
+        };
+    }
+
+    if (orderBy && orderBy.length > 0) {
+        body["orderBy"] = orderBy;
+    }
+
+    return body;
 };

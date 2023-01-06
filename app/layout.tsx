@@ -24,7 +24,7 @@ export default function RootLayout({ children }: Props) {
     const andOr = "OR";
     const orderBy = [
         {
-            title: "desc",
+            title: "asc",
         },
     ];
 
@@ -35,6 +35,7 @@ export default function RootLayout({ children }: Props) {
             andOr,
             orderBy as IOrderBy[]
         );
+        console.log("🚀 ~ file: layout.tsx:38 ~ devices ~ dev", dev);
     };
 
     devices();
