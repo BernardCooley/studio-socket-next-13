@@ -193,7 +193,7 @@ const FilterModal = ({}: Props) => {
     return (
         <div>
             {filterModalShowing && (
-                <div className="absolute modal">
+                <div className="absolute modal z-50">
                     <Icons
                         iconType="close"
                         className="z-30 absolute right-2 top-2"
