@@ -1,25 +1,19 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import {
-    getFirebaseData,
-    getFirebaseImage,
-    getUserData,
-} from "../../../firebase/functions";
-import { useSession } from "next-auth/react";
-import { doc } from "firebase/firestore";
-import { db } from "../../../firebase/clientApp";
-import { UserData } from "../../../types";
+import { getFirebaseImage } from "../../../firebase/functions";
+import { IDevice } from "../../../types";
 import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
 import { useNavContext } from "../../../contexts/NavContext";
 import DeviceList from "../../../components/DeviceList";
 import { useSearchContext } from "../../../contexts/SearchContext";
-import { devicesRef } from "../../../firebase/firebaseRefs";
-import { allDevicesTest, userDevicesTest } from "../../../testData/testData";
 import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../icons";
 import routes from "../../../routes";
+import { fetchDevices } from "../../../bff/requests";
+import { IOrderBy } from "../../../bff/types";
 
 interface Props {}
 
@@ -32,33 +26,55 @@ const Devices = ({}: Props) => {
     const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
         useODevFilterContext();
     const { searchOpen } = useSearchContext();
-    const { updateDeviceListInView, environment, navOpen } = useNavContext();
-    const { data: user } = useSession();
-    const [userDeviceIds, setUserDeviceIds] = useState<string[]>([]);
-    const [userDevices, setUserDevices] = useState<any[]>([]);
-    const [allDevices, setAllDevices] = useState<any[]>([]);
+    const { updateDeviceListInView, navOpen } = useNavContext();
+    const [devices, setDevices] = useState<IDevice[]>([]);
     const scrollElementRef = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
     const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
 
+    const limit = 10;
+    const filters = [
+        { countryOfManufacturer: "Germany" },
+        {
+            formFactor: {
+                name: "Keyboard",
+            },
+        },
+    ];
+    const andOr = "OR";
+    const orderBy = [
+        {
+            title: "desc",
+        },
+    ];
+
+    const getDevices = async () => {
+        const dev = await fetchDevices(
+            limit,
+            filters,
+            andOr,
+            orderBy as IOrderBy[]
+        );
+        if (dev) {
+            setDevices(dev as IDevice[]);
+        }
+    };
+
     useEffect(() => {
-        fetchDevices();
+        if (devices.length > 0) {
+            devices.forEach(async (device) => {
+                const image = await getImage(device.deviceId);
+                if (image) {
+                    device.image = image;
+                }
+            });
+        }
+    }, [devices]);
+
+    useEffect(() => {
+        getDevices();
     }, []);
-
-    useEffect(() => {
-        if (environment === "prod") {
-            fetchUserDeviceIds();
-        } else {
-            fetchUserDevices();
-        }
-    }, [user]);
-
-    useEffect(() => {
-        if (userDeviceIds.length > 0) {
-            fetchUserDevices();
-        }
-    }, [userDeviceIds]);
 
     useEffect(() => {
         if (isIntersecting) {
@@ -67,69 +83,6 @@ const Devices = ({}: Props) => {
             updateDeviceListInView("ours");
         }
     }, [isIntersecting]);
-
-    useEffect(() => {
-        if (userDevices.length > 0) {
-            userDevices.forEach(async (device) => {
-                const image = await getImage(device.id);
-                if (image) {
-                    device.image = image;
-                }
-            });
-        }
-    }, [userDevices]);
-
-    useEffect(() => {
-        if (allDevices.length > 0) {
-            allDevices.forEach(async (device) => {
-                const image = await getImage(device.id);
-                if (image) {
-                    device.image = image;
-                }
-            });
-        }
-    }, [allDevices]);
-
-    const fetchDevices = async () => {
-        if (environment === "prod") {
-            const devices = await getFirebaseData(devicesRef, 20);
-            if (devices) {
-                setAllDevices(devices);
-            }
-        } else {
-            setAllDevices(allDevicesTest);
-        }
-    };
-
-    const fetchUserDevices = async () => {
-        if (environment === "prod") {
-            if (userDeviceIds.length > 0) {
-                const devices = await getFirebaseData(
-                    devicesRef,
-                    20,
-                    "id",
-                    "in",
-                    userDeviceIds
-                );
-                if (devices) {
-                    setUserDevices(devices);
-                }
-            }
-        } else {
-            setUserDevices(userDevicesTest);
-        }
-    };
-
-    const fetchUserDeviceIds = async () => {
-        if (user?.user) {
-            const userData: UserData | null = await getUserData(
-                doc(db, "users", user.user.id)
-            );
-            if (userData && userData.devices) {
-                setUserDeviceIds(userData.devices);
-            }
-        }
-    };
 
     const getImage = async (deviceId: string) => {
         try {
@@ -175,7 +128,7 @@ const Devices = ({}: Props) => {
                 <DeviceList
                     onScrollClick={() => scroll(true)}
                     elementRef={yourDevicesRef}
-                    userDevices={userDevices}
+                    devices={devices}
                     pageTitle="Your devices"
                     iconType="right"
                     sortBy={YDevSortBy}
@@ -184,7 +137,7 @@ const Devices = ({}: Props) => {
                 <DeviceList
                     onScrollClick={() => scroll(false)}
                     elementRef={ourDevicesRef}
-                    userDevices={allDevices}
+                    devices={devices}
                     pageTitle="Our devices"
                     iconType="left"
                     sortBy={ODevSortBy}

@@ -62,9 +62,7 @@ export const getFirebaseImage = async (
     try {
         const url = await getDownloadURL(pathReference);
         return { url, name: filename };
-    } catch (err) {
-        console.log(err);
-    }
+    } catch (err) {}
 
     return null;
 };

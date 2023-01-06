@@ -3,6 +3,7 @@ import { useSearchContext } from "../contexts/SearchContext";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import Icons from "../icons";
 import routes from "../routes";
+import { IDevice } from "../types";
 import DeviceItem from "./DeviceItem";
 import FilterIcons from "./FilterIcons";
 import FilterSortLabel from "./FilterSortLabel";
@@ -11,7 +12,7 @@ import PageTitle from "./PageTitle";
 interface Props {
     onScrollClick: () => void;
     elementRef: React.RefObject<HTMLDivElement>;
-    userDevices: any[];
+    devices: IDevice[];
     pageTitle: string;
     iconType: "left" | "right";
     sortBy: string;
@@ -21,7 +22,7 @@ interface Props {
 const DeviceList = ({
     onScrollClick,
     elementRef,
-    userDevices,
+    devices,
     pageTitle,
     iconType,
     sortBy,
@@ -60,9 +61,9 @@ const DeviceList = ({
             <div>
                 <FilterSortLabel filterKeys={filterKeys} sortBy={sortBy} />
                 <div className="deviceList" ref={elementRef}>
-                    {userDevices &&
-                        userDevices.length > 0 &&
-                        userDevices.map((device) => (
+                    {devices &&
+                        devices.length > 0 &&
+                        devices.map((device) => (
                             <DeviceItem
                                 key={device.id}
                                 device={device}
