@@ -1,15 +1,32 @@
+export interface ISelect {
+    select: {
+        [key: string]: boolean;
+    };
+}
+
 export interface IFetchDevicesBody {
     take?: number;
-    include: {
+    select: {
+        id: boolean;
+        slug: boolean;
+        title: boolean;
+        deviceId: boolean;
+        countryOfManufacturer: boolean;
+        datesProduced: boolean;
+        formFactor: ISelect;
+        manufacturers: ISelect;
+        deviceTypes: ISelect;
+        users: ISelect;
         connections: {
-            include: {
-                connector: boolean;
-                description: boolean;
-                devices: boolean;
+            select: {
+                connector: ISelect;
+                description: ISelect;
+                devices: ISelect;
             };
         };
-        manufacturers: boolean;
-        deviceTypes: boolean;
-        users: boolean;
+    };
+    where?: {
+        OR?: any;
+        AND?: any;
     };
 }
