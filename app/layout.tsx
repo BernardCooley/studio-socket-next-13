@@ -5,6 +5,7 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { FormContextProvider } from "../contexts/FormContext";
 import { fetchDevices } from "../bff/requests";
+import { IOrderBy } from "../bff/types";
 
 interface Props {
     children: React.ReactNode;
@@ -21,9 +22,19 @@ export default function RootLayout({ children }: Props) {
         },
     ];
     const andOr = "OR";
+    const orderBy = [
+        {
+            title: "desc",
+        },
+    ];
 
     const devices = async () => {
-        const dev = await fetchDevices(limit, filters, andOr);
+        const dev = await fetchDevices(
+            limit,
+            filters,
+            andOr,
+            orderBy as IOrderBy[]
+        );
     };
 
     devices();

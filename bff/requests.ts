@@ -1,11 +1,12 @@
 import { devicesInclude } from "./includes";
-import { IFetchDevicesBody } from "./types";
+import { IFetchDevicesBody, IOrderBy } from "./types";
 import { fetchWithErrorHandling } from "./utils";
 
 export const fetchDevices = async (
     limit: number | null = null,
     filters: any = null,
-    andOr: "AND" | "OR" = "OR"
+    andOr: "AND" | "OR" = "OR",
+    orderBy: IOrderBy[] | null = null
 ) => {
     const body: IFetchDevicesBody = {
         select: devicesInclude,
@@ -23,6 +24,10 @@ export const fetchDevices = async (
         body["where"] = {
             AND: filters,
         };
+    }
+
+    if (orderBy && orderBy.length > 0) {
+        body["orderBy"] = orderBy;
     }
 
     return fetchWithErrorHandling(`/api/getDevices`, "POST", body);

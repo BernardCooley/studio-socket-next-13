@@ -4,6 +4,10 @@ export interface ISelect {
     };
 }
 
+export interface IOrderBy {
+    [key: string]: "asc" | "desc";
+}
+
 export interface IFetchDevicesBody {
     take?: number;
     select: {
@@ -29,4 +33,5 @@ export interface IFetchDevicesBody {
         OR?: any;
         AND?: any;
     };
+    orderBy?: IOrderBy[];
 }
