@@ -2,8 +2,8 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { getFirebaseImage } from "../../../firebase/functions";
-import { IDevice } from "../../../types";
+import { fetchFirebaseImage } from "../../../firebase/functions";
+import { FormMessageTypes, IDevice, IFirebaseImage } from "../../../types";
 import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
 import { useNavContext } from "../../../contexts/NavContext";
@@ -12,8 +12,9 @@ import { useSearchContext } from "../../../contexts/SearchContext";
 import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../icons";
 import routes from "../../../routes";
-import { fetchDevices } from "../../../bff/requests";
+import { fetchDevices, IRequestOptions } from "../../../bff/requests";
 import { IOrderBy } from "../../../bff/types";
+import { useFormContext } from "../../../contexts/FormContext";
 
 interface Props {}
 
@@ -27,14 +28,26 @@ const Devices = ({}: Props) => {
         useODevFilterContext();
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
-    const [devices, setDevices] = useState<IDevice[]>([]);
+    const [allDevices, setAllDevices] = useState<IDevice[]>([]);
+    const [yourDevices, setYourDevices] = useState<IDevice[]>([]);
     const scrollElementRef = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
     const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
+    const [skip, setSkip] = useState<{
+        allDevices: number;
+        yourDevices: number;
+    }>({
+        allDevices: 0,
+        yourDevices: 0,
+    });
+    const [moreLoading, setMoreLoading] = useState<boolean>(false);
+    const { addFormMessages, updateIcon } = useFormContext();
 
-    const limit = 10;
-    const filters = [
+    // TODO: use context to set request options
+    const allDevicesLimit = 10;
+    const yourDevicesLimit = 20;
+    const allDevicesfilters = [
         { countryOfManufacturer: "Germany" },
         {
             formFactor: {
@@ -42,58 +55,148 @@ const Devices = ({}: Props) => {
             },
         },
     ];
-    const andOr = "OR";
-    const orderBy = [
+    // TODO: update to only get user's devices when auth is sorted
+    const yourDevicesfilters = [
+        { countryOfManufacturer: "Germany" },
+        {
+            formFactor: {
+                name: "Desktop",
+            },
+        },
+    ];
+    const allDevicesAndOr = "OR";
+    const yourDevicesAndOr = "AND";
+    const allDevicesOrderBy = [
         {
             title: "desc",
         },
-    ];
+    ] as IOrderBy[];
+    const yourDevicesOrderBy = [
+        {
+            title: "asc",
+        },
+    ] as IOrderBy[];
 
-    const getDevices = async () => {
-        const dev = await fetchDevices(
-            limit,
-            filters,
-            andOr,
-            orderBy as IOrderBy[]
-        );
-        if (dev) {
-            setDevices(dev as IDevice[]);
+    useEffect(() => {
+        if (allDevices.length > 0) {
+            console.log(allDevices.length);
+            allDevices.forEach(async (device) => {
+                if (!device.image) {
+                    const image: IFirebaseImage | null =
+                        await fetchFirebaseImage(
+                            "gear_images",
+                            device.deviceId
+                        );
+                    if (image) {
+                        device.image = image;
+                    } else {
+                        device.image = {
+                            name: "",
+                            url: "",
+                        };
+                    }
+                }
+            });
+        }
+    }, [allDevices]);
+
+    useEffect(() => {
+        if (yourDevices.length > 0) {
+            yourDevices.forEach(async (device) => {
+                if (!device.image) {
+                    const image: IFirebaseImage | null =
+                        await fetchFirebaseImage(
+                            "gear_images",
+                            device.deviceId
+                        );
+                    if (image) {
+                        device.image = image;
+                    } else {
+                        device.image = {
+                            name: "",
+                            url: "",
+                        };
+                    }
+                }
+            });
+        }
+    }, [yourDevices]);
+
+    useEffect(() => {
+        onLoadingChange(moreLoading);
+    }, [moreLoading]);
+
+    const onLoadingChange = (isLoading: boolean) => {
+        if (isLoading) {
+            addFormMessages(
+                new Set([
+                    {
+                        message: "Loading more devices...",
+                        type: FormMessageTypes.INFO,
+                    },
+                ])
+            );
+            updateIcon(
+                <Icons
+                    iconType="formLoading"
+                    className="text-primary"
+                    fontSize="132px"
+                />
+            );
+        } else {
+            setTimeout(() => {
+                addFormMessages(new Set([]));
+            }, 500);
         }
     };
 
     useEffect(() => {
-        if (devices.length > 0) {
-            devices.forEach(async (device) => {
-                const image = await getImage(device.deviceId);
-                if (image) {
-                    device.image = image;
-                }
-            });
-        }
-    }, [devices]);
-
-    useEffect(() => {
-        getDevices();
+        getDevices(true);
+        getDevices(false);
     }, []);
 
     useEffect(() => {
-        if (isIntersecting) {
-            updateDeviceListInView("yours");
-        } else {
-            updateDeviceListInView("ours");
-        }
+        updateDeviceListInView(isIntersecting ? "yours" : "ours");
     }, [isIntersecting]);
 
-    const getImage = async (deviceId: string) => {
-        try {
-            const image = await getFirebaseImage(
-                "gear_images",
-                `${deviceId}.png`
-            );
-            return image;
-        } catch (err) {
-            return null;
+    const getRequestOptions = (
+        isAllDevices: boolean,
+        customSkip: number | null
+    ): IRequestOptions => {
+        return {
+            skip: customSkip
+                ? customSkip
+                : skip[isAllDevices ? "allDevices" : "yourDevices"],
+            limit: isAllDevices ? allDevicesLimit : yourDevicesLimit,
+            filters: isAllDevices ? allDevicesfilters : yourDevicesfilters,
+            andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
+            orderBy: isAllDevices ? allDevicesOrderBy : yourDevicesOrderBy,
+        };
+    };
+
+    const getDevices = async (isAllDevices: boolean) => {
+        const requestBody = getRequestOptions(isAllDevices, null);
+        const devices = (await fetchDevices(requestBody)) as IDevice[];
+        if (devices) {
+            if (isAllDevices) {
+                setAllDevices(devices);
+            } else {
+                setYourDevices(devices);
+            }
         }
+    };
+
+    const getMoreDevices = async (skip: number, isAllDevices: boolean) => {
+        const requestBody = getRequestOptions(isAllDevices, skip);
+        const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
+        if (moreDevices) {
+            if (isAllDevices) {
+                setAllDevices((devices) => [...devices, ...moreDevices]);
+            } else {
+                setYourDevices((devices) => [...devices, ...moreDevices]);
+            }
+        }
+        setMoreLoading(false);
     };
 
     const scroll = (toLeft: boolean) => {
@@ -102,6 +205,31 @@ const Devices = ({}: Props) => {
                 behavior: "smooth",
                 left: toLeft ? 600 : -600,
             });
+        }
+    };
+
+    const handleVerticalScroll = (
+        e: React.UIEvent<HTMLDivElement, UIEvent>,
+        isAllDevices: boolean
+    ) => {
+        const target = e.target as HTMLDivElement;
+
+        if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+            setMoreLoading(true);
+
+            const deviceListKey = isAllDevices ? "allDevices" : "yourDevices";
+
+            getMoreDevices(
+                skip[deviceListKey] +
+                    (isAllDevices ? allDevicesLimit : yourDevicesLimit),
+                isAllDevices
+            );
+            setSkip((skip) => ({
+                ...skip,
+                [deviceListKey]:
+                    skip[deviceListKey] +
+                    (isAllDevices ? allDevicesLimit : yourDevicesLimit),
+            }));
         }
     };
 
@@ -126,18 +254,20 @@ const Devices = ({}: Props) => {
                 className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
                 <DeviceList
+                    onScroll={(e) => handleVerticalScroll(e, false)}
                     onScrollClick={() => scroll(true)}
                     elementRef={yourDevicesRef}
-                    devices={devices}
+                    devices={yourDevices}
                     pageTitle="Your devices"
                     iconType="right"
                     sortBy={YDevSortBy}
                     filterKeys={YDevFilterKeys}
                 />
                 <DeviceList
+                    onScroll={(e) => handleVerticalScroll(e, true)}
                     onScrollClick={() => scroll(false)}
                     elementRef={ourDevicesRef}
-                    devices={devices}
+                    devices={allDevices}
                     pageTitle="Our devices"
                     iconType="left"
                     sortBy={ODevSortBy}
