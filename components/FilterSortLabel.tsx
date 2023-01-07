@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { IOrderBy } from "../bff/types";
 import { filters, sortButtons } from "../consts";
+import { shallowEqual } from "../utils";
 
 interface Props {
-    sortBy: string;
+    sortBy: IOrderBy[];
     filterKeys: string[];
 }
 
@@ -31,10 +33,10 @@ const FilterSortLabel = ({ sortBy, filterKeys }: Props) => {
         setParsedFilterKeys(filtersss);
     };
 
-    const getSortTitle = (sortKey: string) => {
+    const getSortTitle = (sortKey: IOrderBy) => {
         let sort = "";
         sortButtons.forEach((button) => {
-            if (button.sortKey === sortKey) {
+            if (shallowEqual(button.sortKey[0], sortKey[0])) {
                 sort = button.label;
             }
         });

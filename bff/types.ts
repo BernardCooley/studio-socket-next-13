@@ -5,7 +5,7 @@ export interface ISelect {
 }
 
 export interface IOrderBy {
-    [key: string]: "asc" | "desc";
+    [key: string]: any;
 }
 
 export interface IFetchDevicesBody {

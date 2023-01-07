@@ -1,8 +1,9 @@
 import React from "react";
+import { IOrderBy } from "../bff/types";
 import Icons from "../icons";
 
 interface Props {
-    sortBy: string;
+    sortBy: IOrderBy;
     onSortClick: () => void;
     filterKeys: string[];
     onFilterClick: () => void;

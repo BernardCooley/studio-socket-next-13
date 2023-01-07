@@ -13,18 +13,17 @@ import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../icons";
 import routes from "../../../routes";
 import { fetchDevices, IRequestOptions } from "../../../bff/requests";
-import { IOrderBy } from "../../../bff/types";
 import { useFormContext } from "../../../contexts/FormContext";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
     const {
-        sortBy: YDevSortBy,
+        sortBy: yourDevicesSortBy,
         filterModalShowing,
-        filterKeys: YDevFilterKeys,
+        filterKeys: yourDevicesFilterKeys,
     } = useYDevFilterContext();
-    const { sortBy: ODevSortBy, filterKeys: ODevFilterKeys } =
+    const { sortBy: allDevicesSortBy, filterKeys: allDevicesFilterKeys } =
         useODevFilterContext();
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
@@ -44,38 +43,29 @@ const Devices = ({}: Props) => {
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const { addFormMessages, updateIcon } = useFormContext();
 
-    // TODO: use context to set request options
-    const allDevicesLimit = 10;
-    const yourDevicesLimit = 20;
-    const allDevicesfilters = [
+    const [allDevicesLimit, setAllDevicesLimit] = useState<number>(10);
+    const [yourDevicesLimit, setYourDevicesLimit] = useState<number>(10);
+    const [allDevicesfilters, setAllDevicesFilters] = useState([
         { countryOfManufacturer: "Germany" },
         {
             formFactor: {
                 name: "Keyboard",
             },
         },
-    ];
+    ]);
     // TODO: update to only get user's devices when auth is sorted
-    const yourDevicesfilters = [
+    const [yourDevicesfilters, setYourDevicesFilters] = useState([
         { countryOfManufacturer: "Germany" },
         {
             formFactor: {
                 name: "Desktop",
             },
         },
-    ];
-    const allDevicesAndOr = "OR";
-    const yourDevicesAndOr = "AND";
-    const allDevicesOrderBy = [
-        {
-            title: "desc",
-        },
-    ] as IOrderBy[];
-    const yourDevicesOrderBy = [
-        {
-            title: "asc",
-        },
-    ] as IOrderBy[];
+    ]);
+    const [allDevicesAndOr, setAllDevicesAndOr] = useState<"OR" | "AND">("OR");
+    const [yourDevicesAndOr, setYourDevicesAndOr] = useState<"OR" | "AND">(
+        "AND"
+    );
 
     useEffect(() => {
         if (allDevices.length > 0) {
@@ -153,7 +143,7 @@ const Devices = ({}: Props) => {
     useEffect(() => {
         getDevices(true);
         getDevices(false);
-    }, []);
+    }, [allDevicesSortBy, yourDevicesSortBy]);
 
     useEffect(() => {
         updateDeviceListInView(isIntersecting ? "yours" : "ours");
@@ -170,7 +160,7 @@ const Devices = ({}: Props) => {
             limit: isAllDevices ? allDevicesLimit : yourDevicesLimit,
             filters: isAllDevices ? allDevicesfilters : yourDevicesfilters,
             andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
-            orderBy: isAllDevices ? allDevicesOrderBy : yourDevicesOrderBy,
+            orderBy: isAllDevices ? allDevicesSortBy : yourDevicesSortBy,
         };
     };
 
@@ -260,8 +250,8 @@ const Devices = ({}: Props) => {
                     devices={yourDevices}
                     pageTitle="Your devices"
                     iconType="right"
-                    sortBy={YDevSortBy}
-                    filterKeys={YDevFilterKeys}
+                    sortBy={yourDevicesSortBy}
+                    filterKeys={yourDevicesFilterKeys}
                 />
                 <DeviceList
                     onScroll={(e) => handleVerticalScroll(e, true)}
@@ -270,8 +260,8 @@ const Devices = ({}: Props) => {
                     devices={allDevices}
                     pageTitle="Our devices"
                     iconType="left"
-                    sortBy={ODevSortBy}
-                    filterKeys={ODevFilterKeys}
+                    sortBy={allDevicesSortBy}
+                    filterKeys={allDevicesFilterKeys}
                 />
             </div>
         </div>

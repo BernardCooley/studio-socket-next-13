@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { IOrderBy } from "../bff/types";
 import { useSearchContext } from "../contexts/SearchContext";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import Icons from "../icons";
@@ -15,7 +16,7 @@ interface Props {
     devices: IDevice[];
     pageTitle: string;
     iconType: "left" | "right";
-    sortBy: string;
+    sortBy: IOrderBy[];
     filterKeys: string[];
     onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
 }
@@ -56,8 +57,8 @@ const DeviceList = ({
                     iconType === "right" ? "left" : "right"
                 }-16`}
                 iconType="search"
-                onClick={openSearch}
                 fontSize="92px"
+                onClick={openSearch}
             />
             <PageTitle title={pageTitle} />
             <div>

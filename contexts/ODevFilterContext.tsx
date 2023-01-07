@@ -1,12 +1,13 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
+import { IOrderBy } from "../bff/types";
 
 interface ODevFilterContextProps {
     filterModalShowing: boolean;
     showFilter: (type: "sort" | "filter") => void;
     hideFilter: () => void;
     sortOrFilter: "sort" | "filter";
-    sortBy: string;
-    updateSortBy: (value: string) => void;
+    sortBy: IOrderBy[];
+    updateSortBy: (value: IOrderBy[]) => void;
     filterKeys: string[];
     clearFilterKeys: () => void;
     updateFilterKeys: (keys: string[]) => void;
@@ -19,7 +20,11 @@ export const ODevFilterContext = createContext<ODevFilterContextProps>({
     showFilter: () => {},
     hideFilter: () => {},
     sortOrFilter: "sort",
-    sortBy: "",
+    sortBy: [
+        {
+            title: "asc",
+        },
+    ],
     updateSortBy: () => {},
     filterKeys: [],
     clearFilterKeys: () => {},
@@ -37,7 +42,11 @@ export const ODevFilterContextProvider = ({
 }) => {
     const [filterModalShowing, setShowFilterModal] = useState<boolean>(false);
     const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
-    const [sortBy, setSortBy] = useState<string>("");
+    const [sortBy, setSortBy] = useState<IOrderBy[]>([
+        {
+            title: "asc",
+        },
+    ]);
     const [filterKeys, setFilterKeys] = useState<string[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
 
@@ -50,7 +59,7 @@ export const ODevFilterContextProvider = ({
         setShowFilterModal(false);
     };
 
-    const updateSortBy = (value: string) => {
+    const updateSortBy = (value: IOrderBy[]) => {
         setSortBy(value);
     };
 
