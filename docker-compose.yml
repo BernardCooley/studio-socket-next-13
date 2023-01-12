@@ -4,7 +4,7 @@ services:
         image: postgres:latest
         restart: always
         environment:
-            - POSTGRED_USER=postgres
+            - POSTGRES_USER=Bernard.Cooley
             - POSTGRES_PASSWORD=postgres
         volumes:
             - postgres:/var/lib/postgresql/data
