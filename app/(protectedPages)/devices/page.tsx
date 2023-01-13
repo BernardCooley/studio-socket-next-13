@@ -75,7 +75,7 @@ const Devices = ({}: Props) => {
                     const image: IFirebaseImage | null =
                         await fetchFirebaseImage(
                             "gear_images",
-                            device.deviceId
+                            `${device.deviceId}.png`
                         );
                     if (image) {
                         device.image = image;
@@ -97,7 +97,7 @@ const Devices = ({}: Props) => {
                     const image: IFirebaseImage | null =
                         await fetchFirebaseImage(
                             "gear_images",
-                            device.deviceId
+                            `${device.deviceId}.png`
                         );
                     if (image) {
                         device.image = image;
@@ -203,8 +203,12 @@ const Devices = ({}: Props) => {
         isAllDevices: boolean
     ) => {
         const target = e.target as HTMLDivElement;
+        const scrollPosition = target.scrollHeight - target.scrollTop;
 
-        if (target.scrollHeight - target.scrollTop === target.clientHeight) {
+        if (
+            scrollPosition <= target.clientHeight &&
+            scrollPosition >= target.clientHeight - 700
+        ) {
             setMoreLoading(true);
 
             const deviceListKey = isAllDevices ? "allDevices" : "yourDevices";

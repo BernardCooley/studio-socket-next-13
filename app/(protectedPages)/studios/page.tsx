@@ -71,7 +71,10 @@ const Studios = ({}: Props) => {
     const fetchUserStudioImages = async () => {
         if (userStudios.length > 0) {
             userStudios.forEach(async (studio) => {
-                const image = await fetchFirebaseImage("studios", studio.id);
+                const image = await fetchFirebaseImage(
+                    "studios",
+                    `${studio.id}.png`
+                );
                 if (image) {
                     studio.image = image;
                 }

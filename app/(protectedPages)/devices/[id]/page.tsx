@@ -51,7 +51,7 @@ const Device = ({ params }: Props) => {
             (async () => {
                 const image = await fetchFirebaseImage(
                     "gear_images",
-                    device.id
+                    `${device.id}.png`
                 );
                 setDeviceImage(image);
             })();
