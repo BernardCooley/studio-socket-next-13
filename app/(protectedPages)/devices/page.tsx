@@ -2,8 +2,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { fetchFirebaseImage } from "../../../firebase/functions";
-import { FormMessageTypes, IDevice, IFirebaseImage } from "../../../types";
+import { FormMessageTypes, IDevice } from "../../../types";
 import { useYDevFilterContext } from "../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../contexts/ODevFilterContext";
 import { useNavContext } from "../../../contexts/NavContext";
@@ -12,7 +11,11 @@ import { useSearchContext } from "../../../contexts/SearchContext";
 import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../icons";
 import routes from "../../../routes";
-import { fetchDevices, IRequestOptions } from "../../../bff/requests";
+import {
+    fetchDevices,
+    getDeviceImage,
+    IRequestOptions,
+} from "../../../bff/requests";
 import { useFormContext } from "../../../contexts/FormContext";
 
 interface Props {}
@@ -68,51 +71,6 @@ const Devices = ({}: Props) => {
     );
 
     useEffect(() => {
-        if (allDevices.length > 0) {
-            console.log(allDevices.length);
-            allDevices.forEach(async (device) => {
-                if (!device.image) {
-                    const image: IFirebaseImage | null =
-                        await fetchFirebaseImage(
-                            "gear_images",
-                            `${device.deviceId}.png`
-                        );
-                    if (image) {
-                        device.image = image;
-                    } else {
-                        device.image = {
-                            name: "",
-                            url: "",
-                        };
-                    }
-                }
-            });
-        }
-    }, [allDevices]);
-
-    useEffect(() => {
-        if (yourDevices.length > 0) {
-            yourDevices.forEach(async (device) => {
-                if (!device.image) {
-                    const image: IFirebaseImage | null =
-                        await fetchFirebaseImage(
-                            "gear_images",
-                            `${device.deviceId}.png`
-                        );
-                    if (image) {
-                        device.image = image;
-                    } else {
-                        device.image = {
-                            name: "",
-                            url: "",
-                        };
-                    }
-                }
-            });
-        }
-    }, [yourDevices]);
-
-    useEffect(() => {
         onLoadingChange(moreLoading);
     }, [moreLoading]);
 
@@ -164,15 +122,33 @@ const Devices = ({}: Props) => {
         };
     };
 
+    const getDeviceImages = async (
+        devices: IDevice[]
+    ): Promise<Promise<IDevice>[]> => {
+        return devices.map(async (device) => {
+            if (!device.image) {
+                const img = await getDeviceImage(
+                    "gear_images",
+                    device.deviceId,
+                    "png"
+                );
+                return { ...device, image: img } as IDevice;
+            }
+            return device;
+        });
+    };
+
     const getDevices = async (isAllDevices: boolean) => {
         const requestBody = getRequestOptions(isAllDevices, null);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
-            if (isAllDevices) {
-                setAllDevices(devices);
-            } else {
-                setYourDevices(devices);
-            }
+            Promise.all(await getDeviceImages(devices)).then((devs) => {
+                if (isAllDevices) {
+                    setAllDevices(devs);
+                } else {
+                    setYourDevices(devs);
+                }
+            });
         }
     };
 
@@ -180,11 +156,13 @@ const Devices = ({}: Props) => {
         const requestBody = getRequestOptions(isAllDevices, skip);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
-            if (isAllDevices) {
-                setAllDevices((devices) => [...devices, ...moreDevices]);
-            } else {
-                setYourDevices((devices) => [...devices, ...moreDevices]);
-            }
+            Promise.all(await getDeviceImages(moreDevices)).then((devs) => {
+                if (isAllDevices) {
+                    setAllDevices((devices) => [...devices, ...devs]);
+                } else {
+                    setYourDevices((devices) => [...devices, ...devs]);
+                }
+            });
         }
         setMoreLoading(false);
     };

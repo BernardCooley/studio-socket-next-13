@@ -1183,7 +1183,7 @@ export interface IDevice {
     deviceId: string;
     countryOfManufacturer: string;
     datesProduced: string;
-    formFactor: { name: string }[];
+    formFactor: { name: string };
     manufacturers: { name: string }[];
     deviceTypes: { name: string }[];
     users: { id: string }[];
@@ -1193,4 +1193,5 @@ export interface IDevice {
         devices: { id: string };
     };
     image?: IFirebaseImage;
+    signalPath: { name: string };
 }

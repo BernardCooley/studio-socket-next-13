@@ -30,7 +30,9 @@ const ImageWithFallback = ({
     const [errorOverlay, setErrorOverlay] = useState<string>("");
 
     useEffect(() => {
-        setSrc(image?.url);
+        if (image) {
+            setSrc(image.url);
+        }
     }, [image]);
 
     useEffect(() => {

@@ -94,45 +94,78 @@ export const filters = [
 
 export const sortButtons = [
     {
-        label: "Date Added: asc",
-        sortKey: "dateAddedAsc",
+        label: "Title: asc",
+        sortKey: [
+            {
+                title: "asc",
+            },
+        ],
     },
     {
-        label: "Date Added: desc",
-        sortKey: "dateAddedDesc",
+        label: "Title: desc",
+        sortKey: [
+            {
+                title: "desc",
+            },
+        ],
     },
-    {
-        label: "Year Released: asc",
-        sortKey: "yearReleasedAsc",
-    },
-    {
-        label: "Year Released: desc",
-        sortKey: "yearReleasedDesc",
-    },
-    {
-        label: "Manufacturer: asc",
-        sortKey: "manufacturerAsc",
-    },
-    {
-        label: "Manufacturer: desc",
-        sortKey: "manufacturerDesc",
-    },
-    {
-        label: "Most used: asc",
-        sortKey: "mostUsedAsc",
-    },
-    {
-        label: "Most used: desc",
-        sortKey: "mostUsedDesc",
-    },
-    {
-        label: "Device type: asc",
-        sortKey: "deviceTypeAsc",
-    },
-    {
-        label: "Device type: desc",
-        sortKey: "deviceTypeDesc",
-    },
+    // TODO: Manufacturer is a relation, so we need to sort by the relation's title
+    // {
+    //     label: "Manufacturer: asc",
+    //     sortKey: [
+    //         {
+    //             manufacturer: "asc",
+    //         },
+    //     ],
+    // },
+    // {
+    //     label: "Manufacturer: desc",
+    //     sortKey: [
+    //         {
+    //             manufacturer: "desc",
+    //         },
+    //     ],
+    // },
+    // {
+    //     label: "Date Added: asc",
+    //     sortKey: "dateAddedAsc",
+    // },
+    // {
+    //     label: "Date Added: desc",
+    //     sortKey: "dateAddedDesc",
+    // },
+    // {
+    //     label: "Year Released: asc",
+    //     sortKey: "yearReleasedAsc",
+    // },
+    // {
+    //     label: "Year Released: desc",
+    //     sortKey: "yearReleasedDesc",
+    // },
+    // {
+    //     label: "Manufacturer: asc",
+    //     sortKey: "manufacturerAsc",
+    // },
+    // {
+    //     label: "Manufacturer: desc",
+    //     sortKey: "manufacturerDesc",
+    // },
+    // {
+    //     label: "Most used: asc",
+    //     sortKey: "mostUsedAsc",
+    // },
+    // {
+    //     label: "Most used: desc",
+    //     sortKey: "mostUsedDesc",
+    // },
+    // {
+    //     label: "Device type: asc",
+    //     sortKey: "deviceTypeAsc",
+    // },
+    // {
+    //     label: "Device type: desc",
+    //     sortKey: "deviceTypeDesc",
+    // },
 ];
 
 export const deviceTypes = [

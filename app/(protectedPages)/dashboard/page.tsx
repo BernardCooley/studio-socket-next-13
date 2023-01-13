@@ -1,35 +1,34 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { fetchDevices } from "../../../bff/requests";
 import DeviceItem from "../../../components/DeviceItem";
 import PageSection from "../../../components/PageSection";
 import PageTitle from "../../../components/PageTitle";
 import { useNavContext } from "../../../contexts/NavContext";
-import { devicesRef } from "../../../firebase/firebaseRefs";
-import { getFirebaseData } from "../../../firebase/functions";
 import routes from "../../../routes";
-import { userDevicesTest } from "../../../testData/testData";
+import { IDevice } from "../../../types";
 
 interface Props {}
 
 const Dashboard = ({}: Props) => {
-    const { environment, navOpen } = useNavContext();
-    const router = useRouter();
+    const { navOpen } = useNavContext();
     const [devices, setDevices] = useState<any[]>([]);
 
     useEffect(() => {
-        fetchDevices();
+        getDevices();
     }, []);
 
-    const fetchDevices = async () => {
-        if (environment === "prod") {
-            const devices = await getFirebaseData(devicesRef, 20);
-            if (devices) {
-                setDevices(devices);
-            }
-        } else {
-            setDevices(userDevicesTest);
+    const getDevices = async () => {
+        const devices = (await fetchDevices({
+            skip: 0,
+            limit: 20,
+            filters: [],
+            andOr: "",
+            orderBy: [],
+        })) as IDevice[];
+        if (devices) {
+            setDevices(devices);
         }
     };
 

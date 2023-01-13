@@ -1,26 +1,20 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
-import {
-    getDocumentsWhere,
-    getFirebaseData,
-    fetchFirebaseImage,
-} from "../../../firebase/functions";
+import { getFirebaseData } from "../../../firebase/functions";
 import { Studio } from "../../../types";
 import { studiosRef } from "../../../firebase/firebaseRefs";
 import routes from "../../../routes";
 import { testStudios } from "../../../testData/testData";
 import Icons from "../../../icons";
-import { useRouter } from "next/navigation";
 import StudioList from "../../../components/StudioList";
 import { useNavContext } from "../../../contexts/NavContext";
 
 interface Props {}
 
 const Studios = ({}: Props) => {
-    // TODO: test when db is back up
-    const router = useRouter();
     const { environment, navOpen } = useNavContext();
     const { data: user } = useSession();
     const [allStudios, setAllStudios] = useState<Studio[]>([]);
@@ -31,32 +25,6 @@ const Studios = ({}: Props) => {
         fetchStudios();
     }, []);
 
-    useEffect(() => {
-        fetchUserStudioImages();
-    }, [userStudios]);
-
-    useEffect(() => {
-        fetchUserStudios();
-    }, [user]);
-
-    const fetchUserStudios = async () => {
-        if (environment === "prod") {
-            if (user?.user) {
-                const studios = await getDocumentsWhere(
-                    studiosRef,
-                    "userId",
-                    "==",
-                    user.user.id
-                );
-                if (studios) {
-                    setUserStudios(studios as Studio[]);
-                }
-            }
-        } else {
-            setUserStudios(testStudios);
-        }
-    };
-
     const fetchStudios = async () => {
         if (environment === "prod") {
             const studios = await getFirebaseData(studiosRef, 20);
@@ -65,20 +33,6 @@ const Studios = ({}: Props) => {
             }
         } else {
             setAllStudios(testStudios);
-        }
-    };
-
-    const fetchUserStudioImages = async () => {
-        if (userStudios.length > 0) {
-            userStudios.forEach(async (studio) => {
-                const image = await fetchFirebaseImage(
-                    "studios",
-                    `${studio.id}.png`
-                );
-                if (image) {
-                    studio.image = image;
-                }
-            });
         }
     };
 

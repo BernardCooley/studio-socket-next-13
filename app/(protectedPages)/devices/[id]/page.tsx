@@ -8,13 +8,13 @@ import CustomButton from "../../../../components/CustomButton";
 import DetailItem from "../../../../components/DetailItem";
 import ImageWithFallback from "../../../../components/ImageWithFallback";
 import { useFormContext } from "../../../../contexts/FormContext";
-import { devicesRef } from "../../../../firebase/firebaseRefs";
+import { getUserData } from "../../../../firebase/functions";
 import {
-    getDocumentsWhere,
-    fetchFirebaseImage,
-    getUserData,
-} from "../../../../firebase/functions";
-import { FormMessageTypes, IFirebaseImage, UserData } from "../../../../types";
+    FormMessageTypes,
+    IDevice,
+    IFirebaseImage,
+    UserData,
+} from "../../../../types";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../../../firebase/clientApp";
@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 import routes from "../../../../routes";
 import Connections from "../../../../components/Connections";
 import { useNavContext } from "../../../../contexts/NavContext";
+import { fetchDeviceById, getDeviceImage } from "../../../../bff/requests";
 
 interface Props {
     params: { id: number };
@@ -40,7 +41,7 @@ const Device = ({ params }: Props) => {
     } = useFormContext();
     const router = useRouter();
     const [deviceImage, setDeviceImage] = useState<IFirebaseImage | null>(null);
-    const [device, setDevice] = useState<any | null>(null);
+    const [device, setDevice] = useState<IDevice | null>(null);
 
     useEffect(() => {
         getDevice();
@@ -49,24 +50,19 @@ const Device = ({ params }: Props) => {
     useEffect(() => {
         if (device) {
             (async () => {
-                const image = await fetchFirebaseImage(
+                const image = (await getDeviceImage(
                     "gear_images",
-                    `${device.id}.png`
-                );
+                    device.deviceId,
+                    "png"
+                )) as IFirebaseImage;
                 setDeviceImage(image);
             })();
         }
     }, [device]);
 
     const getDevice = async () => {
-        const device = await getDocumentsWhere(
-            devicesRef,
-            "id",
-            "==",
-            Number(params.id),
-            true
-        );
-        setDevice(device);
+        const dev = (await fetchDeviceById(params.id.toString())) as IDevice;
+        setDevice(dev);
     };
 
     const setErrorMessage = () => {
@@ -81,7 +77,7 @@ const Device = ({ params }: Props) => {
     };
 
     const addDevice = async (userData: UserData | null, userId: string) => {
-        if (userData) {
+        if (userData && device) {
             await updateDoc(doc(db, "users", userId), {
                 devices: userData.devices
                     ? [...userData.devices, device.id]
@@ -115,7 +111,7 @@ const Device = ({ params }: Props) => {
                     doc(db, "users", user.user.id)
                 );
 
-                if (userData && userData.devices) {
+                if (userData && userData.devices && device) {
                     if (userData.devices.includes(device.id)) {
                         addFormMessages(
                             new Set([
@@ -169,9 +165,12 @@ const Device = ({ params }: Props) => {
                 <>
                     <div className="w-full">
                         <div className="text-2xl mb-4">
-                            {device.manufacturers.join(", ")}
+                            {device.manufacturers &&
+                                device.manufacturers
+                                    .map((manufacturer) => manufacturer.name)
+                                    .join(", ")}
                         </div>
-                        <div className="text-4xl">{device.title}</div>
+                        <div className="text-4xl">{device.title || ""}</div>
                         <div className="w-full relative aspect-video m-auto my-4">
                             <ImageWithFallback
                                 fit="contain"
@@ -186,27 +185,33 @@ const Device = ({ params }: Props) => {
                         </div>
                         <DetailItem
                             title="Type"
-                            subtitle={device.deviceTypes.join(", ")}
+                            subtitle={
+                                device.deviceTypes &&
+                                device.deviceTypes
+                                    .map((deviceType) => deviceType.name)
+                                    .join(", ")
+                            }
                         />
                         <DetailItem
                             title="Form factor"
-                            subtitle={device.form_factor}
+                            subtitle={device.formFactor?.name}
                         />
                         <DetailItem
                             title="Signal path"
-                            subtitle={device.signal_path}
+                            subtitle={device.signalPath?.name}
                         />
                         <DetailItem
                             title="Year"
-                            subtitle={device.dates_produced}
+                            subtitle={device.datesProduced || ""}
                         />
                         <DetailItem
                             title="Country"
-                            subtitle={device.country_of_manufacture}
+                            subtitle={device.countryOfManufacturer || ""}
                         />
-                        {device.connections && (
+                        {/* TODO: */}
+                        {/* {device.connections && (
                             <Connections connections={device.connections} />
-                        )}
+                        )} */}
                     </div>
                     <CustomButton
                         label="Add to your devices"

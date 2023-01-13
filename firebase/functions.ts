@@ -10,10 +10,9 @@ import {
     Query,
     doc,
 } from "firebase/firestore";
-import { getDownloadURL, getStorage, listAll, ref } from "firebase/storage";
 import { Session } from "next-auth";
+import { getDeviceImage } from "../bff/requests";
 import { IFirebaseImage, UserData } from "../types";
-import { trimFileExtension } from "../utils";
 import { db } from "./clientApp";
 
 export const getDocumentsWhere = async (
@@ -49,47 +48,6 @@ export const getUserData = async (docRef: any): Promise<UserData | null> => {
         console.log(`Error getting docs`);
     }
     return null;
-};
-
-export const fetchFirebaseImage = async (
-    folder: string,
-    filename: string
-): Promise<IFirebaseImage | null> => {
-    const storage = getStorage();
-
-    const pathReference = ref(storage, `${folder}/${filename}`);
-
-    try {
-        const url = await getDownloadURL(pathReference);
-        return { url, name: filename };
-    } catch (err) {}
-
-    return null;
-};
-
-export const getFirebaseImages = async (
-    folder: string
-): Promise<IFirebaseImage[] | undefined> => {
-    const storage = getStorage();
-    const pathReference = ref(storage, `${folder}`);
-
-    try {
-        const imageRefs = await listAll(pathReference);
-        return await Promise.all(
-            imageRefs.items.map(async (imageRef) => {
-                const url = await getDownloadURL(imageRef);
-                const name = trimFileExtension(imageRef.name);
-
-                return {
-                    name,
-                    url,
-                };
-            })
-        );
-    } catch (e) {
-        console.log(e);
-    }
-    return undefined;
 };
 
 export const getFirebaseData = async (
@@ -144,10 +102,11 @@ export const fetchUserData = async (
         if (userData) {
             userData.email = user?.user.email || "";
 
-            const image = await fetchFirebaseImage(
+            const image = (await getDeviceImage(
                 "users/avatars",
-                `${user?.user.id}`
-            );
+                user?.user.id,
+                "png"
+            )) as IFirebaseImage;
 
             if (image) {
                 userData.imageUrl = image.url;

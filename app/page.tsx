@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { fetchFirebaseImage } from "../firebase/functions";
 import ImageWithFallback from "../components/ImageWithFallback";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { IFirebaseImage } from "../types";
 import routes from "../routes";
+import { getDeviceImage } from "../bff/requests";
 
 const listItems = [
     "Create a collection of your devices",
@@ -31,14 +31,22 @@ const Landing = ({}: Props) => {
 
     const getLogo = async () => {
         try {
-            const logo = await fetchFirebaseImage("brand", "logo.png");
+            const logo = (await getDeviceImage(
+                "brand",
+                "logo",
+                "png"
+            )) as IFirebaseImage;
             setLogo(logo);
         } catch (err) {}
     };
 
     const getTableImage = async () => {
         try {
-            const tableImage = await fetchFirebaseImage("brand", "table.png");
+            const tableImage = (await getDeviceImage(
+                "brand",
+                "table",
+                "png"
+            )) as IFirebaseImage;
             setTableImage(tableImage);
         } catch (err) {}
     };

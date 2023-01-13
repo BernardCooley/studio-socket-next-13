@@ -6,7 +6,7 @@ export interface IRequestOptions {
     skip: number;
     limit: number | null;
     filters: any;
-    andOr: "AND" | "OR";
+    andOr: "AND" | "OR" | "";
     orderBy: IOrderBy[] | null;
 }
 
@@ -27,4 +27,20 @@ export const fetchDevices = async ({
         "POST",
         buildQuery(body, limit, filters, andOr, orderBy)
     );
+};
+
+export const fetchDeviceById = async (id: string) => {
+    return fetchWithErrorHandling(`/api/getDeviceById`, "POST", { id: id });
+};
+
+export const getDeviceImage = async (
+    folder: string,
+    id: string,
+    extension: string
+) => {
+    return fetchWithErrorHandling(`/api/getDeviceImage`, "POST", {
+        id,
+        folder,
+        extension,
+    });
 };

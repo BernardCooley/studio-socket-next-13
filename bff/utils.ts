@@ -58,7 +58,7 @@ export const buildQuery = (
     body: IFetchDevicesBody,
     limit: number | null = null,
     filters: any = null,
-    andOr: "AND" | "OR" = "OR",
+    andOr: "AND" | "OR" | "" = "OR",
     orderBy: IOrderBy[] | null = null
 ) => {
     if (limit) {
