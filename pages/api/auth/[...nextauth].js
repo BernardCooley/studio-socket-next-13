@@ -1,10 +1,6 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {
-    sendEmailVerification,
-    signInWithEmailAndPassword,
-} from "firebase/auth";
-import { auth } from "../../../firebase/clientApp";
+import { supabase } from "../../../supabase/supabaseClient";
 
 export default NextAuth({
     providers: [
@@ -14,29 +10,22 @@ export default NextAuth({
             async authorize(credentials) {
                 const { email, password } = credentials;
 
-                const signInPromise = new Promise((resolve, reject) => {
-                    signInWithEmailAndPassword(auth, email, password)
-                        .then((userCredential) => {
-                            resolve(userCredential.user);
-                        })
-                        .catch((error) => {
-                            reject(error);
-                        });
+                let { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password,
                 });
 
-                const res = await signInPromise;
-
-                if (res.email && res.uid && res.emailVerified) {
-                    return {
-                        email: res.email,
-                        id: res.uid,
+                if (data) {
+                    const user = {
+                        email: data.user.email,
+                        id: data.user.id,
                     };
-                }
-                if (!res.emailVerified) {
-                    await sendEmailVerification(auth.currentUser);
+                    return user;
                 }
 
-                return null;
+                if (error) {
+                    return null;
+                }
             },
         }),
     ],
@@ -45,10 +34,22 @@ export default NextAuth({
         error: "/signin",
     },
     secret: process.env.JWT_SECRET,
+    session: {
+        strategy: "jwt",
+        maxAge: 3000,
+    },
     callbacks: {
-        async session({ session, token }) {
+        async jwt({ token, account, user }) {
+            if (account) {
+                token.accessToken = account.access_token;
+                token.id = user.id;
+            }
+            return token;
+        },
+        async session({ session, token, user }) {
             session.accessToken = token.accessToken;
-            session.user.id = token.sub;
+            session.user.id = token.id;
+
             return session;
         },
     },

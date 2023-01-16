@@ -30,6 +30,7 @@ interface Props {}
 
 const Account = ({}: Props) => {
     const { data: user } = useSession();
+    // TODO: Take user data and auth from supabase instead of firebase
     const [userData, setUserData] = useState<UserData>({
         username: "",
         devices: [],
