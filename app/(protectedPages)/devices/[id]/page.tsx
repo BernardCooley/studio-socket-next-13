@@ -8,7 +8,7 @@ import CustomButton from "../../../../components/CustomButton";
 import DetailItem from "../../../../components/DetailItem";
 import ImageWithFallback from "../../../../components/ImageWithFallback";
 import { useFormContext } from "../../../../contexts/FormContext";
-import { getUserData } from "../../../../firebase/functions";
+import { getFirebaseImage, getUserData } from "../../../../firebase/functions";
 import {
     FormMessageTypes,
     IDevice,
@@ -22,7 +22,7 @@ import { useSession } from "next-auth/react";
 import routes from "../../../../routes";
 import Connections from "../../../../components/Connections";
 import { useNavContext } from "../../../../contexts/NavContext";
-import { fetchDeviceById, getDeviceImage } from "../../../../bff/requests";
+import { fetchDeviceById } from "../../../../bff/requests";
 
 interface Props {
     params: { id: number };
@@ -50,7 +50,7 @@ const Device = ({ params }: Props) => {
     useEffect(() => {
         if (device) {
             (async () => {
-                const image = (await getDeviceImage(
+                const image = (await getFirebaseImage(
                     "gear_images",
                     device.deviceId,
                     "png"

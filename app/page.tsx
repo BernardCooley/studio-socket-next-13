@@ -6,7 +6,7 @@ import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { IFirebaseImage } from "../types";
 import routes from "../routes";
-import { getDeviceImage } from "../bff/requests";
+import { getFirebaseImage } from "../firebase/functions";
 
 const listItems = [
     "Create a collection of your devices",
@@ -31,7 +31,7 @@ const Landing = ({}: Props) => {
 
     const getLogo = async () => {
         try {
-            const logo = (await getDeviceImage(
+            const logo = (await getFirebaseImage(
                 "brand",
                 "logo",
                 "png"
@@ -42,7 +42,7 @@ const Landing = ({}: Props) => {
 
     const getTableImage = async () => {
         try {
-            const tableImage = (await getDeviceImage(
+            const tableImage = (await getFirebaseImage(
                 "brand",
                 "table",
                 "png"

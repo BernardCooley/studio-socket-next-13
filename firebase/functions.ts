@@ -10,8 +10,8 @@ import {
     Query,
     doc,
 } from "firebase/firestore";
+import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { Session } from "next-auth";
-import { getDeviceImage } from "../bff/requests";
 import { IFirebaseImage, UserData } from "../types";
 import { db } from "./clientApp";
 
@@ -102,7 +102,7 @@ export const fetchUserData = async (
         if (userData) {
             userData.email = user?.user.email || "";
 
-            const image = (await getDeviceImage(
+            const image = (await getFirebaseImage(
                 "users/avatars",
                 user?.user.id,
                 "png"
@@ -119,4 +119,22 @@ export const fetchUserData = async (
     }
 
     return null;
+};
+
+export const getFirebaseImage = async (
+    folder: string,
+    id: string,
+    extension: string
+) => {
+    const storage = getStorage();
+
+    const pathReference = ref(storage, `${folder}/${id}.${extension}`);
+
+    try {
+        const url = await getDownloadURL(pathReference);
+        return {
+            url,
+            name: `${id}.${extension}`,
+        };
+    } catch (err) {}
 };

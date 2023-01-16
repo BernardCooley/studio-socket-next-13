@@ -32,15 +32,3 @@ export const fetchDevices = async ({
 export const fetchDeviceById = async (id: string) => {
     return fetchWithErrorHandling(`/api/getDeviceById`, "POST", { id: id });
 };
-
-export const getDeviceImage = async (
-    folder: string,
-    id: string,
-    extension: string
-) => {
-    return fetchWithErrorHandling(`/api/getDeviceImage`, "POST", {
-        id,
-        folder,
-        extension,
-    });
-};

@@ -11,12 +11,9 @@ import { useSearchContext } from "../../../contexts/SearchContext";
 import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../icons";
 import routes from "../../../routes";
-import {
-    fetchDevices,
-    getDeviceImage,
-    IRequestOptions,
-} from "../../../bff/requests";
+import { fetchDevices, IRequestOptions } from "../../../bff/requests";
 import { useFormContext } from "../../../contexts/FormContext";
+import { getFirebaseImage } from "../../../firebase/functions";
 
 interface Props {}
 
@@ -127,7 +124,7 @@ const Devices = ({}: Props) => {
     ): Promise<Promise<IDevice>[]> => {
         return devices.map(async (device) => {
             if (!device.image) {
-                const img = await getDeviceImage(
+                const img = await getFirebaseImage(
                     "gear_images",
                     device.deviceId,
                     "png"
