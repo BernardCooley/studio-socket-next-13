@@ -1,6 +1,6 @@
 import React from "react";
-import PageTitle from "../../../components/PageTitle";
-import { useNavContext } from "../../../contexts/NavContext";
+import PageTitle from "../../../../components/PageTitle";
+import { useNavContext } from "../../../../contexts/NavContext";
 
 interface Props {}
 

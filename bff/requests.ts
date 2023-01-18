@@ -32,3 +32,19 @@ export const fetchDevices = async ({
 export const fetchDeviceById = async (id: string) => {
     return fetchWithErrorHandling(`/api/getDeviceById`, "POST", { id: id });
 };
+
+export const updateUserProfile = async (
+    userId: string,
+    updateData: { [key: string]: string }
+) => {
+    return fetchWithErrorHandling("./api/auth/updateUserProfile", "POST", {
+        userId: userId,
+        updateData: updateData,
+    });
+};
+
+export const getUserProfile = async (userId: string) => {
+    return fetchWithErrorHandling(`./api/auth/getUserProfile`, "POST", {
+        userId,
+    });
+};

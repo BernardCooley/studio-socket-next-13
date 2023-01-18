@@ -32,15 +32,17 @@ export const handleFetchErrors = (response: Response) => {
 };
 
 export const fetchWithErrorHandling = async <T>(
-    input: RequestInfo,
-    method: "GET" | "POST" | "PUT" | "DELETE",
-    body: any
+    endpoint: RequestInfo,
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+    body?: any,
+    authentication: string = ""
 ) => {
     try {
-        const res = await fetch(input, {
+        const res = await fetch(endpoint, {
             method: method,
             headers: {
                 "Content-Type": "application/json",
+                authorization: authentication,
             },
             body: JSON.stringify(body),
         });

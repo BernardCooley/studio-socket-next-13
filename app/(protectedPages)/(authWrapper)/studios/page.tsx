@@ -3,14 +3,14 @@
 
 import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
-import { getFirebaseData } from "../../../firebase/functions";
-import { Studio } from "../../../types";
-import { studiosRef } from "../../../firebase/firebaseRefs";
-import routes from "../../../routes";
-import { testStudios } from "../../../testData/testData";
-import Icons from "../../../icons";
-import StudioList from "../../../components/StudioList";
-import { useNavContext } from "../../../contexts/NavContext";
+import { getFirebaseData } from "../../../../firebase/functions";
+import { Studio } from "../../../../types";
+import { studiosRef } from "../../../../firebase/firebaseRefs";
+import routes from "../../../../routes";
+import { testStudios } from "../../../../testData/testData";
+import Icons from "../../../../icons";
+import StudioList from "../../../../components/StudioList";
+import { useNavContext } from "../../../../contexts/NavContext";
 
 interface Props {}
 

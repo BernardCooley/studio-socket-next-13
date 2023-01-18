@@ -3,26 +3,29 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import BackButton from "../../../../components/BackButton";
-import CustomButton from "../../../../components/CustomButton";
-import DetailItem from "../../../../components/DetailItem";
-import ImageWithFallback from "../../../../components/ImageWithFallback";
-import { useFormContext } from "../../../../contexts/FormContext";
-import { getFirebaseImage, getUserData } from "../../../../firebase/functions";
+import BackButton from "../../../../../components/BackButton";
+import CustomButton from "../../../../../components/CustomButton";
+import DetailItem from "../../../../../components/DetailItem";
+import ImageWithFallback from "../../../../../components/ImageWithFallback";
+import { useFormContext } from "../../../../../contexts/FormContext";
+import {
+    getFirebaseImage,
+    getUserData,
+} from "../../../../../firebase/functions";
 import {
     FormMessageTypes,
     IDevice,
     IFirebaseImage,
     UserData,
-} from "../../../../types";
+} from "../../../../../types";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
 import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../../firebase/clientApp";
+import { db } from "../../../../../firebase/clientApp";
 import { useSession } from "next-auth/react";
-import routes from "../../../../routes";
-import Connections from "../../../../components/Connections";
-import { useNavContext } from "../../../../contexts/NavContext";
-import { fetchDeviceById } from "../../../../bff/requests";
+import routes from "../../../../../routes";
+import Connections from "../../../../../components/Connections";
+import { useNavContext } from "../../../../../contexts/NavContext";
+import { fetchDeviceById } from "../../../../../bff/requests";
 
 interface Props {
     params: { id: number };

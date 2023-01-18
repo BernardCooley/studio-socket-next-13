@@ -4,18 +4,18 @@ import { addDoc, collection } from "firebase/firestore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
-import BackButton from "../../../../components/BackButton";
-import CustomButton from "../../../../components/CustomButton";
-import CustomTextInput from "../../../../components/CustomTextInput";
-import PageTitle from "../../../../components/PageTitle";
-import { useFormContext } from "../../../../contexts/FormContext";
-import { useNavContext } from "../../../../contexts/NavContext";
-import { db } from "../../../../firebase/clientApp";
-import { getFormMessages, StudioSchema } from "../../../../formValidation";
-import Icons from "../../../../icons";
-import routes from "../../../../routes";
-import { FormMessageTypes, NewStudio } from "../../../../types";
-import { getErrorMessages } from "../../../../utils";
+import BackButton from "../../../../../components/BackButton";
+import CustomButton from "../../../../../components/CustomButton";
+import CustomTextInput from "../../../../../components/CustomTextInput";
+import PageTitle from "../../../../../components/PageTitle";
+import { useFormContext } from "../../../../../contexts/FormContext";
+import { useNavContext } from "../../../../../contexts/NavContext";
+import { db } from "../../../../../firebase/clientApp";
+import { getFormMessages, StudioSchema } from "../../../../../formValidation";
+import Icons from "../../../../../icons";
+import routes from "../../../../../routes";
+import { FormMessageTypes, NewStudio } from "../../../../../types";
+import { getErrorMessages } from "../../../../../utils";
 
 interface Props {}
 

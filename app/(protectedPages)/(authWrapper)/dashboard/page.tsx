@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { fetchDevices } from "../../../bff/requests";
-import DeviceItem from "../../../components/DeviceItem";
-import PageSection from "../../../components/PageSection";
-import PageTitle from "../../../components/PageTitle";
-import { useNavContext } from "../../../contexts/NavContext";
-import routes from "../../../routes";
-import { IDevice } from "../../../types";
+import { fetchDevices } from "../../../../bff/requests";
+import DeviceItem from "../../../../components/DeviceItem";
+import PageSection from "../../../../components/PageSection";
+import PageTitle from "../../../../components/PageTitle";
+import { useNavContext } from "../../../../contexts/NavContext";
+import routes from "../../../../routes";
+import { IDevice } from "../../../../types";
 
 interface Props {}
 

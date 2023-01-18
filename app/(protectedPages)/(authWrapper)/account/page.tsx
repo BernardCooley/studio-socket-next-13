@@ -1,40 +1,36 @@
 "use client";
 
-import { signOut, useSession } from "next-auth/react";
-import React, { useEffect, useRef, useState } from "react";
-import Avatar from "../../../components/Avatar";
-import PageTitle from "../../../components/PageTitle";
-import { FormMessageTypes, UserData } from "../../../types";
-import Icons from "../../../icons";
-import { db, auth } from "../../../firebase/clientApp";
-import EditableDetailItem from "../../../components/EditableDetailItem";
+import { signOut } from "next-auth/react";
+import React, { useRef, useState } from "react";
+import Avatar from "../../../../components/Avatar";
+import PageTitle from "../../../../components/PageTitle";
+import { FormMessageTypes } from "../../../../types";
+import Icons from "../../../../icons";
+import { db, auth } from "../../../../firebase/clientApp";
+import EditableDetailItem from "../../../../components/EditableDetailItem";
 import {
     UpdateEmailSchema,
     UpdateUsernameSchema,
-} from "../../../formValidation";
-import { useFormContext } from "../../../contexts/FormContext";
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { getErrorMessages } from "../../../utils";
+} from "../../../../formValidation";
+import { useFormContext } from "../../../../contexts/FormContext";
+import { deleteDoc, doc } from "firebase/firestore";
+import { getErrorMessages } from "../../../../utils";
 import {
     deleteUser,
     sendEmailVerification,
     sendPasswordResetEmail,
     updateEmail,
 } from "firebase/auth";
-import DetailItem from "../../../components/DetailItem";
-import { fetchUserData } from "../../../firebase/functions";
-import CustomButton from "../../../components/CustomButton";
-import { useNavContext } from "../../../contexts/NavContext";
+import DetailItem from "../../../../components/DetailItem";
+import CustomButton from "../../../../components/CustomButton";
+import { useNavContext } from "../../../../contexts/NavContext";
+import { useAuthContext } from "../../../../contexts/AuthContext";
+import { updateUserProfile } from "../../../../bff/requests";
 
 interface Props {}
 
 const Account = ({}: Props) => {
-    const { data: user } = useSession();
-    // TODO: Take user data and auth from supabase instead of firebase
-    const [userData, setUserData] = useState<UserData>({
-        username: "",
-        devices: [],
-    });
+    const { user, updateUser } = useAuthContext();
     const [editing, setEditing] = useState<string>("");
     const { addFormMessages, updateIcon, updateDialogButtons } =
         useFormContext();
@@ -59,33 +55,19 @@ const Account = ({}: Props) => {
     const editableDetailItems = [
         {
             title: "Username",
-            subtitle: userData.username,
+            subtitle: user?.username,
             name: "username",
-            defaultValue: userData.username,
+            defaultValue: user?.username,
             ref: usernameRef,
         },
         {
             title: "Email",
-            subtitle: userData.email,
+            subtitle: user?.email,
             name: "email",
-            defaultValue: userData.email,
+            defaultValue: user?.email,
             ref: emailRef,
         },
     ];
-
-    useEffect(() => {
-        setErrors([]);
-        if (user?.user && db) {
-            getUserData();
-        }
-    }, [user, db, auth]);
-
-    const getUserData = async () => {
-        if (user) {
-            const data = await fetchUserData(user);
-            setUserData(data as UserData);
-        }
-    };
 
     const editIcon = (type: string) => {
         switch (type) {
@@ -194,10 +176,6 @@ const Account = ({}: Props) => {
                             setEditing("");
                         }, 5000);
                     } catch (err: any) {
-                        console.log(
-                            "🚀 ~ file: page.tsx:189 ~ passwordReset ~ error",
-                            err
-                        );
                         const errorCode = err.code;
                         const errorMessage = err.message;
                     }
@@ -227,11 +205,15 @@ const Account = ({}: Props) => {
                     "Updating username",
                     "accountCreated",
                     async () => {
-                        const userRef = doc(db, "users", user?.user.id);
-
-                        await updateDoc(userRef, {
-                            username: usernameRef?.current?.value,
-                        });
+                        if (usernameRef?.current?.value && user?.user_id) {
+                            const newUserData = await updateUserProfile(
+                                user.user_id,
+                                {
+                                    username: usernameRef.current.value,
+                                }
+                            );
+                            updateUser(newUserData);
+                        }
                     },
                     "Username updated"
                 );
@@ -330,10 +312,6 @@ const Account = ({}: Props) => {
                             signOut({ callbackUrl: "/" });
                         }, 5000);
                     } catch (err: any) {
-                        console.log(
-                            "🚀 ~ file: page.tsx:189 ~ passwordReset ~ error",
-                            err
-                        );
                         const errorCode = err.code;
                         const errorMessage = err.message;
                     }
@@ -365,10 +343,10 @@ const Account = ({}: Props) => {
                 fontSize="84px"
             />
             <div className="aspect-square w-full flex justify-center px-8">
-                {userData?.imageUrl && (
+                {user?.image && (
                     <div className="w-full mt-8">
                         <Avatar
-                            image={userData.imageUrl || ""}
+                            image={user?.image || ""}
                             icon={
                                 <Icons
                                     iconType="edit"
@@ -380,7 +358,7 @@ const Account = ({}: Props) => {
                     </div>
                 )}
             </div>
-            {userData && (
+            {user && (
                 <div className="w-full">
                     {editableDetailItems.map((item) => (
                         <EditableDetailItem

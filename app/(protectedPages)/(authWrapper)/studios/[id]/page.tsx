@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavContext } from "../../../../contexts/NavContext";
+import { useNavContext } from "../../../../../contexts/NavContext";
 
 interface Props {
     params: { id: number };

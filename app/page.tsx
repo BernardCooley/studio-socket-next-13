@@ -5,8 +5,8 @@ import ImageWithFallback from "../components/ImageWithFallback";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { IFirebaseImage } from "../types";
-import routes from "../routes";
 import { getFirebaseImage } from "../firebase/functions";
+import { signIn } from "next-auth/react";
 
 const listItems = [
     "Create a collection of your devices",
@@ -51,6 +51,12 @@ const Landing = ({}: Props) => {
         } catch (err) {}
     };
 
+    const login = async () => {
+        await signIn("auth0", {
+            callbackUrl: "/dashboard",
+        });
+    };
+
     return (
         <div className="Home bg-primary-light">
             <section className="text-primary-light flex flex-col items-center bg-modular bg-centered">
@@ -58,12 +64,7 @@ const Landing = ({}: Props) => {
                     <CustomButton
                         label="Sign in"
                         type="button"
-                        onClick={() => router.push(routes.signin().as)}
-                    />
-                    <CustomButton
-                        label="Register"
-                        type="button"
-                        onClick={() => router.push(routes.register().as)}
+                        onClick={login}
                     />
                 </div>
                 <div className="Logo w-full flex justify-center">

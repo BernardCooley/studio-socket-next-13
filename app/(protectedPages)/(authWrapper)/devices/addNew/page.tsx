@@ -2,32 +2,32 @@
 
 import { useRouter } from "next/navigation";
 import React, { useState, FormEvent, useRef } from "react";
-import AddConnectionSection from "../../../../components/AddConnectionSection";
-import BackButton from "../../../../components/BackButton";
-import CustomButton from "../../../../components/CustomButton";
-import CustomSelect from "../../../../components/CustomSelect";
-import CustomTextInput from "../../../../components/CustomTextInput";
-import PageTitle from "../../../../components/PageTitle";
-import { useFormContext } from "../../../../contexts/FormContext";
+import AddConnectionSection from "../../../../../components/AddConnectionSection";
+import BackButton from "../../../../../components/BackButton";
+import CustomButton from "../../../../../components/CustomButton";
+import CustomSelect from "../../../../../components/CustomSelect";
+import CustomTextInput from "../../../../../components/CustomTextInput";
+import PageTitle from "../../../../../components/PageTitle";
+import { useFormContext } from "../../../../../contexts/FormContext";
 import {
     AddDeviceSchema,
     ConnectionDescriptionSchema,
     ConnectionSchema,
     getFormMessages,
-} from "../../../../formValidation";
+} from "../../../../../formValidation";
 import {
     Connection,
     DeviceType,
     FormMessageTypes,
     NewDevice,
-} from "../../../../types";
-import { getErrorMessages, noop } from "../../../../utils";
-import Avatar from "../../../../components/Avatar";
-import Icons from "../../../../icons";
-import { useNavContext } from "../../../../contexts/NavContext";
+} from "../../../../../types";
+import { getErrorMessages, noop } from "../../../../../utils";
+import Avatar from "../../../../../components/Avatar";
+import Icons from "../../../../../icons";
+import { useNavContext } from "../../../../../contexts/NavContext";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../../../firebase/clientApp";
-import { connectionTypes, deviceTypes } from "../../../../consts";
+import { db } from "../../../../../firebase/clientApp";
+import { connectionTypes, deviceTypes } from "../../../../../consts";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 
 interface Props {}
