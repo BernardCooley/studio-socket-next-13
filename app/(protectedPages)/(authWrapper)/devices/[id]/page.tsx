@@ -8,10 +8,7 @@ import CustomButton from "../../../../../components/CustomButton";
 import DetailItem from "../../../../../components/DetailItem";
 import ImageWithFallback from "../../../../../components/ImageWithFallback";
 import { useFormContext } from "../../../../../contexts/FormContext";
-import {
-    getFirebaseImage,
-    getUserData,
-} from "../../../../../firebase/functions";
+import { getFirebaseImage } from "../../../../../firebase/functions";
 import {
     FormMessageTypes,
     IDevice,
@@ -19,9 +16,6 @@ import {
     UserData,
 } from "../../../../../types";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
-import { doc, updateDoc } from "firebase/firestore";
-import { db } from "../../../../../firebase/clientApp";
-import { useSession } from "next-auth/react";
 import routes from "../../../../../routes";
 import Connections from "../../../../../components/Connections";
 import { useNavContext } from "../../../../../contexts/NavContext";
@@ -33,7 +27,6 @@ interface Props {
 
 const Device = ({ params }: Props) => {
     const { navOpen } = useNavContext();
-    const { data: user } = useSession();
     const {
         addFormMessages,
         updateIcon,
@@ -80,79 +73,77 @@ const Device = ({ params }: Props) => {
     };
 
     const addDevice = async (userData: UserData | null, userId: string) => {
-        if (userData && device) {
-            await updateDoc(doc(db, "users", userId), {
-                devices: userData.devices
-                    ? [...userData.devices, device.id]
-                    : [device.id],
-            });
-
-            clearDialogButtons();
-
-            addFormMessages(
-                new Set([
-                    {
-                        message: "Device has been added to your devices",
-                        type: FormMessageTypes.INFO,
-                    },
-                ])
-            );
-            updateIcon(<LibraryAddCheckIcon />);
-
-            setTimeout(() => {
-                resetIcon();
-                clearFormMessages();
-                router.push(routes.devices().as);
-            }, 2000);
-        }
+        // TODO:
+        // if (userData && device) {
+        //     await updateDoc(doc(db, "users", userId), {
+        //         devices: userData.devices
+        //             ? [...userData.devices, device.id]
+        //             : [device.id],
+        //     });
+        //     clearDialogButtons();
+        //     addFormMessages(
+        //         new Set([
+        //             {
+        //                 message: "Device has been added to your devices",
+        //                 type: FormMessageTypes.INFO,
+        //             },
+        //         ])
+        //     );
+        //     updateIcon(<LibraryAddCheckIcon />);
+        //     setTimeout(() => {
+        //         resetIcon();
+        //         clearFormMessages();
+        //         router.push(routes.devices().as);
+        //     }, 2000);
+        // }
     };
 
     const handleClick = async () => {
-        if (user && user.user.id) {
-            try {
-                const userData: UserData | null = await getUserData(
-                    doc(db, "users", user.user.id)
-                );
-
-                if (userData && userData.devices && device) {
-                    if (userData.devices.includes(device.id)) {
-                        addFormMessages(
-                            new Set([
-                                {
-                                    message:
-                                        "Device is already in your devices. Add anyway?",
-                                    type: FormMessageTypes.INFO,
-                                },
-                            ])
-                        );
-                        updateDialogButtons([
-                            {
-                                text: "Yes",
-                                onClick: () =>
-                                    addDevice(userData, user.user.id),
-                                classes:
-                                    "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
-                            },
-                            {
-                                text: "No",
-                                onClick: () => clearFormMessages(),
-                                classes:
-                                    "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
-                            },
-                        ]);
-                        return;
-                    } else {
-                        addDevice(userData, user.user.id);
-                    }
-                } else {
-                    addDevice(userData, user.user.id);
-                }
-            } catch (error) {
-                setErrorMessage();
-            }
-        } else {
-            setErrorMessage();
-        }
+        // TODO:
+        // if (user && user.user.id) {
+        //     try {
+        //         const userData: UserData | null = await getUserData(
+        //             doc(db, "users", user.user.id)
+        //         );
+        //         if (userData && userData.devices && device) {
+        //             if (userData.devices.includes(device.id)) {
+        //                 addFormMessages(
+        //                     new Set([
+        //                         {
+        //                             message:
+        //                                 "Device is already in your devices. Add anyway?",
+        //                             type: FormMessageTypes.INFO,
+        //                         },
+        //                     ])
+        //                 );
+        //                 updateDialogButtons([
+        //                     {
+        //                         text: "Yes",
+        //                         onClick: () =>
+        //                             addDevice(userData, user.user.id),
+        //                         classes:
+        //                             "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+        //                     },
+        //                     {
+        //                         text: "No",
+        //                         onClick: () => clearFormMessages(),
+        //                         classes:
+        //                             "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+        //                     },
+        //                 ]);
+        //                 return;
+        //             } else {
+        //                 addDevice(userData, user.user.id);
+        //             }
+        //         } else {
+        //             addDevice(userData, user.user.id);
+        //         }
+        //     } catch (error) {
+        //         setErrorMessage();
+        //     }
+        // } else {
+        //     setErrorMessage();
+        // }
     };
 
     return (

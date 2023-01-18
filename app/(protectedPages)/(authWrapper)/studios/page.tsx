@@ -1,13 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { useSession } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
-import { getFirebaseData } from "../../../../firebase/functions";
 import { Studio } from "../../../../types";
-import { studiosRef } from "../../../../firebase/firebaseRefs";
 import routes from "../../../../routes";
-import { testStudios } from "../../../../testData/testData";
 import Icons from "../../../../icons";
 import StudioList from "../../../../components/StudioList";
 import { useNavContext } from "../../../../contexts/NavContext";
@@ -15,8 +11,7 @@ import { useNavContext } from "../../../../contexts/NavContext";
 interface Props {}
 
 const Studios = ({}: Props) => {
-    const { environment, navOpen } = useNavContext();
-    const { data: user } = useSession();
+    const { navOpen } = useNavContext();
     const [allStudios, setAllStudios] = useState<Studio[]>([]);
     const [userStudios, setUserStudios] = useState<Studio[]>([]);
     const scrollElement = useRef<HTMLDivElement>(null);
@@ -25,16 +20,7 @@ const Studios = ({}: Props) => {
         fetchStudios();
     }, []);
 
-    const fetchStudios = async () => {
-        if (environment === "prod") {
-            const studios = await getFirebaseData(studiosRef, 20);
-            if (studios) {
-                setAllStudios(studios as Studio[]);
-            }
-        } else {
-            setAllStudios(testStudios);
-        }
-    };
+    const fetchStudios = async () => {};
 
     const scroll = (toLeft: boolean) => {
         if (scrollElement.current) {

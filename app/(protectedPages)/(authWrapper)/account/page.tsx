@@ -6,21 +6,13 @@ import Avatar from "../../../../components/Avatar";
 import PageTitle from "../../../../components/PageTitle";
 import { FormMessageTypes } from "../../../../types";
 import Icons from "../../../../icons";
-import { db, auth } from "../../../../firebase/clientApp";
 import EditableDetailItem from "../../../../components/EditableDetailItem";
 import {
     UpdateEmailSchema,
     UpdateUsernameSchema,
 } from "../../../../formValidation";
 import { useFormContext } from "../../../../contexts/FormContext";
-import { deleteDoc, doc } from "firebase/firestore";
 import { getErrorMessages } from "../../../../utils";
-import {
-    deleteUser,
-    sendEmailVerification,
-    sendPasswordResetEmail,
-    updateEmail,
-} from "firebase/auth";
 import DetailItem from "../../../../components/DetailItem";
 import CustomButton from "../../../../components/CustomButton";
 import { useNavContext } from "../../../../contexts/NavContext";
@@ -42,7 +34,7 @@ const Account = ({}: Props) => {
     const editingIcons = [
         {
             iconType: "tick",
-            onClick: () => updateItem("username"),
+            onClick: () => updateItem(editing),
             fontSize: "82px",
         },
         {
@@ -156,17 +148,14 @@ const Account = ({}: Props) => {
                 text: "Yes",
                 onClick: async () => {
                     try {
-                        await sendPasswordResetEmail(
-                            auth,
-                            auth.currentUser?.email || ""
-                        );
+                        // TODO: await sendPasswordResetEmail(auth, user?.email);
 
                         updateDialogButtons([]);
 
                         addFormMessages(
                             new Set([
                                 {
-                                    message: `A password reset email has been sent to ${auth.currentUser?.email}. Please check your inbox and follow the instructions to reset your password.`,
+                                    message: `A password reset email has been sent to ${user?.email}. Please check your inbox and follow the instructions to reset your password.`,
                                     type: FormMessageTypes.INFO,
                                 },
                             ])
@@ -228,12 +217,14 @@ const Account = ({}: Props) => {
                     "Updating email",
                     "accountCreated",
                     async () => {
-                        if (auth.currentUser && emailRef?.current?.value) {
-                            await updateEmail(
-                                auth.currentUser,
-                                emailRef.current.value
+                        if (emailRef?.current?.value && user?.user_id) {
+                            const newUserData = await updateUserProfile(
+                                user.user_id,
+                                {
+                                    email: emailRef.current.value,
+                                }
                             );
-                            await sendEmailVerification(auth.currentUser);
+                            updateUser(newUserData);
 
                             addFormMessages(
                                 new Set([
@@ -279,7 +270,7 @@ const Account = ({}: Props) => {
                 text: "Yes",
                 onClick: async () => {
                     try {
-                        if (auth.currentUser) {
+                        if (user) {
                             addFormMessages(
                                 new Set([
                                     {
@@ -289,10 +280,7 @@ const Account = ({}: Props) => {
                                 ])
                             );
 
-                            await deleteDoc(
-                                doc(db, "users", auth.currentUser.uid)
-                            );
-                            await deleteUser(auth.currentUser);
+                            // TODO: Delete user data from database
                         }
 
                         updateDialogButtons([]);
@@ -343,10 +331,10 @@ const Account = ({}: Props) => {
                 fontSize="84px"
             />
             <div className="aspect-square w-full flex justify-center px-8">
-                {user?.image && (
+                {user?.picture && (
                     <div className="w-full mt-8">
                         <Avatar
-                            image={user?.image || ""}
+                            image={user.picture || ""}
                             icon={
                                 <Icons
                                     iconType="edit"

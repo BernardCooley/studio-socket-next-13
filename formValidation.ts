@@ -1,60 +1,24 @@
 import { z } from "zod";
 import { FormMessage, FormMessageTypes } from "./types";
 
-export const LoginFormSchema = z.object({
-    email: z.string().email(),
-    password: z
-        .string()
-        .min(8, { message: "Password must be 8 or more characters" }),
-});
-
-export const RegisterFormSchema = z
-    .object({
-        username: z
-            .string()
-            .min(3, { message: "Username must be 3 or more characters" }),
-        email: z.string().email(),
-        password: z
-            .string()
-            .min(8, { message: "Password must be 8 or more characters" }),
-        repeatPassword: z
-            .string()
-            .min(8, { message: "Password must be 8 or more characters" }),
-        avatar: z.union([
-            z.string().regex(/jpg|jpeg|png/, {
-                message: "Invalid file type (only jpg, jpeg and png allowed)",
-            }),
-            z.null(),
-        ]),
-    })
-    .superRefine(({ repeatPassword, password }, ctx) => {
-        if (repeatPassword !== password) {
-            ctx.addIssue({
-                code: "custom",
-                message: "The passwords did not match",
-                path: ["repeatPassword"],
-            });
-        }
-    });
-
 export const SearchSchema = z.object({
     search: z
         .string()
-        .min(3, { message: "Search term must be 3 or more characters" }),
+        .min(3, { message: "Search term must be 3 characters or more" }),
 });
 
 export const AddDeviceSchema = z.object({
-    title: z.string().min(3, { message: "Title must be 3 or more characters" }),
+    title: z.string().min(3, { message: "Title must be 3 characters or more" }),
     manufacturer: z
         .string()
-        .min(3, { message: "Manufacturermust be 3 or more characters" }),
+        .min(3, { message: "Manufacturermust be 3 characters or more" }),
     deviceType: z.string().min(1, { message: "Please select a device type" }),
 });
 
 export const ConnectionSchema = z.object({
     name: z
         .string()
-        .min(3, { message: "Connection name must be 3 or more characters" }),
+        .min(3, { message: "Connection name must be 3 characters or more" }),
     description: z
         .array(z.string())
         .min(1, { message: "Please add at least 1 description" }),
@@ -64,25 +28,27 @@ export const ConnectionSchema = z.object({
 export const ConnectionDescriptionSchema = z.object({
     description: z
         .string()
-        .min(3, { message: "Description name must be 3 or more characters" }),
+        .min(3, { message: "Description name must be 3 characters or more" }),
 });
 
 export const StudioSchema = z.object({
     title: z
         .string()
-        .min(3, { message: "Studio title must be 3 or more characters" }),
+        .min(3, { message: "Studio title must be 3 characters or more" }),
 });
 
 export const UpdateUsernameSchema = z.object({
     username: z
         .string()
-        .min(3, { message: "Username must be 3 or more characters" }),
+        .min(3, { message: "Username must be 3 characters or more" })
+        .max(25, { message: "Username must be 25 characters or less" }),
 });
 
 export const UpdateEmailSchema = z.object({
     email: z.string().email(),
 });
 
+// TODO: Update form messages to reflect auth0 error codes
 export const getFormMessages = (errorCode: any) => {
     const messages: Set<FormMessage> = new Set();
 
