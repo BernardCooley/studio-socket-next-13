@@ -19,7 +19,7 @@ const AuthWrapperLayout = ({ children }: Props) => {
     }, [data]);
 
     const getUser = async () => {
-        if (data) {
+        if (data?.user.id) {
             const usr = await getUserProfile(data.user.id);
             updateUser(usr);
         }
