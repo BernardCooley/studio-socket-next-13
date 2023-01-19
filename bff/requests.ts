@@ -48,3 +48,9 @@ export const getUserProfile = async (userId: string) => {
         userId,
     });
 };
+
+export const changePassword = async (email: string) => {
+    return fetchWithErrorHandling(`./api/auth/passwordReset`, "POST", {
+        email,
+    });
+};

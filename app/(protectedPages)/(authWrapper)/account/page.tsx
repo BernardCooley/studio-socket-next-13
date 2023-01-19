@@ -17,7 +17,7 @@ import DetailItem from "../../../../components/DetailItem";
 import CustomButton from "../../../../components/CustomButton";
 import { useNavContext } from "../../../../contexts/NavContext";
 import { useAuthContext } from "../../../../contexts/AuthContext";
-import { updateUserProfile } from "../../../../bff/requests";
+import { changePassword, updateUserProfile } from "../../../../bff/requests";
 
 interface Props {}
 
@@ -148,14 +148,18 @@ const Account = ({}: Props) => {
                 text: "Yes",
                 onClick: async () => {
                     try {
-                        // TODO: await sendPasswordResetEmail(auth, user?.email);
+                        const response = (await changePassword(
+                            user?.email
+                        )) as {
+                            message: string;
+                        };
 
                         updateDialogButtons([]);
 
                         addFormMessages(
                             new Set([
                                 {
-                                    message: `A password reset email has been sent to ${user?.email}. Please check your inbox and follow the instructions to reset your password.`,
+                                    message: response?.message,
                                     type: FormMessageTypes.INFO,
                                 },
                             ])
