@@ -17,7 +17,7 @@ const ProtectedLayout = ({ children }: Props) => {
     const { icon, formMessages } = useFormContext();
     return (
         <AllContexts>
-            <div className="relative h-screen">
+            <div className="relative h-full">
                 <FilterModal />
                 <SearchModal searchType={pathname?.replace("/", " ")} />
                 <FormDialog messages={formMessages} messageIcon={icon} />

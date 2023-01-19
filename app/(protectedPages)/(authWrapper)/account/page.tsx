@@ -395,7 +395,7 @@ const Account = ({}: Props) => {
 
     return (
         <div
-            className={`px-8 pt-16 flex flex-col items-center relative h-screen ${
+            className={`px-8 pt-16 flex flex-col items-center relative h-full ${
                 navOpen ? "disable" : ""
             }`}
         >

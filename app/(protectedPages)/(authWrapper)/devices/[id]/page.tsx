@@ -203,9 +203,9 @@ const Device = ({ params }: Props) => {
                             subtitle={device.countryOfManufacturer || ""}
                         />
                         {/* TODO: */}
-                        {/* {device.connections && (
+                        {device.connections && (
                             <Connections connections={device.connections} />
-                        )} */}
+                        )}
                     </div>
                     <CustomButton
                         label="Add to your devices"

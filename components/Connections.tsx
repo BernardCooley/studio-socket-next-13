@@ -1,5 +1,5 @@
+import { Connection } from "@prisma/client";
 import React from "react";
-import { Connection } from "../types";
 
 interface Props {
     connections: Connection[];
@@ -47,7 +47,7 @@ const Connections = ({
                                         {connection.name.toLowerCase()}
                                     </td>
                                     <td className="text-center border-primary">
-                                        {connection.connector}
+                                        {connection.connector.name}
                                     </td>
                                     <td className="text-center border-primary">
                                         {connection.description?.join(", ")}
