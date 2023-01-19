@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {
     ChangeEvent,
     forwardRef,
@@ -25,6 +26,7 @@ interface Props {
     hide?: boolean;
     resetValue?: boolean;
     fieldIcon?: React.ReactNode;
+    errorClassName?: string;
 }
 
 const CustomTextInput = forwardRef(
@@ -46,6 +48,7 @@ const CustomTextInput = forwardRef(
             hide,
             resetValue,
             fieldIcon,
+            errorClassName = "",
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -108,7 +111,7 @@ const CustomTextInput = forwardRef(
                         </label>
                     </div>
                 </div>
-                <div className="text-error">
+                <div className={`text-error ${errorClassName}`}>
                     {errorMessages.length > 0 &&
                         errorMessages.map((error) => (
                             <div key={JSON.stringify(error)}>{error}</div>

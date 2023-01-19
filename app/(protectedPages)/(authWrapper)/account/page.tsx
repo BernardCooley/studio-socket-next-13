@@ -1,13 +1,15 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Avatar from "../../../../components/Avatar";
 import PageTitle from "../../../../components/PageTitle";
 import { FormMessageTypes } from "../../../../types";
 import Icons from "../../../../icons";
 import EditableDetailItem from "../../../../components/EditableDetailItem";
 import {
+    UpdateAvatarSizeSchema,
+    UpdateAvatarTypeSchema,
     UpdateEmailSchema,
     UpdateUsernameSchema,
 } from "../../../../formValidation";
@@ -22,18 +24,36 @@ import {
     deleteUser,
     updateUserProfile,
 } from "../../../../bff/requests";
+import CustomTextInput from "../../../../components/CustomTextInput";
+import {
+    deleteFirebaseImage,
+    uploadFirebaseImage,
+} from "../../../../firebase/functions";
 
 interface Props {}
 
 const Account = ({}: Props) => {
     const { user, updateUser } = useAuthContext();
+    const [existingImageName, setExistingImageName] = useState<string>("");
     const [editing, setEditing] = useState<string>("");
-    const { addFormMessages, updateIcon, updateDialogButtons } =
-        useFormContext();
+    const {
+        file,
+        updateFile,
+        addFormMessages,
+        updateIcon,
+        updateDialogButtons,
+    } = useFormContext();
     const [errors, setErrors] = useState<string[]>([]);
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
+    const avatarRef = useRef<HTMLInputElement>(null);
     const { navOpen } = useNavContext();
+
+    useEffect(() => {
+        if (user) {
+            setExistingImageName(getImageNameFromUrl(user.picture));
+        }
+    }, [user]);
 
     const editingIcons = [
         {
@@ -65,20 +85,8 @@ const Account = ({}: Props) => {
         },
     ];
 
-    const editIcon = (type: string) => {
-        switch (type) {
-            case "username":
-                setEditing("username");
-                break;
-            case "email":
-                setEditing("email");
-                break;
-            case "password":
-                setEditing("password");
-                break;
-            default:
-                break;
-        }
+    const getImageNameFromUrl = (url: string) => {
+        return decodeURI(url.split("avatars%2F")[1].split("?alt")[0]);
     };
 
     const updateUserDetail = async (
@@ -90,8 +98,8 @@ const Account = ({}: Props) => {
         postFormMessage: string
     ) => {
         try {
-            validation();
             setErrors([]);
+            validation();
 
             addFormMessages(
                 new Set([
@@ -251,6 +259,69 @@ const Account = ({}: Props) => {
             case "password":
                 passwordReset();
                 break;
+            case "avatar":
+                updateUserDetail(
+                    "avatar",
+                    () => {
+                        if (
+                            avatarRef?.current?.value &&
+                            avatarRef.current?.files
+                        ) {
+                            UpdateAvatarTypeSchema.parse({
+                                avatar: avatarRef.current.value,
+                            });
+                            UpdateAvatarSizeSchema.parse({
+                                avatar: avatarRef.current?.files[0].size,
+                            });
+                        }
+                    },
+                    "Updating avatar",
+                    "accountCreated",
+                    async () => {
+                        if (
+                            avatarRef?.current?.value &&
+                            user?.user_id &&
+                            avatarRef.current?.files
+                        ) {
+                            try {
+                                const response = await uploadFirebaseImage(
+                                    "users/avatars",
+                                    avatarRef.current.files[0],
+                                    user.user_id
+                                );
+
+                                const newUserData = await updateUserProfile(
+                                    user.user_id,
+                                    {
+                                        picture: response,
+                                    }
+                                );
+                                updateUser(newUserData);
+
+                                if (
+                                    getImageNameFromUrl(response) !==
+                                    existingImageName
+                                ) {
+                                    await deleteFirebaseImage(
+                                        "users/avatars",
+                                        existingImageName
+                                    );
+                                }
+                            } catch (err: any) {
+                                addFormMessages(
+                                    new Set([
+                                        {
+                                            message: err.message,
+                                            type: FormMessageTypes.ERROR,
+                                        },
+                                    ])
+                                );
+                            }
+                        }
+                    },
+                    "Avatar updated"
+                );
+                break;
         }
     };
 
@@ -339,18 +410,62 @@ const Account = ({}: Props) => {
                 {user?.picture && (
                     <div className="w-full mt-8">
                         <Avatar
-                            image={user.picture || ""}
+                            image={file ? file : user.picture || ""}
                             icon={
                                 <Icons
                                     iconType="edit"
-                                    className="border-2 border-primary bg-primary-light rounded-full p-2 relative bottom-6"
+                                    className={`border-2 border-primary bg-primary-light rounded-full p-2 relative bottom-6 ${
+                                        editing === "avatar" ? "hidden" : ""
+                                    }`}
                                     fontSize="102px"
+                                    onClick={() => setEditing("avatar")}
                                 />
                             }
                         />
                     </div>
                 )}
             </div>
+            {editing === "avatar" && (
+                <div>
+                    <div className="flex items-center">
+                        <CustomTextInput
+                            type="file"
+                            id="avatar"
+                            label="Avatar (jpg, jpeg, png)"
+                            name="avatar"
+                            ref={avatarRef}
+                            errorMessages={errors}
+                            isFile={true}
+                            borderless={true}
+                            scaleLabel={false}
+                            className="flex items-start flex-col justify-center relative"
+                            errorClassName="absolute bottom-2"
+                        />
+                        <div className="flex">
+                            {file.length > 0 && (
+                                <div className="mx-1">
+                                    <Icons
+                                        iconType="tick"
+                                        onClick={() => updateItem(editing)}
+                                        fontSize="82px"
+                                    />
+                                </div>
+                            )}
+                            <div className="mx-1">
+                                <Icons
+                                    iconType="close"
+                                    onClick={() => {
+                                        setEditing("");
+                                        updateFile("");
+                                        setErrors([]);
+                                    }}
+                                    fontSize="82px"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
             {user && (
                 <div className="w-full">
                     {editableDetailItems.map((item) => (
@@ -362,7 +477,7 @@ const Account = ({}: Props) => {
                             iconNotEditing={
                                 <Icons
                                     iconType="edit"
-                                    onClick={() => editIcon(item.name)}
+                                    onClick={() => setEditing(item.name)}
                                     fontSize="72px"
                                 />
                             }

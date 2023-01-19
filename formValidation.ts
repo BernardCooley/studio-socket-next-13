@@ -48,6 +48,18 @@ export const UpdateUsernameSchema = z.object({
         }),
 });
 
+export const UpdateAvatarTypeSchema = z.object({
+    avatar: z.string().regex(/jpg|jpeg|png/, {
+        message: "Invalid file type (only jpg, jpeg and png allowed)",
+    }),
+});
+
+export const UpdateAvatarSizeSchema = z.object({
+    avatar: z.number().lte(1000000, {
+        message: "File size must be less than 1MB",
+    }),
+});
+
 export const UpdateEmailSchema = z.object({
     email: z.string().email(),
 });
