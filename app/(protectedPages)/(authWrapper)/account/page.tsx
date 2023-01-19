@@ -17,7 +17,11 @@ import DetailItem from "../../../../components/DetailItem";
 import CustomButton from "../../../../components/CustomButton";
 import { useNavContext } from "../../../../contexts/NavContext";
 import { useAuthContext } from "../../../../contexts/AuthContext";
-import { changePassword, updateUserProfile } from "../../../../bff/requests";
+import {
+    changePassword,
+    deleteUser,
+    updateUserProfile,
+} from "../../../../bff/requests";
 
 interface Props {}
 
@@ -284,7 +288,7 @@ const Account = ({}: Props) => {
                                 ])
                             );
 
-                            // TODO: Delete user data from database
+                            await deleteUser(user.email);
                         }
 
                         updateDialogButtons([]);
@@ -303,10 +307,7 @@ const Account = ({}: Props) => {
                             setEditing("");
                             signOut({ callbackUrl: "/" });
                         }, 5000);
-                    } catch (err: any) {
-                        const errorCode = err.code;
-                        const errorMessage = err.message;
-                    }
+                    } catch (err: any) {}
                 },
                 classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
             },

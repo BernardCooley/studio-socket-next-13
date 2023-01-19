@@ -16,7 +16,7 @@ export default async function handler(
     const body = {
         client_id: process.env.AUTH0_MACHINE_CLIENT_ID || "",
         email: req.body.email,
-        connection: process.env.AUTH0_DATABASE_CONNECTION || "",
+        connection: process.env.AUTH0_DATABASE_CONNECTION_NAME || "",
     };
 
     var options = {

@@ -54,3 +54,9 @@ export const changePassword = async (email: string) => {
         email,
     });
 };
+
+export const deleteUser = async (email: string) => {
+    return fetchWithErrorHandling(`./api/auth/deleteUser`, "DELETE", {
+        email,
+    });
+};
