@@ -41,7 +41,11 @@ export const UpdateUsernameSchema = z.object({
     username: z
         .string()
         .min(3, { message: "Username must be 3 characters or more" })
-        .max(25, { message: "Username must be 25 characters or less" }),
+        .max(25, { message: "Username must be 25 characters or less" })
+        .regex(/^[a-zA-Z0-9]+$/, {
+            message:
+                "Username must be alphanumeric and not contain any spaces or special characters",
+        }),
 });
 
 export const UpdateEmailSchema = z.object({
