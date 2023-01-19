@@ -25,14 +25,16 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                         </div>
                         <div className="text-2xl">{device.title}</div>
                     </div>
-                    <div className="relative w-full aspect-square mt-2">
-                        <ImageWithFallback
-                            fit="cover"
-                            title={device.title}
-                            fallbackImage="/assets/images/image_not_found.png"
-                            image={device.image}
-                        />
-                    </div>
+                    {device.image && (
+                        <div className="relative w-full aspect-square mt-2">
+                            <ImageWithFallback
+                                fit="cover"
+                                title={device.title}
+                                fallbackImage="/assets/images/image_not_found.png"
+                                image={device.image}
+                            />
+                        </div>
+                    )}
                 </div>
             )}
         </Link>
