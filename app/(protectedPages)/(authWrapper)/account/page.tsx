@@ -440,6 +440,7 @@ const Account = ({}: Props) => {
                             scaleLabel={false}
                             className="flex items-start flex-col justify-center relative"
                             errorClassName="absolute bottom-2"
+                            onClick={() => setErrors([])}
                         />
                         <div className="flex">
                             {file.length > 0 && (

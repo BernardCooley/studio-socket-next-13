@@ -27,6 +27,7 @@ interface Props {
     resetValue?: boolean;
     fieldIcon?: React.ReactNode;
     errorClassName?: string;
+    onClick?: () => void;
 }
 
 const CustomTextInput = forwardRef(
@@ -49,6 +50,7 @@ const CustomTextInput = forwardRef(
             resetValue,
             fieldIcon,
             errorClassName = "",
+            onClick,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -59,8 +61,9 @@ const CustomTextInput = forwardRef(
                     const image = await imageToBase65(e.target.files[0]);
                     updateFile(image as string);
                 }
+            } else {
+                setValue(e.target.value);
             }
-            setValue(e.target.value);
         };
 
         const [value, setValue] = useState(defaultValue);
@@ -97,6 +100,7 @@ const CustomTextInput = forwardRef(
                             onChange={handleChange}
                             onBlur={onBlur}
                             ref={ref}
+                            onClick={onClick}
                         />
                         {fieldIcon}
                         <label
