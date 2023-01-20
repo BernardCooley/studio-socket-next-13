@@ -94,6 +94,7 @@ export const filters = [
 ];
 
 export const sortButtons = [
+    // TODO: may not be sorting title correctly
     {
         label: "Title: asc",
         sortKey: [
