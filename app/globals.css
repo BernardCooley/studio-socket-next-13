@@ -117,7 +117,7 @@ input:-webkit-autofill:active {
 }
 
 .deviceList {
-    @apply grid gap-4 grid-cols-2 relative m-4;
+    @apply grid gap-4 grid-cols-1 relative m-4;
 }
 
 .buttonSmall {

@@ -43,8 +43,8 @@ const Devices = ({}: Props) => {
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const { addFormMessages, updateIcon } = useFormContext();
 
-    const [allDevicesLimit, setAllDevicesLimit] = useState<number>(10);
-    const [yourDevicesLimit, setYourDevicesLimit] = useState<number>(10);
+    const [allDevicesLimit, setAllDevicesLimit] = useState<number>(50);
+    const [yourDevicesLimit, setYourDevicesLimit] = useState<number>(50);
     const [allDevicesfilters, setAllDevicesFilters] = useState([
         { countryOfManufacturer: "Germany" },
         {

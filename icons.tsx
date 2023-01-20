@@ -25,6 +25,84 @@ import DoneIcon from "@mui/icons-material/Done";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PasswordIcon from "@mui/icons-material/Password";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
+import Image from "next/image";
+
+const deviceIcons = {
+    Turntable: "/assets/icons/devices/turntable.png",
+    Speaker: "/assets/icons/devices/speaker.png",
+    "DJ Mixer": "/assets/icons/devices/dj_mixer.png",
+    Headphones: "/assets/icons/devices/headphones.png",
+    Sequencer: "/assets/icons/devices/sequencer.png",
+    Sampler: "/assets/icons/devices/sampler.png",
+    Synthesizer: "/assets/icons/devices/synthesizer.png",
+    "Signal Distribution": "/assets/icons/devices/signal_distribution.png",
+    Effect: "/assets/icons/devices/effect.png",
+    EQ: "/assets/icons/devices/eq.png",
+    Accessory: "/assets/icons/devices/accessory.png",
+    "Amplifier, Pre": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Power": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Integrated": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Phono": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Headphone": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Guitar": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Microphone": "/assets/icons/devices/amplifier.png",
+    "Amplifier, Bass": "/assets/icons/devices/amplifier.png",
+    "Drum Machine": "/assets/icons/devices/drum_machine.png",
+    "Enclosure / Casing": "/assets/icons/devices/case.png",
+    "Mixing Desk": "/assets/icons/devices/mixing_desk.png",
+    Dynamics: "/assets/icons/devices/dynamics.png",
+    CD: "/assets/icons/devices/cd.png",
+    "Audio Interface": "/assets/icons/devices/audio_interface.png",
+    "Instrument Tuner": "/assets/icons/devices/tuner.png",
+    "Turntable Cartridge": "/assets/icons/devices/turntable_accessory.png",
+    "Turntable Stylus": "/assets/icons/devices/turntable_accessory.png",
+    "Turntable Tonearm": "/assets/icons/devices/turntable_accessory.png",
+    "Turntable Accessory": "/assets/icons/devices/turntable_accessory.png",
+    "Turntable Spare Part": "/assets/icons/devices/turntable_accessory.png",
+    "Digital Recorder": "/assets/icons/devices/recorder.png",
+    "Power Supply": "/assets/icons/devices/power_supply.png",
+    "Control Surface": "/assets/icons/devices/control_surface.png",
+    "Media Player": "/assets/icons/devices/media_player.png",
+    "Cassette Deck": "/assets/icons/devices/cassette_deck.png",
+    "Tape Machine": "/assets/icons/devices/tape_machine.png",
+    Cable: "/assets/icons/devices/cable.png",
+    "Radio Receiver": "/assets/icons/devices/radio_receiver.png",
+    Minidisc: "/assets/icons/devices/minidisc.png",
+    Microphone: "/assets/icons/devices/microphone.png",
+    Receiver: "/assets/icons/devices/receiver.png",
+    "Synchronizer / Clock Generator":
+        "/assets/icons/devices/clock_generator.png",
+    Crossover: "/assets/icons/devices/crossover.png",
+    "Radio Tuner": "/assets/icons/devices/radio_tuner.png",
+    "Media & Data Storage": "/assets/icons/devices/storage.png",
+    "8-track deck": "/assets/icons/devices/8_track_deck.png",
+    "Digital-to-Analog Converter (DAC)": "/assets/icons/devices/converter.png",
+    "Analog-to-Digital Converter (ADC)": "/assets/icons/devices/converter.png",
+};
+
+export const DeviceIcon = ({
+    name,
+    className = "",
+}: {
+    name: string;
+    className?: string;
+}) => {
+    return (
+        <div className={className}>
+            <Image
+                src={
+                    deviceIcons[name as keyof typeof deviceIcons] ||
+                    "/assets/icons/devices/devices_default.png"
+                }
+                alt=""
+                fill
+                style={{
+                    objectFit: "contain",
+                }}
+            />
+        </div>
+    );
+};
 
 interface Props {
     iconType: string;

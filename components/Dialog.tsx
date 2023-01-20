@@ -10,7 +10,7 @@ interface Props {
     messageIcon: React.ReactNode;
 }
 
-const FormDialog = ({ messages, messageIcon }: Props) => {
+const Dialog = ({ messages, messageIcon }: Props) => {
     const dialogRef = useRef(null);
     const {
         clearFormMessages,
@@ -91,4 +91,4 @@ const FormDialog = ({ messages, messageIcon }: Props) => {
     );
 };
 
-export default FormDialog;
+export default Dialog;

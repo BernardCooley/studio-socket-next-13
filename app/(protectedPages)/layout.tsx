@@ -1,7 +1,7 @@
 "use client";
 
 import FilterModal from "../../components/FilterModal";
-import FormDialog from "../../components/FormDialog";
+import Dialog from "../../components/Dialog";
 import Navigation from "../../components/Navigation";
 import { useFormContext } from "../../contexts/FormContext";
 import AllContexts from "../../contexts/AllContexts";
@@ -20,7 +20,7 @@ const ProtectedLayout = ({ children }: Props) => {
             <div className="relative h-full min-h-screen">
                 <FilterModal />
                 <SearchModal searchType={pathname?.replace("/", " ")} />
-                <FormDialog messages={formMessages} messageIcon={icon} />
+                <Dialog messages={formMessages} messageIcon={icon} />
                 <Navigation />
                 {children}
             </div>
