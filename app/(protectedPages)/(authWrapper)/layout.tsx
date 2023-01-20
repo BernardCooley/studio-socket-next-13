@@ -25,7 +25,7 @@ const AuthWrapperLayout = ({ children }: Props) => {
         }
     };
 
-    return <div className="relative h-full">{children}</div>;
+    return <div className="relative h-full  min-h-screen">{children}</div>;
 };
 
 export default AuthWrapperLayout;
