@@ -1,3 +1,4 @@
+// TODO: Get filter tyles from API
 export const filters = [
     {
         title: "Device type",
@@ -109,63 +110,38 @@ export const sortButtons = [
             },
         ],
     },
-    // TODO: Manufacturer is a relation, so we need to sort by the relation's title
-    // {
-    //     label: "Manufacturer: asc",
-    //     sortKey: [
-    //         {
-    //             manufacturer: "asc",
-    //         },
-    //     ],
-    // },
-    // {
-    //     label: "Manufacturer: desc",
-    //     sortKey: [
-    //         {
-    //             manufacturer: "desc",
-    //         },
-    //     ],
-    // },
-    // {
-    //     label: "Date Added: asc",
-    //     sortKey: "dateAddedAsc",
-    // },
-    // {
-    //     label: "Date Added: desc",
-    //     sortKey: "dateAddedDesc",
-    // },
-    // {
-    //     label: "Year Released: asc",
-    //     sortKey: "yearReleasedAsc",
-    // },
-    // {
-    //     label: "Year Released: desc",
-    //     sortKey: "yearReleasedDesc",
-    // },
-    // {
-    //     label: "Manufacturer: asc",
-    //     sortKey: "manufacturerAsc",
-    // },
-    // {
-    //     label: "Manufacturer: desc",
-    //     sortKey: "manufacturerDesc",
-    // },
-    // {
-    //     label: "Most used: asc",
-    //     sortKey: "mostUsedAsc",
-    // },
-    // {
-    //     label: "Most used: desc",
-    //     sortKey: "mostUsedDesc",
-    // },
-    // {
-    //     label: "Device type: asc",
-    //     sortKey: "deviceTypeAsc",
-    // },
-    // {
-    //     label: "Device type: desc",
-    //     sortKey: "deviceTypeDesc",
-    // },
+    {
+        label: "Dates produced: asc",
+        sortKey: [
+            {
+                datesProduced: "asc",
+            },
+        ],
+    },
+    {
+        label: "Dates produced: desc",
+        sortKey: [
+            {
+                datesProduced: "desc",
+            },
+        ],
+    },
+    {
+        label: "Country: asc",
+        sortKey: [
+            {
+                countryOfManufacturer: "asc",
+            },
+        ],
+    },
+    {
+        label: "Country: desc",
+        sortKey: [
+            {
+                countryOfManufacturer: "desc",
+            },
+        ],
+    },
 ];
 
 export const deviceTypes = [

@@ -43,10 +43,10 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                         className="flex grow border-primary-light-border border-r-2"
                         href={href}
                     >
-                        <div className="w-20 flex flex-col items-center  mr-4">
+                        <div className="min-w-deviceIconWidth flex flex-col items-center  mr-4">
                             <DeviceIcon
                                 className="h-20 w-full relative flex items-center justify-center"
-                                name={device.deviceTypes[0].name}
+                                name={device.deviceTypes[0]?.name || ""}
                             />
                         </div>
                         <div className="grow">
@@ -56,7 +56,7 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                                     .join(", ")}
                             </div>
                             <div className="text-2xl">{device.title}</div>
-                            <div>{device.deviceTypes[0].name}</div>
+                            <div>{device.deviceTypes[0]?.name}</div>
                         </div>
                     </Link>
                     <div className="w-10 h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">

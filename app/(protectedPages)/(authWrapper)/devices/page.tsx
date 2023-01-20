@@ -45,23 +45,9 @@ const Devices = ({}: Props) => {
 
     const [allDevicesLimit, setAllDevicesLimit] = useState<number>(50);
     const [yourDevicesLimit, setYourDevicesLimit] = useState<number>(50);
-    const [allDevicesfilters, setAllDevicesFilters] = useState([
-        { countryOfManufacturer: "Germany" },
-        {
-            formFactor: {
-                name: "Keyboard",
-            },
-        },
-    ]);
+    const [allDevicesfilters, setAllDevicesFilters] = useState([]);
     // TODO: update to only get user's devices when auth is sorted
-    const [yourDevicesfilters, setYourDevicesFilters] = useState([
-        { countryOfManufacturer: "Germany" },
-        {
-            formFactor: {
-                name: "Desktop",
-            },
-        },
-    ]);
+    const [yourDevicesfilters, setYourDevicesFilters] = useState([]);
     const [allDevicesAndOr, setAllDevicesAndOr] = useState<"OR" | "AND">("OR");
     const [yourDevicesAndOr, setYourDevicesAndOr] = useState<"OR" | "AND">(
         "AND"
