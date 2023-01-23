@@ -1,3 +1,5 @@
+import { RefObject } from "react";
+
 // Device type interfaces
 export interface IEightTrackDeck {
     country_of_manufacture: string;
@@ -1191,7 +1193,18 @@ export interface IDevice {
         connector: { name: string };
         description: { name: string }[];
         devices: { id: string };
-    };
+    }[];
     image?: IFirebaseImage;
     signalPath: { name: string };
+}
+
+export interface Filters {
+    title: string;
+    filters: SelectOption[];
+    ref: RefObject<HTMLInputElement>;
+}
+
+export interface FilterKeys {
+    name: string;
+    filters: string[];
 }

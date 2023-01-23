@@ -57,6 +57,7 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                             </div>
                             <div className="text-2xl">{device.title}</div>
                             <div>{device.deviceTypes[0]?.name}</div>
+                            <div>{device.formFactor?.name}</div>
                         </div>
                     </Link>
                     <div className="w-10 h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">

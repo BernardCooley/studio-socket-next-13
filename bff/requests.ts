@@ -60,3 +60,15 @@ export const deleteUser = async (email: string) => {
         email,
     });
 };
+
+export const fetchDeviceTypes = async () => {
+    return fetchWithErrorHandling(`/api/getDeviceTypes`, "GET");
+};
+
+export const fetchConnectors = async () => {
+    return fetchWithErrorHandling(`/api/getConnectors`, "GET");
+};
+
+export const fetchFormFactors = async () => {
+    return fetchWithErrorHandling(`/api/getFormFactors`, "GET");
+};

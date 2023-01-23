@@ -22,9 +22,21 @@ const Devices = ({}: Props) => {
         sortBy: yourDevicesSortBy,
         filterModalShowing,
         filterKeys: yourDevicesFilterKeys,
+        filteredByLabel: yourDevicesFilteredByLabel,
+        andOr: yourDevicesAndOr,
+        limit: yourDevicesLimit,
+        skip: yourDevicesSkip,
+        updateSkip: updateYourDevicesSkip,
     } = useYDevFilterContext();
-    const { sortBy: allDevicesSortBy, filterKeys: allDevicesFilterKeys } =
-        useODevFilterContext();
+    const {
+        sortBy: allDevicesSortBy,
+        filterKeys: allDevicesFilterKeys,
+        filteredByLabel: allDevicesFilteredByLabel,
+        andOr: allDevicesAndOr,
+        limit: allDevicesLimit,
+        skip: allDevicesSkip,
+        updateSkip: updateAllDevicesSkip,
+    } = useODevFilterContext();
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
@@ -33,25 +45,8 @@ const Devices = ({}: Props) => {
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
     const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
-    const [skip, setSkip] = useState<{
-        allDevices: number;
-        yourDevices: number;
-    }>({
-        allDevices: 0,
-        yourDevices: 0,
-    });
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const { addFormMessages, updateIcon } = useFormContext();
-
-    const [allDevicesLimit, setAllDevicesLimit] = useState<number>(50);
-    const [yourDevicesLimit, setYourDevicesLimit] = useState<number>(50);
-    const [allDevicesfilters, setAllDevicesFilters] = useState([]);
-    // TODO: update to only get user's devices when auth is sorted
-    const [yourDevicesfilters, setYourDevicesFilters] = useState([]);
-    const [allDevicesAndOr, setAllDevicesAndOr] = useState<"OR" | "AND">("OR");
-    const [yourDevicesAndOr, setYourDevicesAndOr] = useState<"OR" | "AND">(
-        "AND"
-    );
 
     useEffect(() => {
         onLoadingChange(moreLoading);
@@ -84,7 +79,12 @@ const Devices = ({}: Props) => {
     useEffect(() => {
         getDevices(true);
         getDevices(false);
-    }, [allDevicesSortBy, yourDevicesSortBy]);
+    }, [
+        allDevicesSortBy,
+        yourDevicesSortBy,
+        yourDevicesFilterKeys,
+        allDevicesFilterKeys,
+    ]);
 
     useEffect(() => {
         updateDeviceListInView(isIntersecting ? "yours" : "ours");
@@ -97,9 +97,13 @@ const Devices = ({}: Props) => {
         return {
             skip: customSkip
                 ? customSkip
-                : skip[isAllDevices ? "allDevices" : "yourDevices"],
+                : isAllDevices
+                ? allDevicesSkip
+                : yourDevicesSkip,
             limit: isAllDevices ? allDevicesLimit : yourDevicesLimit,
-            filters: isAllDevices ? allDevicesfilters : yourDevicesfilters,
+            filters: isAllDevices
+                ? allDevicesFilterKeys
+                : yourDevicesFilterKeys,
             andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
             orderBy: isAllDevices ? allDevicesSortBy : yourDevicesSortBy,
         };
@@ -172,19 +176,16 @@ const Devices = ({}: Props) => {
         ) {
             setMoreLoading(true);
 
-            const deviceListKey = isAllDevices ? "allDevices" : "yourDevices";
-
-            getMoreDevices(
-                skip[deviceListKey] +
-                    (isAllDevices ? allDevicesLimit : yourDevicesLimit),
-                isAllDevices
-            );
-            setSkip((skip) => ({
-                ...skip,
-                [deviceListKey]:
-                    skip[deviceListKey] +
-                    (isAllDevices ? allDevicesLimit : yourDevicesLimit),
-            }));
+            if (isAllDevices) {
+                updateAllDevicesSkip(allDevicesSkip + allDevicesLimit);
+                getMoreDevices(allDevicesSkip + allDevicesLimit, isAllDevices);
+            } else {
+                updateYourDevicesSkip(yourDevicesSkip + yourDevicesLimit);
+                getMoreDevices(
+                    yourDevicesSkip + yourDevicesLimit,
+                    isAllDevices
+                );
+            }
         }
     };
 
@@ -216,7 +217,7 @@ const Devices = ({}: Props) => {
                     pageTitle="Your devices"
                     iconType="right"
                     sortBy={yourDevicesSortBy}
-                    filterKeys={yourDevicesFilterKeys}
+                    filterKeys={yourDevicesFilteredByLabel}
                 />
                 <DeviceList
                     onScroll={(e) => handleVerticalScroll(e, true)}
@@ -226,7 +227,7 @@ const Devices = ({}: Props) => {
                     pageTitle="Our devices"
                     iconType="left"
                     sortBy={allDevicesSortBy}
-                    filterKeys={allDevicesFilterKeys}
+                    filterKeys={allDevicesFilteredByLabel}
                 />
             </div>
         </div>

@@ -1,3 +1,5 @@
+import { SelectOption } from "./types";
+
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
     if (!errors || errors.length === 0) return [];
     return errors
@@ -40,4 +42,13 @@ export const shallowEqual = (object1: any, object2: any) => {
         }
     }
     return true;
+};
+
+export const getSelectionOptions = (options: string[]): SelectOption[] => {
+    return options.map((o) => {
+        return {
+            value: o,
+            label: o,
+        };
+    });
 };

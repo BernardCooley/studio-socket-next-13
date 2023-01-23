@@ -8,11 +8,19 @@ interface YDevFilterContextProps {
     sortOrFilter: "sort" | "filter";
     sortBy: IOrderBy[];
     updateSortBy: (value: IOrderBy[]) => void;
-    filterKeys: string[];
+    filterKeys: any[];
     clearFilterKeys: () => void;
-    updateFilterKeys: (keys: string[]) => void;
+    filteredByLabel: string[];
+    updateFilteredByLabel: (label: string[]) => void;
+    updateFilterKeys: (keys: any[]) => void;
     searchQuery: string;
     updateSearchQuery: (query: string) => void;
+    andOr: "AND" | "OR";
+    updateAndOr: (value: "AND" | "OR") => void;
+    limit: number;
+    updateLimit: (value: number) => void;
+    skip: number;
+    updateSkip: (value: number) => void;
 }
 
 export const YDevFilterContext = createContext<YDevFilterContextProps>({
@@ -28,9 +36,17 @@ export const YDevFilterContext = createContext<YDevFilterContextProps>({
     updateSortBy: () => {},
     filterKeys: [],
     clearFilterKeys: () => {},
+    filteredByLabel: [],
+    updateFilteredByLabel: () => {},
     updateFilterKeys: () => {},
     searchQuery: "",
     updateSearchQuery: () => {},
+    andOr: "AND",
+    updateAndOr: () => {},
+    limit: 50,
+    updateLimit: () => {},
+    skip: 0,
+    updateSkip: () => {},
 });
 
 export const useYDevFilterContext = () => useContext(YDevFilterContext);
@@ -47,8 +63,12 @@ export const YDevFilterContextProvider = ({
             title: "asc",
         },
     ]);
-    const [filterKeys, setFilterKeys] = useState<string[]>([]);
+    const [filterKeys, setFilterKeys] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
+    const [andOr, setAndOr] = useState<"AND" | "OR">("AND");
+    const [limit, setLimit] = useState<number>(50);
+    const [skip, setSkip] = useState<number>(0);
 
     const showFilter = (type: "sort" | "filter") => {
         setShowFilterModal(true);
@@ -67,12 +87,28 @@ export const YDevFilterContextProvider = ({
         setFilterKeys([]);
     };
 
-    const updateFilterKeys = (filterKeys: string[]) => {
+    const updateFilterKeys = (filterKeys: any[]) => {
         setFilterKeys(filterKeys);
     };
 
     const updateSearchQuery = (query: string) => {
         setSearchQuery(query);
+    };
+
+    const updateFilteredByLabel = (label: string[]) => {
+        setFilteredByLabel(label);
+    };
+
+    const updateAndOr = (value: "AND" | "OR") => {
+        setAndOr(value);
+    };
+
+    const updateLimit = (value: number) => {
+        setLimit(value);
+    };
+
+    const updateSkip = (value: number) => {
+        setSkip(value);
     };
 
     return (
@@ -89,6 +125,14 @@ export const YDevFilterContextProvider = ({
                 updateFilterKeys,
                 searchQuery,
                 updateSearchQuery,
+                filteredByLabel,
+                updateFilteredByLabel,
+                andOr,
+                updateAndOr,
+                limit,
+                updateLimit,
+                skip,
+                updateSkip,
             }}
         >
             {children}
