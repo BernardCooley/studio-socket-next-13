@@ -1,5 +1,6 @@
 import React, { forwardRef, LegacyRef, useEffect } from "react";
 import Icons from "../icons";
+import ErrorMessages from "./ErrorMessages";
 
 interface Props {
     title: string;
@@ -55,17 +56,9 @@ const EditableDetailItem = forwardRef(
                                         }
                                         ref={ref}
                                     />
-                                    <div className="text-error">
-                                        {errorMessages &&
-                                            errorMessages.length > 0 &&
-                                            errorMessages.map((error) => (
-                                                <div
-                                                    key={JSON.stringify(error)}
-                                                >
-                                                    {error}
-                                                </div>
-                                            ))}
-                                    </div>
+                                    <ErrorMessages
+                                        errorMessages={errorMessages}
+                                    />
                                 </div>
                             ) : (
                                 <div className="text-xl">{subtitle}</div>

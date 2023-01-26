@@ -8,6 +8,7 @@ import React, {
 } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import { imageToBase65 } from "../utils";
+import ErrorMessages from "./ErrorMessages";
 
 interface Props {
     name: string;
@@ -115,12 +116,7 @@ const CustomTextInput = forwardRef(
                         </label>
                     </div>
                 </div>
-                <div className={`text-error ${errorClassName}`}>
-                    {errorMessages.length > 0 &&
-                        errorMessages.map((error) => (
-                            <div key={JSON.stringify(error)}>{error}</div>
-                        ))}
-                </div>
+                <ErrorMessages errorMessages={errorMessages} />
             </div>
         );
     }

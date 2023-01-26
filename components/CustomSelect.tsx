@@ -11,6 +11,7 @@ import { SelectOption } from "../types";
 import Icons from "../icons";
 import useOnClickOutside from "../hooks/useClickOutside";
 import { noop } from "../utils";
+import ErrorMessages from "./ErrorMessages";
 
 interface Props {
     options: SelectOption[];
@@ -91,13 +92,7 @@ const CustomSelect = forwardRef(
                         ))}
                     </div>
                 </div>
-                <div className="text-error relative -top-8">
-                    {errorMessages &&
-                        errorMessages.length > 0 &&
-                        errorMessages.map((error) => (
-                            <div key={JSON.stringify(error)}>{error}</div>
-                        ))}
-                </div>
+                <ErrorMessages errorMessages={errorMessages} />
                 <input
                     className="opacity-0 absolute top-0 left-0"
                     ref={ref}
