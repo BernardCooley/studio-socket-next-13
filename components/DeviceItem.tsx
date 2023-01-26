@@ -43,7 +43,7 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                         className="flex grow border-primary-light-border border-r-2"
                         href={href}
                     >
-                        <div className="min-w-deviceIconWidth flex flex-col items-center  mr-4">
+                        <div className="min-w-deviceIconWidth flex flex-col items-center mr-4 justify-center">
                             <DeviceIcon
                                 className="h-20 w-full relative flex items-center justify-center"
                                 name={device.deviceTypes[0]?.name || ""}
@@ -60,7 +60,7 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                             <div>{device.formFactor?.name}</div>
                         </div>
                     </Link>
-                    <div className="w-10 h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">
+                    <div className="min-w-deviceActions h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">
                         <ActionIcon type="close" onClick={removeDeviice} />
                         <ActionIcon type="edit" onClick={editDeviice} />
                     </div>

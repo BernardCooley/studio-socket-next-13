@@ -18,15 +18,18 @@ interface Props {
     label: string;
     className?: string;
     errorMessages: string[];
+    defaultOption?: SelectOption | null;
 }
 
 const CustomSelect = forwardRef(
     (
-        { options, label, className, errorMessages }: Props,
+        { options, label, className, errorMessages, defaultOption }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
         const containerRef = useRef<HTMLDivElement>(null);
-        const [value, setValue] = useState<SelectOption>(options[0]);
+        const [value, setValue] = useState<SelectOption>(
+            defaultOption && defaultOption.value ? defaultOption : options[0]
+        );
         const [optionsDisplayed, setOptionsDisplayed] = useState(false);
 
         const handleClickOutside = () => {

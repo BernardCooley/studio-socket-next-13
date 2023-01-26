@@ -29,7 +29,10 @@ const FilterSortLabel = ({ sortBy, filterKeys }: Props) => {
         <div className="m-4 text-md">
             {parsedSortKey.length > 0 && <div>Sorted by: {parsedSortKey}</div>}
             {filterKeys.length > 0 && (
-                <div>Filtered by: {filterKeys.join(", ")}</div>
+                <div>
+                    Filtered by:{" "}
+                    {filterKeys.filter((key) => key !== "").join(", ")}
+                </div>
             )}
         </div>
     );

@@ -45,10 +45,12 @@ export const shallowEqual = (object1: any, object2: any) => {
 };
 
 export const getSelectionOptions = (options: string[]): SelectOption[] => {
-    return options.map((o) => {
+    const defaultOption = [{ value: "", label: "None" }];
+    const opts = options.map((o) => {
         return {
             value: o,
             label: o,
         };
     });
+    return [...defaultOption, ...opts];
 };

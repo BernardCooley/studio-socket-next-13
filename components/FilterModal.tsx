@@ -36,6 +36,7 @@ const FilterModal = ({}: Props) => {
         clearFilterKeys: clearYourDevicesFilterKeys,
         updateFilterKeys: updateYourDevicesFilterKeys,
         updateFilteredByLabel: updateYourDevicesFilteredByLabel,
+        filteredByLabel: yourDevicesFilteredByLabel,
     } = useYDevFilterContext();
 
     const {
@@ -45,6 +46,7 @@ const FilterModal = ({}: Props) => {
         clearFilterKeys: clearAllDevicesFilterKeys,
         updateFilterKeys: updateAllDevicesFilterKeys,
         updateFilteredByLabel: updateAllDevicesFilteredByLabel,
+        filteredByLabel: allDevicesFilteredByLabel,
     } = useODevFilterContext();
 
     const { deviceListInView } = useNavContext();
@@ -79,8 +81,10 @@ const FilterModal = ({}: Props) => {
         hideFilter();
         if (deviceListInView === "yours") {
             clearYourDevicesFilterKeys();
+            updateYourDevicesFilteredByLabel([]);
         } else if (deviceListInView === "ours") {
             clearAllDevicesFilterKeys();
+            updateAllDevicesFilteredByLabel([]);
         }
         setFilterList([]);
     };
@@ -112,10 +116,11 @@ const FilterModal = ({}: Props) => {
         }
     };
 
-    const buildFilterQuery = (filterList: FilterKeys[]) => {
-        return filterList.map((filter) => {
-            if (filter.name === "deviceTypes") {
-                return {
+    const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
+        const filts: any[] = [];
+        filterList.forEach((filter) => {
+            if (filter.name === "deviceTypes" && filter.filters[0] !== "") {
+                filts.push({
                     deviceTypes: {
                         some: {
                             name: {
@@ -123,19 +128,19 @@ const FilterModal = ({}: Props) => {
                             },
                         },
                     },
-                };
+                });
             }
-            if (filter.name === "formFactors") {
-                return {
+            if (filter.name === "formFactors" && filter.filters[0] !== "") {
+                filts.push({
                     formFactor: {
                         name: {
                             in: filter.filters,
                         },
                     },
-                };
+                });
             }
-            if (filter.name === "connectors") {
-                return {
+            if (filter.name === "connectors" && filter.filters[0] !== "") {
+                filts.push({
                     connections: {
                         some: {
                             connector: {
@@ -145,9 +150,10 @@ const FilterModal = ({}: Props) => {
                             },
                         },
                     },
-                };
+                });
             }
         });
+        return filts;
     };
 
     const handleSubmitFilters = () => {
@@ -165,9 +171,9 @@ const FilterModal = ({}: Props) => {
                 filters: [formFactorsRef.current?.value || ""],
             },
         ];
-        const filterLabels = selectedFilters.map((key) =>
-            key.filters.join(", ")
-        );
+        const filterLabels = selectedFilters
+            .filter((filt) => filt.filters.length > 0)
+            .map((key) => key.filters.join(", "));
 
         hideFilter();
         if (deviceListInView === "yours") {
@@ -212,6 +218,21 @@ const FilterModal = ({}: Props) => {
         );
     };
 
+    const getDefaultOption = (i: number) => {
+        return yourDevicesFilteredByLabel[i] !== ""
+            ? {
+                  value:
+                      deviceListInView === "yours"
+                          ? yourDevicesFilteredByLabel[i]
+                          : allDevicesFilteredByLabel[i],
+                  label:
+                      deviceListInView === "yours"
+                          ? yourDevicesFilteredByLabel[i]
+                          : allDevicesFilteredByLabel[i],
+              }
+            : null;
+    };
+
     const Filter = () => {
         return (
             <>
@@ -222,6 +243,7 @@ const FilterModal = ({}: Props) => {
                         label="Device Type"
                         ref={deviceTypesRef}
                         errorMessages={[]}
+                        defaultOption={getDefaultOption(0)}
                     />
                     <CustomSelect
                         name="Connector"
@@ -229,6 +251,7 @@ const FilterModal = ({}: Props) => {
                         label="Connector"
                         ref={connectorsRef}
                         errorMessages={[]}
+                        defaultOption={getDefaultOption(1)}
                     />
                     <CustomSelect
                         name="Form factor"
@@ -236,43 +259,8 @@ const FilterModal = ({}: Props) => {
                         label="Form factor"
                         ref={formFactorsRef}
                         errorMessages={[]}
+                        defaultOption={getDefaultOption(2)}
                     />
-                    {/* {filt.map((filter) => (
-                        <div
-                            className="mb-3 border-b-2 border-primary-light-border last-of-type:border-b-0"
-                            key={filter.title}
-                        >
-                            <div className="mb-2 text-xl">{filter.title}</div>
-                            <div className="mb-3">
-                                {filter.filters.map((flt) => (
-                                    <CustomButton
-                                        buttonClassName={`filterSortButton ${
-                                            filterList.includes(flt)
-                                                ? "filterSortButtonActive"
-                                                : "filterSortButtonInactive"
-                                        }`}
-                                        labelClassName="text-xl"
-                                        key={flt}
-                                        label={flt}
-                                        type="button"
-                                        onClick={() =>
-                                            filterList.includes(flt)
-                                                ? setFilterList(
-                                                      filterList.filter(
-                                                          (filterKey) =>
-                                                              filterKey !== flt
-                                                      )
-                                                  )
-                                                : setFilterList([
-                                                      ...filterList,
-                                                      flt,
-                                                  ])
-                                        }
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    ))} */}
                 </div>
                 <div className="flex justify-between w-full">
                     <CustomButton

@@ -27,6 +27,7 @@ module.exports = {
                 dialogButton: "152px",
                 dialogSubmitButton: "252px",
                 deviceIconWidth: "180px",
+                deviceActions: "90px",
             },
             boxShadow: {
                 "3xl": "0 0 26px 11px #383b43",
