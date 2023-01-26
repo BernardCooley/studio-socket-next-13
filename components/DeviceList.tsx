@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { IOrderBy } from "../bff/types";
 import { useSearchContext } from "../contexts/SearchContext";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
@@ -9,6 +9,7 @@ import DeviceItem from "./DeviceItem";
 import FilterIcons from "./FilterIcons";
 import FilterSortLabel from "./FilterSortLabel";
 import PageTitle from "./PageTitle";
+import ToTop from "./ToTop";
 
 interface Props {
     onScrollClick: () => void;
@@ -19,6 +20,8 @@ interface Props {
     sortBy: IOrderBy[];
     filterKeys: string[];
     onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
+    showToTopButton: boolean;
+    listId: string;
 }
 
 const DeviceList = ({
@@ -30,14 +33,18 @@ const DeviceList = ({
     sortBy,
     filterKeys,
     onScroll,
+    showToTopButton,
+    listId,
 }: Props) => {
     const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
 
-    useEffect(() => {}, []);
-
     return (
-        <div className="snapScrollPane mb-20 pt-16 pb-8" onScroll={onScroll}>
+        <div
+            className="snapScrollPane mb-20 pt-16 pb-8"
+            onScroll={onScroll}
+            id={listId}
+        >
             <FilterIcons
                 filterKeys={filterKeys}
                 sortBy={sortBy}
@@ -75,6 +82,7 @@ const DeviceList = ({
                         ))}
                 </div>
             </div>
+            <ToTop showButton={showToTopButton} listId={listId} />
         </div>
     );
 };

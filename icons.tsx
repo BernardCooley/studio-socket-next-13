@@ -26,6 +26,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PasswordIcon from "@mui/icons-material/Password";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import Image from "next/image";
+import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 
 const deviceIcons = {
     Turntable: "/assets/icons/devices/turntable.png",
@@ -168,6 +169,7 @@ const Icons = ({
         search: <SearchIcon {...attributes} />,
         back: <ArrowBackIcon {...attributes} />,
         password: <PasswordIcon {...attributes} />,
+        toTop: <VerticalAlignTopIcon {...attributes} />,
     };
 
     return <Icon>{icons[iconType]}</Icon>;

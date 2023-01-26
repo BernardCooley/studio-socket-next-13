@@ -47,6 +47,10 @@ const Devices = ({}: Props) => {
     const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const { addFormMessages, updateIcon } = useFormContext();
+    const [showYourToTopButton, setShowYourToTopButton] =
+        useState<boolean>(false);
+    const [showAllToTopButton, setShowAllToTopButton] =
+        useState<boolean>(false);
 
     useEffect(() => {
         onLoadingChange(moreLoading);
@@ -170,6 +174,20 @@ const Devices = ({}: Props) => {
         const target = e.target as HTMLDivElement;
         const scrollPosition = target.scrollHeight - target.scrollTop;
 
+        if (target.scrollTop > 500) {
+            if (isAllDevices) {
+                setShowAllToTopButton(true);
+            } else {
+                setShowYourToTopButton(true);
+            }
+        } else {
+            if (isAllDevices) {
+                setShowAllToTopButton(false);
+            } else {
+                setShowYourToTopButton(false);
+            }
+        }
+
         if (
             scrollPosition <= target.clientHeight &&
             scrollPosition >= target.clientHeight - 700
@@ -218,6 +236,8 @@ const Devices = ({}: Props) => {
                     iconType="right"
                     sortBy={yourDevicesSortBy}
                     filterKeys={yourDevicesFilteredByLabel}
+                    showToTopButton={showYourToTopButton && isIntersecting}
+                    listId="yours"
                 />
                 <DeviceList
                     onScroll={(e) => handleVerticalScroll(e, true)}
@@ -228,6 +248,8 @@ const Devices = ({}: Props) => {
                     iconType="left"
                     sortBy={allDevicesSortBy}
                     filterKeys={allDevicesFilteredByLabel}
+                    showToTopButton={showAllToTopButton && !isIntersecting}
+                    listId="ours"
                 />
             </div>
         </div>
