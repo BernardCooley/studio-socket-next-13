@@ -42,6 +42,7 @@ const FilterModal = ({}: Props) => {
         updateFilteredByLabel: updateYourDevicesFilteredByLabel,
         updateSelectedFilterOptions: updateYourDevicesSelectedFilterOptions,
         selectedFilterOptions: yourDevicesSelectedFilterOptions,
+        clearSelectedFilterOptions: clearYourDevicesSelectedFilterOptions,
     } = useYDevFilterContext();
 
     const {
@@ -53,6 +54,7 @@ const FilterModal = ({}: Props) => {
         updateFilteredByLabel: updateAllDevicesFilteredByLabel,
         updateSelectedFilterOptions: updateAllDevicesSelectedFilterOptions,
         selectedFilterOptions: allDevicesSelectedFilterOptions,
+        clearSelectedFilterOptions: clearAllDevicesSelectedFilterOptions,
     } = useODevFilterContext();
 
     const { deviceListInView } = useNavContext();
@@ -80,12 +82,14 @@ const FilterModal = ({}: Props) => {
 
     const handleClearFilters = () => {
         hideFilter();
-        if (!isAllDevices) {
-            clearYourDevicesFilterKeys();
-            updateYourDevicesFilteredByLabel([]);
-        } else if (isAllDevices) {
+        if (isAllDevices) {
             clearAllDevicesFilterKeys();
             updateAllDevicesFilteredByLabel([]);
+            clearAllDevicesSelectedFilterOptions();
+        } else {
+            clearYourDevicesFilterKeys();
+            updateYourDevicesFilteredByLabel([]);
+            clearYourDevicesSelectedFilterOptions();
         }
         setFilterList([]);
     };
@@ -275,7 +279,6 @@ const FilterModal = ({}: Props) => {
                 </div>
                 <div className="flex justify-between w-full">
                     <CustomButton
-                        disabled={filterList.length === 0}
                         buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Clear"
@@ -283,8 +286,6 @@ const FilterModal = ({}: Props) => {
                         onClick={handleClearFilters}
                     />
                     <CustomButton
-                        // TODO: get disabled state from filters
-                        // disabled={filterList.length === 0}
                         buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"
                         label="Show results"

@@ -16,6 +16,7 @@ interface ODevFilterContextProps {
     updateFilteredByLabel: (label: string[]) => void;
     selectedFilterOptions: SelectedFilterOptions | null;
     updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
+    clearSelectedFilterOptions: () => void;
     searchQuery: string;
     updateSearchQuery: (query: string) => void;
     andOr: AndOr;
@@ -44,6 +45,7 @@ export const ODevFilterContext = createContext<ODevFilterContextProps>({
     updateFilteredByLabel: () => {},
     selectedFilterOptions: null,
     updateSelectedFilterOptions: () => {},
+    clearSelectedFilterOptions: () => {},
     searchQuery: "",
     updateSearchQuery: () => {},
     andOr: "AND",
@@ -122,6 +124,10 @@ export const ODevFilterContextProvider = ({
         setFilterOptions((op) => ({ ...op, ...options }));
     };
 
+    const clearSelectedFilterOptions = () => {
+        setFilterOptions(null);
+    };
+
     return (
         <ODevFilterContext.Provider
             value={{
@@ -146,6 +152,7 @@ export const ODevFilterContextProvider = ({
                 updateSkip,
                 selectedFilterOptions,
                 updateSelectedFilterOptions,
+                clearSelectedFilterOptions,
             }}
         >
             {children}
