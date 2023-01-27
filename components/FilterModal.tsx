@@ -8,8 +8,8 @@ import CustomButton from "./CustomButton";
 import { useNavContext } from "../contexts/NavContext";
 import { IOrderBy } from "../bff/types";
 import { getSelectionOptions, shallowEqual } from "../utils";
-import { FilterKeys, SelectOption } from "../types";
-import CustomSelect from "./CustomSelect";
+import { FilterKeys, SelectedFilterOptions, SelectOption } from "../types";
+import CustomMultiSelect from "./CustomMultiSelect";
 import {
     fetchConnectors,
     fetchDeviceTypes,
@@ -23,9 +23,13 @@ const FilterModal = ({}: Props) => {
     const [types, setTypes] = useState<SelectOption[]>([]);
     const [connectors, setConnectors] = useState<SelectOption[]>([]);
     const [formFactors, setFormFactors] = useState<SelectOption[]>([]);
-    const deviceTypesRef = useRef<HTMLInputElement>(null);
-    const connectorsRef = useRef<HTMLInputElement>(null);
-    const formFactorsRef = useRef<HTMLInputElement>(null);
+    const refs: {
+        [key: string]: React.RefObject<HTMLInputElement>;
+    } = {
+        deviceTypes: useRef<HTMLInputElement>(null),
+        connectors: useRef<HTMLInputElement>(null),
+        formFactors: useRef<HTMLInputElement>(null),
+    };
     const {
         filterModalShowing,
         hideFilter,
@@ -36,7 +40,8 @@ const FilterModal = ({}: Props) => {
         clearFilterKeys: clearYourDevicesFilterKeys,
         updateFilterKeys: updateYourDevicesFilterKeys,
         updateFilteredByLabel: updateYourDevicesFilteredByLabel,
-        filteredByLabel: yourDevicesFilteredByLabel,
+        updateSelectedFilterOptions: updateYourDevicesSelectedFilterOptions,
+        selectedFilterOptions: yourDevicesSelectedFilterOptions,
     } = useYDevFilterContext();
 
     const {
@@ -46,18 +51,18 @@ const FilterModal = ({}: Props) => {
         clearFilterKeys: clearAllDevicesFilterKeys,
         updateFilterKeys: updateAllDevicesFilterKeys,
         updateFilteredByLabel: updateAllDevicesFilteredByLabel,
-        filteredByLabel: allDevicesFilteredByLabel,
+        updateSelectedFilterOptions: updateAllDevicesSelectedFilterOptions,
+        selectedFilterOptions: allDevicesSelectedFilterOptions,
     } = useODevFilterContext();
 
     const { deviceListInView } = useNavContext();
+    const isAllDevices = deviceListInView === "ours";
 
     const [filterList, setFilterList] = useState<FilterKeys[]>(
-        deviceListInView === "yours"
-            ? yourDevicesFilterKeys
-            : allDevicesFilterKeys
+        !isAllDevices ? yourDevicesFilterKeys : allDevicesFilterKeys
     );
     const [sort, setSort] = useState<IOrderBy[]>(
-        deviceListInView === "yours" ? yourDevicesSortBy : allDevicesSortBy
+        !isAllDevices ? yourDevicesSortBy : allDevicesSortBy
     );
 
     useEffect(() => {
@@ -68,21 +73,17 @@ const FilterModal = ({}: Props) => {
 
     useEffect(() => {
         setFilterList(
-            deviceListInView === "yours"
-                ? yourDevicesFilterKeys
-                : allDevicesFilterKeys
+            !isAllDevices ? yourDevicesFilterKeys : allDevicesFilterKeys
         );
-        setSort(
-            deviceListInView === "yours" ? yourDevicesSortBy : allDevicesSortBy
-        );
+        setSort(!isAllDevices ? yourDevicesSortBy : allDevicesSortBy);
     }, [filterModalShowing, deviceListInView]);
 
     const handleClearFilters = () => {
         hideFilter();
-        if (deviceListInView === "yours") {
+        if (!isAllDevices) {
             clearYourDevicesFilterKeys();
             updateYourDevicesFilteredByLabel([]);
-        } else if (deviceListInView === "ours") {
+        } else if (isAllDevices) {
             clearAllDevicesFilterKeys();
             updateAllDevicesFilteredByLabel([]);
         }
@@ -109,9 +110,9 @@ const FilterModal = ({}: Props) => {
 
     const handleSubmitSort = () => {
         hideFilter();
-        if (deviceListInView === "yours") {
+        if (!isAllDevices) {
             updateYourDevicesSortBy(sort);
-        } else if (deviceListInView === "ours") {
+        } else if (isAllDevices) {
             updateAllDevicesSortBy(sort);
         }
     };
@@ -157,29 +158,36 @@ const FilterModal = ({}: Props) => {
     };
 
     const handleSubmitFilters = () => {
-        const selectedFilters = [
-            {
-                name: "deviceTypes",
-                filters: [deviceTypesRef.current?.value || ""],
-            },
-            {
-                name: "connectors",
-                filters: [connectorsRef.current?.value || ""],
-            },
-            {
-                name: "formFactors",
-                filters: [formFactorsRef.current?.value || ""],
-            },
-        ];
+        const selectedFilters = Object.keys(refs).map((refKey) => {
+            return {
+                name: refKey,
+                filters: [
+                    ...(JSON.parse(refs[refKey].current?.value || "") || ""),
+                ],
+            };
+        });
+        const selectedFilterOptions: SelectedFilterOptions = {};
+        Object.keys(refs).forEach((refKey) => {
+            selectedFilterOptions[refKey] = JSON.parse(
+                refs[refKey].current?.value || ""
+            ).map((d: string) => {
+                return {
+                    value: d === "" ? "" : d,
+                    label: d === "" ? "None" : d,
+                };
+            });
+        });
         const filterLabels = selectedFilters
             .filter((filt) => filt.filters.length > 0)
             .map((key) => key.filters.join(", "));
 
         hideFilter();
-        if (deviceListInView === "yours") {
+        if (!isAllDevices) {
+            updateYourDevicesSelectedFilterOptions(selectedFilterOptions);
             updateYourDevicesFilteredByLabel(filterLabels);
             updateYourDevicesFilterKeys(buildFilterQuery(selectedFilters));
-        } else if (deviceListInView === "ours") {
+        } else if (isAllDevices) {
+            updateAllDevicesSelectedFilterOptions(selectedFilterOptions);
             updateAllDevicesFilteredByLabel(filterLabels);
             updateAllDevicesFilterKeys(buildFilterQuery(selectedFilters));
         }
@@ -218,48 +226,51 @@ const FilterModal = ({}: Props) => {
         );
     };
 
-    const getDefaultOption = (i: number) => {
-        return yourDevicesFilteredByLabel[i] !== ""
-            ? {
-                  value:
-                      deviceListInView === "yours"
-                          ? yourDevicesFilteredByLabel[i]
-                          : allDevicesFilteredByLabel[i],
-                  label:
-                      deviceListInView === "yours"
-                          ? yourDevicesFilteredByLabel[i]
-                          : allDevicesFilteredByLabel[i],
-              }
-            : null;
+    const getDefaultOption = (filterField: string): SelectOption[] | null => {
+        if (!isAllDevices) {
+            if (yourDevicesSelectedFilterOptions) {
+                return yourDevicesSelectedFilterOptions[
+                    filterField as keyof typeof yourDevicesSelectedFilterOptions
+                ];
+            }
+        } else if (isAllDevices) {
+            if (allDevicesSelectedFilterOptions) {
+                return allDevicesSelectedFilterOptions[
+                    filterField as keyof typeof allDevicesSelectedFilterOptions
+                ];
+            }
+        }
+
+        return null;
     };
 
     const Filter = () => {
         return (
             <>
                 <div className="w-full">
-                    <CustomSelect
+                    <CustomMultiSelect
                         name="Device Type"
                         options={types}
                         label="Device Type"
-                        ref={deviceTypesRef}
+                        ref={refs.deviceTypes}
                         errorMessages={[]}
-                        defaultOption={getDefaultOption(0)}
+                        defaultOptions={getDefaultOption("deviceTypes")}
                     />
-                    <CustomSelect
+                    <CustomMultiSelect
                         name="Connector"
                         options={connectors}
                         label="Connector"
-                        ref={connectorsRef}
+                        ref={refs.connectors}
                         errorMessages={[]}
-                        defaultOption={getDefaultOption(1)}
+                        defaultOptions={getDefaultOption("connectors")}
                     />
-                    <CustomSelect
+                    <CustomMultiSelect
                         name="Form factor"
                         options={formFactors}
                         label="Form factor"
-                        ref={formFactorsRef}
+                        ref={refs.formFactors}
                         errorMessages={[]}
-                        defaultOption={getDefaultOption(2)}
+                        defaultOptions={getDefaultOption("formFactors")}
                     />
                 </div>
                 <div className="flex justify-between w-full">
@@ -272,6 +283,7 @@ const FilterModal = ({}: Props) => {
                         onClick={handleClearFilters}
                     />
                     <CustomButton
+                        // TODO: get disabled state from filters
                         // disabled={filterList.length === 0}
                         buttonClassName="filterSortDialogButton"
                         labelClassName="text-xl"

@@ -1,11 +1,12 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { IOrderBy } from "../bff/types";
+import { AndOr, IOrderBy, SortFilter } from "../bff/types";
+import { SelectedFilterOptions } from "../types";
 
 interface ODevFilterContextProps {
     filterModalShowing: boolean;
-    showFilter: (type: "sort" | "filter") => void;
+    showFilter: (type: SortFilter) => void;
     hideFilter: () => void;
-    sortOrFilter: "sort" | "filter";
+    sortOrFilter: SortFilter;
     sortBy: IOrderBy[];
     updateSortBy: (value: IOrderBy[]) => void;
     filterKeys: any[];
@@ -13,10 +14,12 @@ interface ODevFilterContextProps {
     updateFilterKeys: (keys: any[]) => void;
     filteredByLabel: string[];
     updateFilteredByLabel: (label: string[]) => void;
+    selectedFilterOptions: SelectedFilterOptions | null;
+    updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
     searchQuery: string;
     updateSearchQuery: (query: string) => void;
-    andOr: "AND" | "OR";
-    updateAndOr: (value: "AND" | "OR") => void;
+    andOr: AndOr;
+    updateAndOr: (value: AndOr) => void;
     limit: number;
     updateLimit: (value: number) => void;
     skip: number;
@@ -39,6 +42,8 @@ export const ODevFilterContext = createContext<ODevFilterContextProps>({
     updateFilterKeys: () => {},
     filteredByLabel: [],
     updateFilteredByLabel: () => {},
+    selectedFilterOptions: null,
+    updateSelectedFilterOptions: () => {},
     searchQuery: "",
     updateSearchQuery: () => {},
     andOr: "AND",
@@ -57,7 +62,7 @@ export const ODevFilterContextProvider = ({
     children: ReactNode;
 }) => {
     const [filterModalShowing, setShowFilterModal] = useState<boolean>(false);
-    const [sortOrFilter, setSortOrFilter] = useState<"sort" | "filter">("sort");
+    const [sortOrFilter, setSortOrFilter] = useState<SortFilter>("sort");
     const [sortBy, setSortBy] = useState<IOrderBy[]>([
         {
             title: "asc",
@@ -66,11 +71,13 @@ export const ODevFilterContextProvider = ({
     const [filterKeys, setFilterKeys] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
-    const [andOr, setAndOr] = useState<"AND" | "OR">("AND");
+    const [andOr, setAndOr] = useState<AndOr>("AND");
     const [limit, setLimit] = useState<number>(50);
     const [skip, setSkip] = useState<number>(0);
+    const [selectedFilterOptions, setFilterOptions] =
+        useState<SelectedFilterOptions | null>(null);
 
-    const showFilter = (type: "sort" | "filter") => {
+    const showFilter = (type: SortFilter) => {
         setShowFilterModal(true);
         setSortOrFilter(type);
     };
@@ -99,7 +106,7 @@ export const ODevFilterContextProvider = ({
         setFilteredByLabel(label);
     };
 
-    const updateAndOr = (value: "AND" | "OR") => {
+    const updateAndOr = (value: AndOr) => {
         setAndOr(value);
     };
 
@@ -109,6 +116,10 @@ export const ODevFilterContextProvider = ({
 
     const updateSkip = (value: number) => {
         setSkip(value);
+    };
+
+    const updateSelectedFilterOptions = (options: SelectedFilterOptions) => {
+        setFilterOptions((op) => ({ ...op, ...options }));
     };
 
     return (
@@ -133,6 +144,8 @@ export const ODevFilterContextProvider = ({
                 updateLimit,
                 skip,
                 updateSkip,
+                selectedFilterOptions,
+                updateSelectedFilterOptions,
             }}
         >
             {children}

@@ -1064,6 +1064,10 @@ export interface SelectOption {
     label: string;
 }
 
+export interface SelectedFilterOptions {
+    [key: string]: SelectOption[];
+}
+
 export interface NewDevice {
     title: string;
     manufacturer: string;

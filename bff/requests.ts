@@ -1,12 +1,12 @@
 import { devicesInclude } from "./includes";
-import { IFetchDevicesBody, IOrderBy } from "./types";
+import { AndOr, IFetchDevicesBody, IOrderBy } from "./types";
 import { buildQuery, fetchWithErrorHandling } from "./utils";
 
 export interface IRequestOptions {
     skip: number;
     limit: number | null;
     filters: any;
-    andOr: "AND" | "OR" | "";
+    andOr: AndOr | "";
     orderBy: IOrderBy[] | null;
 }
 

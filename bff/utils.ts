@@ -1,4 +1,4 @@
-import { IFetchDevicesBody, IOrderBy } from "./types";
+import { AndOr, IFetchDevicesBody, IOrderBy } from "./types";
 
 export class GoneError extends Error {
     statusCode = 410;
@@ -60,7 +60,7 @@ export const buildQuery = (
     body: IFetchDevicesBody,
     limit: number | null = null,
     filters: any = null,
-    andOr: "AND" | "OR" | "" = "OR",
+    andOr: AndOr | "" = "OR",
     orderBy: IOrderBy[] | null = null
 ) => {
     if (limit) {

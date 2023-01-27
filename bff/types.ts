@@ -36,3 +36,7 @@ export interface IFetchDevicesBody {
     };
     orderBy?: IOrderBy[];
 }
+
+export type AndOr = "AND" | "OR";
+
+export type SortFilter = "sort" | "filter";
