@@ -16,6 +16,8 @@ interface FormContextProps {
     resetIcon: () => void;
     canCloseDialog: boolean;
     updateCanCloseDialog: (value: boolean) => void;
+    loadingMessage: string;
+    updateLoadingMessage: (value: string) => void;
 }
 
 export const FormContext = createContext<FormContextProps>({
@@ -32,6 +34,8 @@ export const FormContext = createContext<FormContextProps>({
     resetIcon: () => {},
     canCloseDialog: false,
     updateCanCloseDialog: () => {},
+    loadingMessage: "",
+    updateLoadingMessage: () => {},
 });
 
 export const useFormContext = () => useContext(FormContext);
@@ -46,6 +50,7 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
     );
     const [dialogButtons, setDialogButtons] = useState<DialogButton[]>([]);
     const [canCloseDialog, setCanCloseDialog] = useState<boolean>(false);
+    const [loadingMessage, setLoadingMessage] = useState<string>("");
 
     const updateIcon = (icon: React.ReactNode) => {
         setIcon(icon);
@@ -89,6 +94,10 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
         setCanCloseDialog(value);
     };
 
+    const updateLoadingMessage = (value: string) => {
+        setLoadingMessage(value);
+    };
+
     return (
         <FormContext.Provider
             value={{
@@ -105,6 +114,8 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
                 resetIcon,
                 canCloseDialog,
                 updateCanCloseDialog,
+                loadingMessage,
+                updateLoadingMessage,
             }}
         >
             {children}

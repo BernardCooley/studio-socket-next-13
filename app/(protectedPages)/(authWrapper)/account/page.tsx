@@ -38,13 +38,7 @@ const Account = ({}: Props) => {
     const { user, updateUser } = useAuthContext();
     const [existingImageName, setExistingImageName] = useState<string>("");
     const [editing, setEditing] = useState<string>("");
-    const {
-        file,
-        updateFile,
-        addFormMessages,
-        updateIcon,
-        updateDialogButtons,
-    } = useFormContext();
+    const { file, updateFile, addFormMessages, updateIcon } = useFormContext();
     const [errors, setErrors] = useState<string[]>([]);
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
@@ -168,6 +162,7 @@ const Account = ({}: Props) => {
             },
             successMessage: null,
             successMessageType: FormMessageTypes.SUCCESS,
+            loadingMessage: "Resetting password...",
         });
     };
 
@@ -325,6 +320,7 @@ const Account = ({}: Props) => {
             successMessage:
                 "Your account has now been deleted. We are sorry to see you go.",
             successMessageType: FormMessageTypes.SUCCESS,
+            loadingMessage: "Deleting account...",
         });
     };
 

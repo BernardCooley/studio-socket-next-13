@@ -10,11 +10,16 @@ interface UpdateDialogProps {
     successMessage?: string | null;
     successMessageType: FormMessageTypes;
     messageTimeout?: number;
+    loadingMessage?: string;
 }
 
 const useUpdateDialog = () => {
-    const { addFormMessages, updateIcon, updateDialogButtons } =
-        useFormContext();
+    const {
+        addFormMessages,
+        updateIcon,
+        updateDialogButtons,
+        updateLoadingMessage,
+    } = useFormContext();
 
     const update = ({
         question,
@@ -25,6 +30,7 @@ const useUpdateDialog = () => {
         successMessage,
         successMessageType,
         messageTimeout = 5000,
+        loadingMessage = "",
     }: UpdateDialogProps) => {
         addFormMessages(
             new Set([
@@ -41,8 +47,10 @@ const useUpdateDialog = () => {
             {
                 text: "Yes",
                 onClick: async () => {
+                    updateLoadingMessage(loadingMessage);
                     try {
                         const message = await successAction();
+                        updateLoadingMessage("");
                         updateDialogButtons([]);
 
                         addFormMessages(
@@ -61,7 +69,9 @@ const useUpdateDialog = () => {
                         setTimeout(() => {
                             addFormMessages(new Set([]));
                         }, messageTimeout);
-                    } catch (err: any) {}
+                    } catch (err: any) {
+                        updateLoadingMessage("");
+                    }
                 },
                 classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
             },

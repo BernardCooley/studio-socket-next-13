@@ -39,11 +39,11 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
     const removeDevice = () => {
         update({
             question: `Are you sure you want to remove ${device.title} from your device list?`,
-            messageType: FormMessageTypes.ERROR,
+            messageType: FormMessageTypes.WARNING,
             defaultIcon: (
                 <Icons
                     iconType="removeFromList"
-                    className="text-error"
+                    className="text-warning"
                     fontSize="132px"
                 />
             ),
@@ -58,6 +58,7 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
             successMessage: `${device.title} has been removed from your devices`,
             successMessageType: FormMessageTypes.SUCCESS,
             messageTimeout: 3000,
+            loadingMessage: "Removing device...",
         });
     };
 
@@ -65,7 +66,7 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
         console.log("Edit device", yoursOurs, device.id);
     };
 
-    const addDeviice = () => {
+    const addDevice = () => {
         update({
             question: `Add ${device.title} to your device list?`,
             messageType: FormMessageTypes.INFO,
@@ -87,6 +88,7 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
             successMessage: `${device.title} has been added to your devices`,
             successMessageType: FormMessageTypes.SUCCESS,
             messageTimeout: 3000,
+            loadingMessage: "Adding device...",
         });
     };
 
@@ -127,7 +129,7 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
                             <ActionIcon
                                 type="add"
                                 fontSize="80px"
-                                onClick={addDeviice}
+                                onClick={addDevice}
                             />
                         )}
                         <ActionIcon

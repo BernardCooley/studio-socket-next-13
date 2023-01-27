@@ -17,6 +17,7 @@ const Dialog = ({ messages, messageIcon }: Props) => {
         dialogButtons,
         canCloseDialog,
         addFormMessages,
+        loadingMessage,
     } = useFormContext();
 
     const handleClickOutside = () => {
@@ -48,42 +49,50 @@ const Dialog = ({ messages, messageIcon }: Props) => {
                         Array.from(messages)[0].type
                     )}`}
                 >
-                    {canCloseDialog && (
-                        <div className="w-full flex justify-end">
-                            <Icons
-                                iconType="close"
-                                onClick={() => addFormMessages(new Set([]))}
-                                fontSize="92px"
-                            />
-                        </div>
-                    )}
-                    <div className="flex items-center">
-                        <div className="min-h-dialog flex items-center pr-4">
-                            {messageIcon}
-                        </div>
-                        <div>
-                            {Array.from(messages).map((message) => (
-                                <div
-                                    className="text-xl"
-                                    key={JSON.stringify(message)}
-                                >
-                                    {message.message}
+                    {loadingMessage.length > 0 ? (
+                        <div className="text-xl">{loadingMessage}</div>
+                    ) : (
+                        <>
+                            {canCloseDialog && (
+                                <div className="w-full flex justify-end">
+                                    <Icons
+                                        iconType="close"
+                                        onClick={() =>
+                                            addFormMessages(new Set([]))
+                                        }
+                                        fontSize="92px"
+                                    />
                                 </div>
-                            ))}
-                        </div>
-                    </div>
-                    {dialogButtons && dialogButtons.length > 0 && (
-                        <div className="w-full flex justify-around text-primary-light mt-4">
-                            {dialogButtons.map((button) => (
-                                <CustomButton
-                                    onClick={button.onClick}
-                                    key={button.text}
-                                    label={button.text}
-                                    type="button"
-                                    buttonClassName={button.classes}
-                                />
-                            ))}
-                        </div>
+                            )}
+                            <div className="flex items-center">
+                                <div className="min-h-dialog flex items-center pr-4">
+                                    {messageIcon}
+                                </div>
+                                <div>
+                                    {Array.from(messages).map((message) => (
+                                        <div
+                                            className="text-xl"
+                                            key={JSON.stringify(message)}
+                                        >
+                                            {message.message}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            {dialogButtons && dialogButtons.length > 0 && (
+                                <div className="w-full flex justify-around text-primary-light mt-4">
+                                    {dialogButtons.map((button) => (
+                                        <CustomButton
+                                            onClick={button.onClick}
+                                            key={button.text}
+                                            label={button.text}
+                                            type="button"
+                                            buttonClassName={button.classes}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             )}
