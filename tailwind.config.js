@@ -6,7 +6,14 @@ module.exports = {
         "./pages/**/*.{js,ts,jsx,tsx}",
         "./components/**/*.{js,ts,jsx,tsx}",
     ],
-    safelist: ["right-16", "left-16"],
+    safelist: [
+        "right-16",
+        "left-16",
+        "border-warning",
+        "border-error",
+        "border-success",
+        "border-primary",
+    ],
     theme: {
         extend: {
             backgroundImage: {
@@ -50,6 +57,8 @@ module.exports = {
             "primary-light-border": "#cbbdbd",
             transparent: "transparent",
             fieldLabel: "#8A8A8A",
+            warning: "#e4980c",
+            success: "#13ae13",
         },
         fontFamily: {
             default: ["SairaCondensed-Thin", "sans-serif"],

@@ -27,6 +27,8 @@ import PasswordIcon from "@mui/icons-material/Password";
 import PersonRemoveIcon from "@mui/icons-material/PersonRemove";
 import Image from "next/image";
 import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 
 const deviceIcons = {
     Turntable: "/assets/icons/devices/turntable.png",
@@ -170,6 +172,8 @@ const Icons = ({
         back: <ArrowBackIcon {...attributes} />,
         password: <PasswordIcon {...attributes} />,
         toTop: <VerticalAlignTopIcon {...attributes} />,
+        addToList: <PlaylistAddIcon {...attributes} />,
+        removeFromList: <PlaylistRemoveIcon {...attributes} />,
     };
 
     return <Icon>{icons[iconType]}</Icon>;

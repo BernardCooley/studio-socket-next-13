@@ -1,8 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import React from "react";
+import useUpdateDialog from "../hooks/useUpdateDialog";
 import Icons, { DeviceIcon } from "../icons";
-import { IDevice } from "../types";
+import { FormMessageTypes, IDevice } from "../types";
+import { noopPromise } from "../utils";
 
 interface Props {
     device: IDevice;
@@ -17,6 +19,7 @@ interface IDeviceIconProps {
 }
 
 const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
+    const { update } = useUpdateDialog();
     const ActionIcon = ({
         type,
         onClick,
@@ -33,8 +36,29 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
         );
     };
 
-    const removeDeviice = () => {
-        console.log("Remove device", device.id);
+    const removeDevice = () => {
+        update({
+            question: `Are you sure you want to remove ${device.title} from your device list?`,
+            messageType: FormMessageTypes.ERROR,
+            defaultIcon: (
+                <Icons
+                    iconType="removeFromList"
+                    className="text-error"
+                    fontSize="132px"
+                />
+            ),
+            successIcon: (
+                <Icons
+                    iconType="removeFromList"
+                    className="text-success"
+                    fontSize="132px"
+                />
+            ),
+            successAction: noopPromise,
+            successMessage: `${device.title} has been removed from your devices`,
+            successMessageType: FormMessageTypes.SUCCESS,
+            messageTimeout: 3000,
+        });
     };
 
     const editDeviice = (yoursOurs: string) => {
@@ -42,7 +66,28 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
     };
 
     const addDeviice = () => {
-        console.log("Add device", device.id);
+        update({
+            question: `Add ${device.title} to your device list?`,
+            messageType: FormMessageTypes.INFO,
+            defaultIcon: (
+                <Icons
+                    iconType="addToList"
+                    className="text-primary"
+                    fontSize="132px"
+                />
+            ),
+            successIcon: (
+                <Icons
+                    iconType="addToList"
+                    className="text-success"
+                    fontSize="132px"
+                />
+            ),
+            successAction: noopPromise,
+            successMessage: `${device.title} has been added to your devices`,
+            successMessageType: FormMessageTypes.SUCCESS,
+            messageTimeout: 3000,
+        });
     };
 
     return (
@@ -75,7 +120,7 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
                             <ActionIcon
                                 type="close"
                                 fontSize="80px"
-                                onClick={removeDeviice}
+                                onClick={removeDevice}
                             />
                         )}
                         {listId === "ours" && (

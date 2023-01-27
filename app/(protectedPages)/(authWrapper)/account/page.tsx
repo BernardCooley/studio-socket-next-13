@@ -29,10 +29,12 @@ import {
     deleteFirebaseImage,
     uploadFirebaseImage,
 } from "../../../../firebase/functions";
+import useUpdateDialog from "../../../../hooks/useUpdateDialog";
 
 interface Props {}
 
 const Account = ({}: Props) => {
+    const { update } = useUpdateDialog();
     const { user, updateUser } = useAuthContext();
     const [existingImageName, setExistingImageName] = useState<string>("");
     const [editing, setEditing] = useState<string>("");
@@ -138,64 +140,35 @@ const Account = ({}: Props) => {
     };
 
     const passwordReset = async () => {
-        addFormMessages(
-            new Set([
-                {
-                    message: "Are you sure you want to reset your password?",
-                    type: FormMessageTypes.INFO,
-                },
-            ])
-        );
-
-        updateIcon(
-            <Icons
-                iconType="password"
-                className="text-primary"
-                fontSize="132px"
-            />
-        );
-
-        updateDialogButtons([
-            {
-                text: "Yes",
-                onClick: async () => {
-                    try {
-                        const response = (await changePassword(
-                            user?.email
-                        )) as {
-                            message: string;
-                        };
-
-                        updateDialogButtons([]);
-
-                        addFormMessages(
-                            new Set([
-                                {
-                                    message: response?.message,
-                                    type: FormMessageTypes.INFO,
-                                },
-                            ])
-                        );
-                        setTimeout(() => {
-                            addFormMessages(new Set([]));
-                            setEditing("");
-                        }, 5000);
-                    } catch (err: any) {
-                        const errorCode = err.code;
-                        const errorMessage = err.message;
-                    }
-                },
-                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+        update({
+            question: "Are you sure you want to reset your password?",
+            messageType: FormMessageTypes.INFO,
+            defaultIcon: (
+                <Icons
+                    iconType="password"
+                    className="text-primary"
+                    fontSize="132px"
+                />
+            ),
+            successIcon: (
+                <Icons
+                    iconType="password"
+                    className="text-primary"
+                    fontSize="132px"
+                />
+            ),
+            successAction: async () => {
+                try {
+                    return (await changePassword(user?.email)) as Promise<{
+                        [key: string]: string;
+                    }>;
+                } catch (err: any) {
+                    return null;
+                }
             },
-            {
-                text: "No",
-                onClick: () => {
-                    addFormMessages(new Set([]));
-                    updateDialogButtons([]);
-                },
-                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
-            },
-        ]);
+            successMessage: null,
+            successMessageType: FormMessageTypes.SUCCESS,
+        });
     };
 
     const updateItem = (type: String) => {
@@ -326,71 +299,33 @@ const Account = ({}: Props) => {
     };
 
     const deleteAccount = async () => {
-        addFormMessages(
-            new Set([
-                {
-                    message:
-                        "Are you sure you want to delete your account? This cannot be undone.",
-                    type: FormMessageTypes.ERROR,
-                },
-            ])
-        );
-
-        updateIcon(
-            <Icons
-                iconType="deleteAccount"
-                className="text-error"
-                fontSize="132px"
-            />
-        );
-
-        updateDialogButtons([
-            {
-                text: "Yes",
-                onClick: async () => {
-                    try {
-                        if (user) {
-                            addFormMessages(
-                                new Set([
-                                    {
-                                        message: "Deleting account",
-                                        type: FormMessageTypes.INFO,
-                                    },
-                                ])
-                            );
-
-                            await deleteUser(user.email);
-                        }
-
-                        updateDialogButtons([]);
-
-                        addFormMessages(
-                            new Set([
-                                {
-                                    message:
-                                        "Your account has now been deleted. We are sorry to see you go.",
-                                    type: FormMessageTypes.INFO,
-                                },
-                            ])
-                        );
-                        setTimeout(() => {
-                            addFormMessages(new Set([]));
-                            setEditing("");
-                            signOut({ callbackUrl: "/" });
-                        }, 5000);
-                    } catch (err: any) {}
-                },
-                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
+        update({
+            question:
+                "Are you sure you want to delete your account? This cannot be undone.",
+            messageType: FormMessageTypes.ERROR,
+            defaultIcon: (
+                <Icons
+                    iconType="deleteAccount"
+                    className="text-error"
+                    fontSize="132px"
+                />
+            ),
+            successIcon: (
+                <Icons
+                    iconType="deleteAccount"
+                    className="text-success"
+                    fontSize="132px"
+                />
+            ),
+            successAction: async () => {
+                return (await deleteUser(user.email)) as Promise<{
+                    [key: string]: string;
+                }>;
             },
-            {
-                text: "No",
-                onClick: () => {
-                    addFormMessages(new Set([]));
-                    updateDialogButtons([]);
-                },
-                classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",
-            },
-        ]);
+            successMessage:
+                "Your account has now been deleted. We are sorry to see you go.",
+            successMessageType: FormMessageTypes.SUCCESS,
+        });
     };
 
     return (

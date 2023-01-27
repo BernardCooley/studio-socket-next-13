@@ -54,3 +54,13 @@ export const getSelectionOptions = (options: string[]): SelectOption[] => {
     });
     return [...defaultOption, ...opts];
 };
+
+export const noopPromise = (): Promise<{ [key: string]: string } | null> => {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({
+                message: "Noop",
+            });
+        }, 2000);
+    });
+};
