@@ -30,7 +30,8 @@ const FilterIcons = ({
                 />
                 <Icons
                     className={`z-30 rounded-lg shadow-lg ${
-                        filterKeys.length > 0
+                        filterKeys.length > 0 &&
+                        filterKeys.filter((key) => key !== "").length > 0
                             ? "filterSortIconActive"
                             : "filterSortIconInactive"
                     }`}
