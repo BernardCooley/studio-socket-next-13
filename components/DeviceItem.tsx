@@ -7,20 +7,26 @@ import { IDevice } from "../types";
 interface Props {
     device: IDevice;
     href?: string;
+    listId?: string;
 }
 
 interface IDeviceIconProps {
     type: string;
     onClick: () => void;
+    fontSize?: string;
 }
 
-const DeviceItem = ({ device, href = "" }: Props) => {
-    const ActionIcon = ({ type, onClick }: IDeviceIconProps): JSX.Element => {
+const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
+    const ActionIcon = ({
+        type,
+        onClick,
+        fontSize = "64px",
+    }: IDeviceIconProps): JSX.Element => {
         return (
             <div className="flex justify-center items-center" onClick={onClick}>
                 <Icons
                     iconType={type}
-                    fontSize="64px"
+                    fontSize={fontSize}
                     className="text-primary"
                 />
             </div>
@@ -31,8 +37,12 @@ const DeviceItem = ({ device, href = "" }: Props) => {
         console.log("Remove device", device.id);
     };
 
-    const editDeviice = () => {
-        console.log("Edit device", device.id);
+    const editDeviice = (yoursOurs: string) => {
+        console.log("Edit device", yoursOurs, device.id);
+    };
+
+    const addDeviice = () => {
+        console.log("Add device", device.id);
     };
 
     return (
@@ -61,8 +71,24 @@ const DeviceItem = ({ device, href = "" }: Props) => {
                         </div>
                     </Link>
                     <div className="min-w-deviceActions h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">
-                        <ActionIcon type="close" onClick={removeDeviice} />
-                        <ActionIcon type="edit" onClick={editDeviice} />
+                        {listId === "yours" && (
+                            <ActionIcon
+                                type="close"
+                                fontSize="80px"
+                                onClick={removeDeviice}
+                            />
+                        )}
+                        {listId === "ours" && (
+                            <ActionIcon
+                                type="add"
+                                fontSize="80px"
+                                onClick={addDeviice}
+                            />
+                        )}
+                        <ActionIcon
+                            type="edit"
+                            onClick={() => editDeviice(listId)}
+                        />
                     </div>
                 </div>
             )}

@@ -75,6 +75,7 @@ const DeviceList = ({
                         devices.length > 0 &&
                         devices.map((device) => (
                             <DeviceItem
+                                listId={listId}
                                 key={device.id}
                                 device={device}
                                 href={routes.device(device.id).as}
