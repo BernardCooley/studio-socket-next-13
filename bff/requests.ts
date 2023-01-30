@@ -8,6 +8,7 @@ export interface IRequestOptions {
     filters: any;
     andOr: AndOr | "";
     orderBy: IOrderBy[] | null;
+    userId?: string | null;
 }
 
 export const fetchDevices = async ({
@@ -16,17 +17,17 @@ export const fetchDevices = async ({
     filters = null,
     andOr = "OR",
     orderBy = null,
+    userId = null,
 }: IRequestOptions) => {
     const body: IFetchDevicesBody = {
         skip: skip,
         select: devicesInclude,
     };
 
-    return fetchWithErrorHandling(
-        `/api/getDevices`,
-        "POST",
-        buildQuery(body, limit, filters, andOr, orderBy)
-    );
+    return fetchWithErrorHandling(`/api/getDevices`, "POST", {
+        body: buildQuery(body, limit, filters, andOr, orderBy),
+        userId: userId,
+    });
 };
 
 export const fetchDeviceById = async (id: string) => {

@@ -13,10 +13,12 @@ import Icons from "../../../../icons";
 import routes from "../../../../routes";
 import { fetchDevices, IRequestOptions } from "../../../../bff/requests";
 import { useFormContext } from "../../../../contexts/FormContext";
+import { useSession } from "next-auth/react";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
+    const { data: user } = useSession();
     const {
         sortBy: yourDevicesSortBy,
         filterModalShowing,
@@ -81,12 +83,15 @@ const Devices = ({}: Props) => {
 
     useEffect(() => {
         getDevices(true);
-        getDevices(false);
+        if (isIntersecting) {
+            getDevices(false);
+        }
     }, [
         allDevicesSortBy,
         yourDevicesSortBy,
         yourDevicesFilterKeys,
         allDevicesFilterKeys,
+        user,
     ]);
 
     useEffect(() => {
@@ -109,6 +114,7 @@ const Devices = ({}: Props) => {
                 : yourDevicesFilterKeys,
             andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
             orderBy: isAllDevices ? allDevicesSortBy : yourDevicesSortBy,
+            userId: isAllDevices ? null : user?.user.id,
         };
     };
 

@@ -14,8 +14,22 @@ export default async function handler(
         return res.status(405).json({ message: "Method not allowed" });
     }
 
+    if (req.body.userId) {
+        req.body.body = {
+            ...req.body.body,
+            where: {
+                ...req.body.body.where,
+                users: {
+                    some: {
+                        userId: req.body.userId,
+                    },
+                },
+            },
+        };
+    }
+
     try {
-        const devices = await prisma?.device.findMany(req.body);
+        const devices = await prisma?.device.findMany(req.body.body);
         if (devices) {
             res.status(200).json(devices);
         }
