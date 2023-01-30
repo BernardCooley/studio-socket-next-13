@@ -41,7 +41,7 @@ const Devices = ({}: Props) => {
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
-    const [yourDevices, setYourDevices] = useState<IDevice[]>([]);
+    const [yourDevices, setYourDevices] = useState<IDevice[] | null>(null);
     const scrollElementRef = useRef<HTMLDivElement>(null);
     const yourDevicesRef = useRef<HTMLDivElement>(null);
     const ourDevicesRef = useRef<HTMLDivElement>(null);
@@ -137,7 +137,9 @@ const Devices = ({}: Props) => {
             if (isAllDevices) {
                 setAllDevices((devices) => [...devices, ...moreDevices]);
             } else {
-                setYourDevices((devices) => [...devices, ...moreDevices]);
+                setYourDevices((devices) =>
+                    devices ? [...devices, ...moreDevices] : null
+                );
             }
         }
         setMoreLoading(false);
@@ -213,7 +215,11 @@ const Devices = ({}: Props) => {
                 className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
             >
                 <DeviceList
-                    onScroll={(e) => handleVerticalScroll(e, false)}
+                    onScroll={(e) =>
+                        yourDevices && yourDevices.length > 0
+                            ? handleVerticalScroll(e, false)
+                            : null
+                    }
                     onScrollClick={() => scroll(true)}
                     elementRef={yourDevicesRef}
                     devices={yourDevices}
