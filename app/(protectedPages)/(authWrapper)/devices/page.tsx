@@ -13,7 +13,6 @@ import Icons from "../../../../icons";
 import routes from "../../../../routes";
 import { fetchDevices, IRequestOptions } from "../../../../bff/requests";
 import { useFormContext } from "../../../../contexts/FormContext";
-import { getFirebaseImage } from "../../../../firebase/functions";
 
 interface Props {}
 
@@ -113,33 +112,15 @@ const Devices = ({}: Props) => {
         };
     };
 
-    const getDeviceImages = async (
-        devices: IDevice[]
-    ): Promise<Promise<IDevice>[]> => {
-        return devices.map(async (device) => {
-            if (!device.image) {
-                const img = await getFirebaseImage(
-                    "gear_images",
-                    device.deviceId,
-                    "png"
-                );
-                return { ...device, image: img } as IDevice;
-            }
-            return device;
-        });
-    };
-
     const getDevices = async (isAllDevices: boolean) => {
         const requestBody = getRequestOptions(isAllDevices, null);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
-            Promise.all(await getDeviceImages(devices)).then((devs) => {
-                if (isAllDevices) {
-                    setAllDevices(devs);
-                } else {
-                    setYourDevices(devs);
-                }
-            });
+            if (isAllDevices) {
+                setAllDevices(devices);
+            } else {
+                setYourDevices(devices);
+            }
         }
     };
 
@@ -147,13 +128,11 @@ const Devices = ({}: Props) => {
         const requestBody = getRequestOptions(isAllDevices, skip);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
-            Promise.all(await getDeviceImages(moreDevices)).then((devs) => {
-                if (isAllDevices) {
-                    setAllDevices((devices) => [...devices, ...devs]);
-                } else {
-                    setYourDevices((devices) => [...devices, ...devs]);
-                }
-            });
+            if (isAllDevices) {
+                setAllDevices((devices) => [...devices, ...moreDevices]);
+            } else {
+                setYourDevices((devices) => [...devices, ...moreDevices]);
+            }
         }
         setMoreLoading(false);
     };
