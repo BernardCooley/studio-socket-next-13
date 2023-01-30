@@ -1,0 +1,65 @@
+[
+    {
+        "name": "RCA (Phono, Cinch)"
+    },
+    {
+        "name": "Spring Terminal"
+    },
+    {
+        "name": "3.5mm Miniature Phone Jack (1/8)"
+    },
+    {
+        "name": "1/4 Phone Jack (6.35mm)"
+    },
+    {
+        "name": "USB"
+    },
+    {
+        "name": "DIN"
+    },
+    {
+        "name": "D-Sub"
+    },
+    {
+        "name": "Other"
+    },
+    {
+        "name": "BNC"
+    },
+    {
+        "name": "Binding Post"
+    },
+    {
+        "name": "Banana"
+    },
+    {
+        "name": "XLR"
+    },
+    {
+        "name": "Combo XLR / 1/4"
+    },
+    {
+        "name": "JIS F05 (Toslink, ADAT Lightpipe)"
+    },
+    {
+        "name": "Bantam Phone Jack (TT)"
+    },
+    {
+        "name": "Terminal Block"
+    },
+    {
+        "name": "Binding Post (Universal)"
+    },
+    {
+        "name": "Firewire"
+    },
+    {
+        "name": "2.5mm Sub-miniature Phone Jack (3/32)"
+    },
+    {
+        "name": "Speakon"
+    },
+    {
+        "name": "RJ45"
+    }
+]

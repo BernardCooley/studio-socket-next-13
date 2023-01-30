@@ -1,0 +1,149 @@
+[
+    {
+        "name": "Turntable"
+    },
+    {
+        "name": "Speaker"
+    },
+    {
+        "name": "DJ Mixer"
+    },
+    {
+        "name": "Headphones"
+    },
+    {
+        "name": "Sequencer"
+    },
+    {
+        "name": "Sampler"
+    },
+    {
+        "name": "Synthesizer"
+    },
+    {
+        "name": "Signal Distribution"
+    },
+    {
+        "name": "Effect"
+    },
+    {
+        "name": "EQ"
+    },
+    {
+        "name": "Turntable Accessory"
+    },
+    {
+        "name": "Amplifier, Pre"
+    },
+    {
+        "name": "Amplifier, Power"
+    },
+    {
+        "name": "Drum Machine"
+    },
+    {
+        "name": "Enclosure / Casing"
+    },
+    {
+        "name": "Mixing Desk"
+    },
+    {
+        "name": "Dynamics"
+    },
+    {
+        "name": "CD"
+    },
+    {
+        "name": "Audio Interface"
+    },
+    {
+        "name": "Instrument Tuner"
+    },
+    {
+        "name": "Turntable Cartridge"
+    },
+    {
+        "name": "Digital Recorder"
+    },
+    {
+        "name": "Power Supply"
+    },
+    {
+        "name": "Control Surface"
+    },
+    {
+        "name": "Media Player"
+    },
+    {
+        "name": "Amplifier, Integrated"
+    },
+    {
+        "name": "Cassette Deck"
+    },
+    {
+        "name": "Tape Machine"
+    },
+    {
+        "name": "Amplifier, Phono"
+    },
+    {
+        "name": "Cable"
+    },
+    {
+        "name": "Radio Receiver"
+    },
+    {
+        "name": "Minidisc"
+    },
+    {
+        "name": "Microphone"
+    },
+    {
+        "name": "Turntable Stylus"
+    },
+    {
+        "name": "Turntable Tonearm"
+    },
+    {
+        "name": "Receiver"
+    },
+    {
+        "name": "Accessory"
+    },
+    {
+        "name": "Synchronizer / Clock Generator"
+    },
+    {
+        "name": "Crossover"
+    },
+    {
+        "name": "Amplifier, Headphone"
+    },
+    {
+        "name": "Radio Tuner"
+    },
+    {
+        "name": "Amplifier, Guitar"
+    },
+    {
+        "name": "Media & Data Storage"
+    },
+    {
+        "name": "Amplifier, Microphone"
+    },
+    {
+        "name": "Turntable Spare Part"
+    },
+    {
+        "name": "Amplifier, Bass"
+    },
+    {
+        "name": "8-track deck"
+    },
+    {
+        "name": "Digital-to-Analog Converter (DAC)"
+    },
+    {
+        "name": "Analog-to-Digital Converter (ADC)"
+    }
+]

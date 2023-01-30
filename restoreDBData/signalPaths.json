@@ -1,0 +1,35 @@
+[
+    {
+        "name": "Analog Hardware"
+    },
+    {
+        "name": "Passive Hardware"
+    },
+    {
+        "name": "No Audio"
+    },
+    {
+        "name": "Hybrid Analog / Digital Hardware"
+    },
+    {
+        "name": "Digital Hardware (including Analog Connections)"
+    },
+    {
+        "name": "Software"
+    },
+    {
+        "name": "Digital Hardware"
+    },
+    {
+        "name": "Software with Digital Hardware (including Analog Connections)"
+    },
+    {
+        "name": "Software with Digital Hardware"
+    },
+    {
+        "name": "Software with Analog Hardware"
+    },
+    {
+        "name": "Software with Hybrid Hardware"
+    }
+]
