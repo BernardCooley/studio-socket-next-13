@@ -6,9 +6,10 @@ import { shallowEqual } from "../utils";
 interface Props {
     sortBy: IOrderBy[];
     filterKeys: string[];
+    searchKeys: string[];
 }
 
-const FilterSortLabel = ({ sortBy, filterKeys }: Props) => {
+const FilterSortLabel = ({ sortBy, filterKeys, searchKeys }: Props) => {
     const [parsedSortKey, setParsedSortKey] = useState<string>("");
 
     useEffect(() => {
@@ -27,12 +28,19 @@ const FilterSortLabel = ({ sortBy, filterKeys }: Props) => {
 
     return (
         <div className="m-4 text-md">
-            {parsedSortKey.length > 0 && <div>Sorted by: {parsedSortKey}</div>}
+            {parsedSortKey.length > 0 && <div>Sorted by {parsedSortKey}</div>}
             {filterKeys.length > 0 &&
                 filterKeys.filter((key) => key !== "").length > 0 && (
                     <div>
-                        Filtered by:{" "}
+                        Filtered by{" "}
                         {filterKeys.filter((key) => key !== "").join(", ")}
+                    </div>
+                )}
+            {searchKeys.length > 0 &&
+                searchKeys.filter((key) => key !== "").length > 0 && (
+                    <div>
+                        Results for{" "}
+                        {searchKeys.filter((key) => key !== "").join(", ")}
                     </div>
                 )}
         </div>

@@ -22,11 +22,17 @@ const SearchModal = ({ searchType }: Props) => {
     const { searchOpen, closeSearch } = useSearchContext();
     const [errors, setErrors] = useState([]);
     const { addFormMessages, updateIcon } = useFormContext();
-    const { updateSearchQuery: updateYourDevicesSearchQuery } =
-        useYDevFilterContext();
+    const {
+        updateSearchQuery: updateYourDevicesSearchQuery,
+        updateSearchLabel: updateYourDevicesSearchLabel,
+        searchLabel: yourDevicesSearchLabel,
+    } = useYDevFilterContext();
 
-    const { updateSearchQuery: updateAllDevicesSearchQuery } =
-        useODevFilterContext();
+    const {
+        updateSearchQuery: updateAllDevicesSearchQuery,
+        updateSearchLabel: updateAllDevicesSearchLabel,
+        searchLabel: allDevicesSearchLabel,
+    } = useODevFilterContext();
 
     const { deviceListInView } = useNavContext();
     const isAllDevices = deviceListInView === "ours";
@@ -56,6 +62,9 @@ const SearchModal = ({ searchType }: Props) => {
             );
 
             if (isAllDevices) {
+                updateAllDevicesSearchLabel([
+                    `Title: ${searchRef.current.value}`,
+                ]);
                 updateAllDevicesSearchQuery([
                     {
                         title: {
@@ -64,6 +73,9 @@ const SearchModal = ({ searchType }: Props) => {
                     },
                 ]);
             } else {
+                updateYourDevicesSearchLabel([
+                    `Title: ${searchRef.current.value}`,
+                ]);
                 updateYourDevicesSearchQuery([
                     {
                         title: {
@@ -78,6 +90,17 @@ const SearchModal = ({ searchType }: Props) => {
                 closeSearch();
             }, 1000);
         }
+    };
+
+    const clearSearch = () => {
+        if (isAllDevices) {
+            updateAllDevicesSearchLabel([]);
+            updateAllDevicesSearchQuery([]);
+        } else {
+            updateYourDevicesSearchLabel([]);
+            updateYourDevicesSearchQuery([]);
+        }
+        closeSearch();
     };
 
     const validateAndSearch = () => {
@@ -115,13 +138,27 @@ const SearchModal = ({ searchType }: Props) => {
                         ref={searchRef}
                         errorMessages={getErrorMessages(errors, "search")}
                     />
-                    <CustomButton
-                        buttonClassName="filterSortDialogButton"
-                        labelClassName="text-xl"
-                        label="Search"
-                        type="button"
-                        onClick={handleSearch}
-                    />
+                    <div>
+                        <CustomButton
+                            disabled={
+                                isAllDevices
+                                    ? allDevicesSearchLabel.length === 0
+                                    : yourDevicesSearchLabel.length === 0
+                            }
+                            buttonClassName="filterSortDialogButton"
+                            labelClassName="text-xl"
+                            label="Clear"
+                            type="button"
+                            onClick={clearSearch}
+                        />
+                        <CustomButton
+                            buttonClassName="filterSortDialogButton"
+                            labelClassName="text-xl"
+                            label="Search"
+                            type="button"
+                            onClick={handleSearch}
+                        />
+                    </div>
                 </div>
             )}
         </div>

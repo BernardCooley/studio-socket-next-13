@@ -30,6 +30,7 @@ const Devices = ({}: Props) => {
         updateSkip: updateYourDevicesSkip,
         refetch,
         searchQuery: yourDevicesSearchQuery,
+        searchLabel: yourDevicesSearchLabel,
     } = useYDevFilterContext();
     const {
         sortBy: allDevicesSortBy,
@@ -40,6 +41,7 @@ const Devices = ({}: Props) => {
         skip: allDevicesSkip,
         updateSkip: updateAllDevicesSkip,
         searchQuery: allDevicesSearchQuery,
+        searchLabel: allDevicesSearchLabel,
     } = useODevFilterContext();
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
@@ -244,6 +246,7 @@ const Devices = ({}: Props) => {
                     showToTopButton={showYourToTopButton && isIntersecting}
                     listId="yours"
                     userId={user?.user.id}
+                    searchKeys={yourDevicesSearchLabel}
                 />
                 <DeviceList
                     onScroll={(e) => handleVerticalScroll(e, true)}
@@ -257,6 +260,7 @@ const Devices = ({}: Props) => {
                     showToTopButton={showAllToTopButton && !isIntersecting}
                     listId="ours"
                     userId={user?.user.id}
+                    searchKeys={allDevicesSearchLabel}
                 />
             </div>
         </div>

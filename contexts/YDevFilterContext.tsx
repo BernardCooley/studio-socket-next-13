@@ -19,6 +19,8 @@ interface YDevFilterContextProps {
     clearSelectedFilterOptions: () => void;
     searchQuery: ISearchQuery[];
     updateSearchQuery: (query: any[]) => void;
+    searchLabel: string[];
+    updateSearchLabel: (label: string[]) => void;
     andOr: AndOr;
     updateAndOr: (value: AndOr) => void;
     limit: number;
@@ -50,6 +52,8 @@ export const YDevFilterContext = createContext<YDevFilterContextProps>({
     clearSelectedFilterOptions: () => {},
     searchQuery: [],
     updateSearchQuery: () => {},
+    searchLabel: [],
+    updateSearchLabel: () => {},
     andOr: "AND",
     updateAndOr: () => {},
     limit: 50,
@@ -76,6 +80,7 @@ export const YDevFilterContextProvider = ({
     ]);
     const [filterKeys, setFilterKeys] = useState<any[]>([]);
     const [searchQuery, setSearchQuery] = useState<ISearchQuery[]>([]);
+    const [searchLabel, setSearchLabel] = useState<string[]>([]);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
     const [andOr, setAndOr] = useState<AndOr>("AND");
     const [limit, setLimit] = useState<number>(50);
@@ -137,6 +142,10 @@ export const YDevFilterContextProvider = ({
         setRefetch((refetch) => !refetch);
     };
 
+    const updateSearchLabel = (label: string[]) => {
+        setSearchLabel(label);
+    };
+
     return (
         <YDevFilterContext.Provider
             value={{
@@ -164,6 +173,8 @@ export const YDevFilterContextProvider = ({
                 clearSelectedFilterOptions,
                 refetch,
                 triggerRefetch,
+                searchLabel,
+                updateSearchLabel,
             }}
         >
             {children}

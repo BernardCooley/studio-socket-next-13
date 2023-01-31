@@ -23,6 +23,7 @@ interface Props {
     showToTopButton: boolean;
     listId: string;
     userId: string;
+    searchKeys: string[];
 }
 
 const DeviceList = ({
@@ -37,6 +38,7 @@ const DeviceList = ({
     showToTopButton,
     listId,
     userId,
+    searchKeys,
 }: Props) => {
     const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
@@ -98,9 +100,13 @@ const DeviceList = ({
                 fontSize="92px"
             />
             <Icons
-                className={`absolute top-16 ${
+                className={`absolute top-16 rounded-lg shadow-lg ${
                     iconType === "right" ? "left" : "right"
-                }-16`}
+                }-16 ${
+                    searchKeys.length > 0
+                        ? "filterSortIconActive"
+                        : "filterSortIconInactive"
+                }`}
                 iconType="search"
                 fontSize="92px"
                 onClick={openSearch}
@@ -108,7 +114,11 @@ const DeviceList = ({
             <PageTitle title={pageTitle} />
             <div>
                 {devices && devices.length > 0 && (
-                    <FilterSortLabel filterKeys={filterKeys} sortBy={sortBy} />
+                    <FilterSortLabel
+                        filterKeys={filterKeys}
+                        sortBy={sortBy}
+                        searchKeys={searchKeys}
+                    />
                 )}
                 <div className="deviceList" ref={elementRef}>
                     <Devices />
