@@ -28,6 +28,7 @@ const Devices = ({}: Props) => {
         limit: yourDevicesLimit,
         skip: yourDevicesSkip,
         updateSkip: updateYourDevicesSkip,
+        refetch,
     } = useYDevFilterContext();
     const {
         sortBy: allDevicesSortBy,
@@ -80,6 +81,11 @@ const Devices = ({}: Props) => {
             }, 500);
         }
     };
+
+    useEffect(() => {
+        scroll(false);
+        getDevices(false);
+    }, [refetch]);
 
     useEffect(() => {
         getDevices(true);
@@ -229,6 +235,7 @@ const Devices = ({}: Props) => {
                     filterKeys={yourDevicesFilteredByLabel}
                     showToTopButton={showYourToTopButton && isIntersecting}
                     listId="yours"
+                    userId={user?.user.id}
                 />
                 <DeviceList
                     onScroll={(e) => handleVerticalScroll(e, true)}
@@ -241,6 +248,7 @@ const Devices = ({}: Props) => {
                     filterKeys={allDevicesFilteredByLabel}
                     showToTopButton={showAllToTopButton && !isIntersecting}
                     listId="ours"
+                    userId={user?.user.id}
                 />
             </div>
         </div>

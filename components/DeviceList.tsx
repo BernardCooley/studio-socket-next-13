@@ -22,6 +22,7 @@ interface Props {
     onScroll: (e: React.UIEvent<HTMLDivElement, UIEvent>) => void;
     showToTopButton: boolean;
     listId: string;
+    userId: string;
 }
 
 const DeviceList = ({
@@ -35,6 +36,7 @@ const DeviceList = ({
     onScroll,
     showToTopButton,
     listId,
+    userId,
 }: Props) => {
     const { openSearch } = useSearchContext();
     const { showFilter } = useYDevFilterContext();
@@ -68,6 +70,7 @@ const DeviceList = ({
                             key={device.id}
                             device={device}
                             href={routes.device(device.id).as}
+                            userId={userId}
                         />
                     ))}
             </>

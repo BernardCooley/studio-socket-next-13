@@ -12,8 +12,7 @@ datasource db {
 
 model User {
   id String @id @default(cuid())
-  userId String
-  userName String
+  userId String @unique
   devices Device[]
 }
 

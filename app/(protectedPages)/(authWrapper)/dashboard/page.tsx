@@ -47,6 +47,7 @@ const Dashboard = ({}: Props) => {
                             key={device.id}
                             device={device}
                             href={routes.device(device.id).as}
+                            userId={device.userId}
                         />
                     ))}
                 <div className="p-6">Page section content</div>

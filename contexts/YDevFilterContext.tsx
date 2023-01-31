@@ -25,6 +25,8 @@ interface YDevFilterContextProps {
     updateLimit: (value: number) => void;
     skip: number;
     updateSkip: (value: number) => void;
+    refetch: boolean;
+    triggerRefetch: () => void;
 }
 
 export const YDevFilterContext = createContext<YDevFilterContextProps>({
@@ -54,6 +56,8 @@ export const YDevFilterContext = createContext<YDevFilterContextProps>({
     updateLimit: () => {},
     skip: 0,
     updateSkip: () => {},
+    refetch: false,
+    triggerRefetch: () => {},
 });
 
 export const useYDevFilterContext = () => useContext(YDevFilterContext);
@@ -78,6 +82,7 @@ export const YDevFilterContextProvider = ({
     const [skip, setSkip] = useState<number>(0);
     const [selectedFilterOptions, setFilterOptions] =
         useState<SelectedFilterOptions | null>(null);
+    const [refetch, setRefetch] = useState<boolean>(false);
 
     const showFilter = (type: SortFilter) => {
         setShowFilterModal(true);
@@ -128,6 +133,10 @@ export const YDevFilterContextProvider = ({
         setFilterOptions(null);
     };
 
+    const triggerRefetch = () => {
+        setRefetch((refetch) => !refetch);
+    };
+
     return (
         <YDevFilterContext.Provider
             value={{
@@ -153,6 +162,8 @@ export const YDevFilterContextProvider = ({
                 selectedFilterOptions,
                 updateSelectedFilterOptions,
                 clearSelectedFilterOptions,
+                refetch,
+                triggerRefetch,
             }}
         >
             {children}

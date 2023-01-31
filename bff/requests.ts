@@ -73,3 +73,10 @@ export const fetchConnectors = async () => {
 export const fetchFormFactors = async () => {
     return fetchWithErrorHandling(`/api/getFormFactors`, "GET");
 };
+
+export const addDeviceToUser = async (userId: string, deviceId: string) => {
+    return fetchWithErrorHandling(`/api/addDeviceToUser`, "POST", {
+        userId: userId,
+        deviceId: deviceId,
+    });
+};

@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import React from "react";
+import { addDeviceToUser } from "../bff/requests";
+import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import useUpdateDialog from "../hooks/useUpdateDialog";
 import Icons, { DeviceIcon } from "../icons";
 import { FormMessageTypes, IDevice } from "../types";
@@ -10,6 +12,7 @@ interface Props {
     device: IDevice;
     href?: string;
     listId?: string;
+    userId: string;
 }
 
 interface IDeviceIconProps {
@@ -18,7 +21,8 @@ interface IDeviceIconProps {
     fontSize?: string;
 }
 
-const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
+const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
+    const { triggerRefetch } = useYDevFilterContext();
     const { update } = useUpdateDialog();
     const ActionIcon = ({
         type,
@@ -84,12 +88,22 @@ const DeviceItem = ({ device, href = "", listId = "" }: Props) => {
                     fontSize="132px"
                 />
             ),
-            successAction: noopPromise,
+            successAction: () => add(userId, device.id),
             successMessage: `${device.title} has been added to your devices`,
             successMessageType: FormMessageTypes.SUCCESS,
             messageTimeout: 3000,
             loadingMessage: "Adding device...",
         });
+    };
+
+    const add = async (userId: string, deviceId: string) => {
+        const resp = await addDeviceToUser(userId, deviceId);
+
+        if (resp) {
+            triggerRefetch();
+        }
+
+        return null;
     };
 
     return (
