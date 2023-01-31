@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import React from "react";
-import { addDeviceToUser } from "../bff/requests";
+import { addDeviceToUser, removeDeviceFromUser } from "../bff/requests";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import useUpdateDialog from "../hooks/useUpdateDialog";
 import Icons, { DeviceIcon } from "../icons";
@@ -58,7 +58,7 @@ const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
                     fontSize="132px"
                 />
             ),
-            successAction: noopPromise,
+            successAction: () => remove(userId, device.id),
             successMessage: `${device.title} has been removed from your devices`,
             successMessageType: FormMessageTypes.SUCCESS,
             messageTimeout: 3000,
@@ -94,6 +94,16 @@ const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
             messageTimeout: 3000,
             loadingMessage: "Adding device...",
         });
+    };
+
+    const remove = async (userId: string, deviceId: string) => {
+        const resp = await removeDeviceFromUser(userId, deviceId);
+
+        if (resp) {
+            triggerRefetch();
+        }
+
+        return null;
     };
 
     const add = async (userId: string, deviceId: string) => {

@@ -84,6 +84,7 @@ const Devices = ({}: Props) => {
 
     useEffect(() => {
         scroll(false);
+        // TODO: not getting devices every time
         getDevices(false);
     }, [refetch]);
 

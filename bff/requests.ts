@@ -80,3 +80,13 @@ export const addDeviceToUser = async (userId: string, deviceId: string) => {
         deviceId: deviceId,
     });
 };
+
+export const removeDeviceFromUser = async (
+    userId: string,
+    deviceId: string
+) => {
+    return fetchWithErrorHandling(`/api/removeDeviceFromUser`, "POST", {
+        userId: userId,
+        deviceId: deviceId,
+    });
+};
