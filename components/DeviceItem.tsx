@@ -6,7 +6,6 @@ import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import useUpdateDialog from "../hooks/useUpdateDialog";
 import Icons, { DeviceIcon } from "../icons";
 import { FormMessageTypes, IDevice } from "../types";
-import { noopPromise } from "../utils";
 
 interface Props {
     device: IDevice;
