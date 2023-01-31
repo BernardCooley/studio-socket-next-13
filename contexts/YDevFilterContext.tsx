@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { AndOr, IOrderBy, SortFilter } from "../bff/types";
+import { AndOr, IOrderBy, ISearchQuery, SortFilter } from "../bff/types";
 import { SelectedFilterOptions } from "../types";
 
 interface YDevFilterContextProps {
@@ -17,8 +17,8 @@ interface YDevFilterContextProps {
     selectedFilterOptions: SelectedFilterOptions | null;
     updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
     clearSelectedFilterOptions: () => void;
-    searchQuery: string;
-    updateSearchQuery: (query: string) => void;
+    searchQuery: ISearchQuery[];
+    updateSearchQuery: (query: any[]) => void;
     andOr: AndOr;
     updateAndOr: (value: AndOr) => void;
     limit: number;
@@ -48,7 +48,7 @@ export const YDevFilterContext = createContext<YDevFilterContextProps>({
     selectedFilterOptions: null,
     updateSelectedFilterOptions: () => {},
     clearSelectedFilterOptions: () => {},
-    searchQuery: "",
+    searchQuery: [],
     updateSearchQuery: () => {},
     andOr: "AND",
     updateAndOr: () => {},
@@ -75,7 +75,7 @@ export const YDevFilterContextProvider = ({
         },
     ]);
     const [filterKeys, setFilterKeys] = useState<any[]>([]);
-    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [searchQuery, setSearchQuery] = useState<ISearchQuery[]>([]);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
     const [andOr, setAndOr] = useState<AndOr>("AND");
     const [limit, setLimit] = useState<number>(50);
@@ -105,7 +105,7 @@ export const YDevFilterContextProvider = ({
         setFilterKeys(filterKeys);
     };
 
-    const updateSearchQuery = (query: string) => {
+    const updateSearchQuery = (query: ISearchQuery[]) => {
         setSearchQuery(query);
     };
 

@@ -34,7 +34,6 @@ export default async function handler(
             res.status(200).json(removeDevice);
         }
     } catch (error) {
-        console.log("🚀 ~ file: removeDeviceFromUser.ts:37 ~ error", error);
         res.status(400).json({
             message: "Server error. Something went wrong.",
         });

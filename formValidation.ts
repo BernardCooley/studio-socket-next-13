@@ -2,7 +2,7 @@ import { z } from "zod";
 import { FormMessage, FormMessageTypes } from "./types";
 
 export const SearchSchema = z.object({
-    search: z
+    searchTerm: z
         .string()
         .min(3, { message: "Search term must be 3 characters or more" }),
 });

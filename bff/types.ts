@@ -8,6 +8,10 @@ export interface IOrderBy {
     [key: string]: any;
 }
 
+export interface ISearchQuery {
+    [key: string]: any;
+}
+
 export interface IFetchDevicesBody {
     skip: number;
     take?: number;

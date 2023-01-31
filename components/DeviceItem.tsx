@@ -23,6 +23,7 @@ interface IDeviceIconProps {
 
 const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
     const { triggerRefetch } = useYDevFilterContext();
+
     const { update } = useUpdateDialog();
     const ActionIcon = ({
         type,
@@ -138,7 +139,6 @@ const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
                             </div>
                             <div className="text-2xl">{device.title}</div>
                             <div>{device.deviceTypes[0]?.name}</div>
-                            <div>{device.formFactor?.name}</div>
                         </div>
                     </Link>
                     <div className="min-w-deviceActions h-full grid grid-cols-1 grid-rows-2 items-center justify-end relative">

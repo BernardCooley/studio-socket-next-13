@@ -28,6 +28,16 @@ export default async function handler(
         };
     }
 
+    if (req.body.searchQuery && req.body.searchQuery.length > 0) {
+        req.body.body = {
+            ...req.body.body,
+            where: {
+                ...req.body.body.where,
+                ...req.body.searchQuery[0],
+            },
+        };
+    }
+
     try {
         const devices = await prisma?.device.findMany(req.body.body);
         if (devices) {

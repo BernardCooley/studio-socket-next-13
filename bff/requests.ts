@@ -1,5 +1,5 @@
 import { devicesInclude } from "./includes";
-import { AndOr, IFetchDevicesBody, IOrderBy } from "./types";
+import { AndOr, IFetchDevicesBody, IOrderBy, ISearchQuery } from "./types";
 import { buildQuery, fetchWithErrorHandling } from "./utils";
 
 export interface IRequestOptions {
@@ -9,6 +9,7 @@ export interface IRequestOptions {
     andOr: AndOr | "";
     orderBy: IOrderBy[] | null;
     userId?: string | null;
+    searchQuery?: ISearchQuery | null;
 }
 
 export const fetchDevices = async ({
@@ -18,6 +19,7 @@ export const fetchDevices = async ({
     andOr = "OR",
     orderBy = null,
     userId = null,
+    searchQuery = null,
 }: IRequestOptions) => {
     const body: IFetchDevicesBody = {
         skip: skip,
@@ -27,6 +29,7 @@ export const fetchDevices = async ({
     return fetchWithErrorHandling(`/api/getDevices`, "POST", {
         body: buildQuery(body, limit, filters, andOr, orderBy),
         userId: userId,
+        searchQuery: searchQuery,
     });
 };
 

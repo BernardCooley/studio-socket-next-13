@@ -2,7 +2,10 @@
 
 import React, { FormEvent, useRef, useState } from "react";
 import { useFormContext } from "../contexts/FormContext";
+import { useNavContext } from "../contexts/NavContext";
+import { useODevFilterContext } from "../contexts/ODevFilterContext";
 import { useSearchContext } from "../contexts/SearchContext";
+import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import { SearchSchema } from "../formValidation";
 import Icons from "../icons";
 import { FormMessageTypes } from "../types";
@@ -19,6 +22,14 @@ const SearchModal = ({ searchType }: Props) => {
     const { searchOpen, closeSearch } = useSearchContext();
     const [errors, setErrors] = useState([]);
     const { addFormMessages, updateIcon } = useFormContext();
+    const { updateSearchQuery: updateYourDevicesSearchQuery } =
+        useYDevFilterContext();
+
+    const { updateSearchQuery: updateAllDevicesSearchQuery } =
+        useODevFilterContext();
+
+    const { deviceListInView } = useNavContext();
+    const isAllDevices = deviceListInView === "ours";
 
     const handleSearch = (e: FormEvent) => {
         setErrors([]);
@@ -26,7 +37,7 @@ const SearchModal = ({ searchType }: Props) => {
         validateAndSearch();
     };
 
-    const search = () => {
+    const search = async () => {
         if (searchRef.current) {
             addFormMessages(
                 new Set([
@@ -44,17 +55,35 @@ const SearchModal = ({ searchType }: Props) => {
                 />
             );
 
+            if (isAllDevices) {
+                updateAllDevicesSearchQuery([
+                    {
+                        title: {
+                            search: searchRef.current.value,
+                        },
+                    },
+                ]);
+            } else {
+                updateYourDevicesSearchQuery([
+                    {
+                        title: {
+                            search: searchRef.current.value,
+                        },
+                    },
+                ]);
+            }
+
             setTimeout(() => {
                 addFormMessages(new Set([]));
                 closeSearch();
-            }, 3000);
+            }, 1000);
         }
     };
 
     const validateAndSearch = () => {
         try {
             SearchSchema.parse({
-                search: searchRef.current?.value,
+                searchTerm: searchRef.current?.value,
             });
             search();
             return true;
@@ -67,7 +96,7 @@ const SearchModal = ({ searchType }: Props) => {
     return (
         <div>
             {searchOpen && (
-                <div className="absolute modal">
+                <div className="absolute modal z-50">
                     <Icons
                         iconType="close"
                         className="z-30 absolute right-2 top-2"
@@ -81,7 +110,7 @@ const SearchModal = ({ searchType }: Props) => {
                         className="mt-10"
                         name="search"
                         id="search"
-                        label=""
+                        label="Name"
                         type="text"
                         ref={searchRef}
                         errorMessages={getErrorMessages(errors, "search")}

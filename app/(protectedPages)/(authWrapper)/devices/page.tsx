@@ -29,6 +29,7 @@ const Devices = ({}: Props) => {
         skip: yourDevicesSkip,
         updateSkip: updateYourDevicesSkip,
         refetch,
+        searchQuery: yourDevicesSearchQuery,
     } = useYDevFilterContext();
     const {
         sortBy: allDevicesSortBy,
@@ -38,6 +39,7 @@ const Devices = ({}: Props) => {
         limit: allDevicesLimit,
         skip: allDevicesSkip,
         updateSkip: updateAllDevicesSkip,
+        searchQuery: allDevicesSearchQuery,
     } = useODevFilterContext();
     const { searchOpen } = useSearchContext();
     const { updateDeviceListInView, navOpen } = useNavContext();
@@ -99,6 +101,8 @@ const Devices = ({}: Props) => {
         yourDevicesFilterKeys,
         allDevicesFilterKeys,
         user,
+        allDevicesSearchQuery,
+        yourDevicesSearchQuery,
     ]);
 
     useEffect(() => {
@@ -122,6 +126,9 @@ const Devices = ({}: Props) => {
             andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
             orderBy: isAllDevices ? allDevicesSortBy : yourDevicesSortBy,
             userId: isAllDevices ? null : user?.user.id,
+            searchQuery: isAllDevices
+                ? allDevicesSearchQuery
+                : yourDevicesSearchQuery,
         };
     };
 
