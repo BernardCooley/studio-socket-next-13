@@ -3,23 +3,23 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import BackButton from "../../../../../components/BackButton";
-import DetailItem from "../../../../../components/DetailItem";
-import ImageWithFallback from "../../../../../components/ImageWithFallback";
-import { useFormContext } from "../../../../../contexts/FormContext";
-import { getFirebaseImage } from "../../../../../firebase/functions";
+import DetailItem from "../../../../../../components/DetailItem";
+import ImageWithFallback from "../../../../../../components/ImageWithFallback";
+import { useFormContext } from "../../../../../../contexts/FormContext";
+import { getFirebaseImage } from "../../../../../../firebase/functions";
 import {
     FormMessageTypes,
     IDevice,
     IFirebaseImage,
     UserData,
-} from "../../../../../types";
+} from "../../../../../../types";
 import LibraryAddCheckIcon from "@mui/icons-material/LibraryAddCheck";
-import routes from "../../../../../routes";
-import Connections from "../../../../../components/Connections";
-import { useNavContext } from "../../../../../contexts/NavContext";
-import { fetchDeviceById } from "../../../../../bff/requests";
+import routes from "../../../../../../routes";
+import Connections from "../../../../../../components/Connections";
+import { useNavContext } from "../../../../../../contexts/NavContext";
+import { fetchDeviceById } from "../../../../../../bff/requests";
 import { Button } from "@chakra-ui/react";
+import BackButton from "../../../../../../components/BackButton";
 
 interface Props {
     params: { id: number };

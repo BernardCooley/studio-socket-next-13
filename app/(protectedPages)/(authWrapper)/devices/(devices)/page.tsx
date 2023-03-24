@@ -2,18 +2,18 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { FormMessageTypes, IDevice } from "../../../../types";
-import { useYDevFilterContext } from "../../../../contexts/YDevFilterContext";
-import { useODevFilterContext } from "../../../../contexts/ODevFilterContext";
-import { useNavContext } from "../../../../contexts/NavContext";
-import DeviceList from "../../../../components/DeviceList";
-import { useSearchContext } from "../../../../contexts/SearchContext";
+import { useYDevFilterContext } from "../../../../../contexts/YDevFilterContext";
+import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
+import { useNavContext } from "../../../../../contexts/NavContext";
+import DeviceList from "../../../../../components/DeviceList";
+import { useSearchContext } from "../../../../../contexts/SearchContext";
 import useIntersectionObserver from "@react-hook/intersection-observer";
-import Icons from "../../../../icons";
-import routes from "../../../../routes";
-import { fetchDevices, IRequestOptions } from "../../../../bff/requests";
-import { useFormContext } from "../../../../contexts/FormContext";
+import Icons from "../../../../../icons";
+import routes from "../../../../../routes";
+import { fetchDevices, IRequestOptions } from "../../../../../bff/requests";
+import { useFormContext } from "../../../../../contexts/FormContext";
 import { useSession } from "next-auth/react";
+import { FormMessageTypes, IDevice } from "../../../../../types";
 
 interface Props {}
 

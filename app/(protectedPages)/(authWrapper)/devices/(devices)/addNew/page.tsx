@@ -1,41 +1,40 @@
 "use client";
 
 import React, { useState, FormEvent, useRef, useEffect } from "react";
-import AddConnectionSection from "../../../../../components/AddConnectionSection";
-import BackButton from "../../../../../components/BackButton";
-import CustomTextInput from "../../../../../components/CustomTextInput";
-import PageTitle from "../../../../../components/PageTitle";
-import { useFormContext } from "../../../../../contexts/FormContext";
+import { DeviceType, Connector, FormFactor, Connection } from "@prisma/client";
+import { Button } from "@chakra-ui/react";
+import AddConnectionSection from "../../../../../../components/AddConnectionSection";
+import BackButton from "../../../../../../components/BackButton";
+import { useFormContext } from "../../../../../../contexts/FormContext";
+import { useNavContext } from "../../../../../../contexts/NavContext";
+import {
+    FormMessageTypes,
+    NewDevice,
+    SelectOption,
+} from "../../../../../../types";
+import {
+    getErrorMessages,
+    getSelectionOptions,
+    noop,
+} from "../../../../../../utils";
+import {
+    fetchConnectors,
+    fetchDeviceTypes,
+    fetchFormFactors,
+} from "../../../../../../bff/requests";
 import {
     AddDeviceSchema,
     ConnectionDescriptionSchema,
     ConnectionSchema,
     getFormMessages,
-} from "../../../../../formValidation";
-import {
-    Connection,
-    FormMessageTypes,
-    NewDevice,
-    SelectOption,
-} from "../../../../../types";
-import {
-    getErrorMessages,
-    getSelectionOptions,
-    noop,
-} from "../../../../../utils";
-import Avatar from "../../../../../components/Avatar";
-import Icons from "../../../../../icons";
-import { useNavContext } from "../../../../../contexts/NavContext";
-import { db } from "../../../../../firebase/clientApp";
-import {
-    fetchConnectors,
-    fetchDeviceTypes,
-    fetchFormFactors,
-} from "../../../../../bff/requests";
-import { DeviceType, Connector, FormFactor } from "@prisma/client";
-import CustomMultiSelect from "../../../../../components/CustomMultiSelect";
-import CustomSelect from "../../../../../components/CustomSelect";
-import { Button } from "@chakra-ui/react";
+} from "../../../../../../formValidation";
+import { db } from "../../../../../../firebase/clientApp";
+import Icons from "../../../../../../icons";
+import PageTitle from "../../../../../../components/PageTitle";
+import CustomTextInput from "../../../../../../components/CustomTextInput";
+import CustomMultiSelect from "../../../../../../components/CustomMultiSelect";
+import CustomSelect from "../../../../../../components/CustomSelect";
+import Avatar from "../../../../../../components/Avatar";
 
 interface Props {}
 
