@@ -1074,6 +1074,7 @@ export interface NewDevice {
     deviceTypes: DeviceType[];
     connections: Connection[];
     requiresVerification: boolean;
+    isTestDevice: boolean;
 }
 
 export type DeviceType =

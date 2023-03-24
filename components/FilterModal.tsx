@@ -97,17 +97,23 @@ const FilterModal = ({}: Props) => {
     const getFilterOptions = async () => {
         setTypes(
             getSelectionOptions(
-                ((await fetchDeviceTypes()) as DeviceType[]).map((t) => t.name)
+                ((await fetchDeviceTypes()) as DeviceType[])
+                    .map((t) => t.name)
+                    .sort()
             )
         );
         setConnectors(
             getSelectionOptions(
-                ((await fetchConnectors()) as Connector[]).map((t) => t.name)
+                ((await fetchConnectors()) as Connector[])
+                    .map((t) => t.name)
+                    .sort()
             )
         );
         setFormFactors(
             getSelectionOptions(
-                ((await fetchFormFactors()) as FormFactor[]).map((t) => t.name)
+                ((await fetchFormFactors()) as FormFactor[])
+                    .map((t) => t.name)
+                    .sort()
             )
         );
     };

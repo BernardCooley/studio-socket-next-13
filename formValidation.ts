@@ -11,8 +11,11 @@ export const AddDeviceSchema = z.object({
     title: z.string().min(3, { message: "Title must be 3 characters or more" }),
     manufacturer: z
         .string()
-        .min(3, { message: "Manufacturermust be 3 characters or more" }),
-    deviceType: z.string().min(1, { message: "Please select a device type" }),
+        .min(3, { message: "Manufacturer must be 3 characters or more" }),
+    deviceTypes: z.array(
+        z.string().min(1, { message: "Please select a device type" })
+    ),
+    formFactor: z.string().min(1, { message: "Please select a form factor" }),
 });
 
 export const ConnectionSchema = z.object({

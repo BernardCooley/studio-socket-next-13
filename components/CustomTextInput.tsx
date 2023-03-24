@@ -81,7 +81,7 @@ const CustomTextInput = forwardRef(
         return (
             <div
                 className={`w-full ${className ? className : ""} ${
-                    hide ? "h-4" : "h-32"
+                    hide ? "h-4" : "h-28"
                 }`}
             >
                 <div className="relative">

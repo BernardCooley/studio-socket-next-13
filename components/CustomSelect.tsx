@@ -50,11 +50,11 @@ const CustomSelect = forwardRef(
         };
 
         return (
-            <div className={`w-full ${className}`} ref={containerRef}>
+            <div className={`w-full mb-16 ${className}`} ref={containerRef}>
                 <label className="w-full text-2xl text-primary z-10 mb-4">
                     {label}
                 </label>
-                <div className="relative w-full mb-8 text-2xl">
+                <div className="relative w-full text-2xl">
                     <div
                         className={`w-full p-2 border-4 flex justify-between ${
                             optionsDisplayed
@@ -91,8 +91,8 @@ const CustomSelect = forwardRef(
                             </div>
                         ))}
                     </div>
+                    <ErrorMessages errorMessages={errorMessages} />
                 </div>
-                <ErrorMessages errorMessages={errorMessages} />
                 <input
                     className="opacity-0 absolute top-0 left-0"
                     ref={ref}

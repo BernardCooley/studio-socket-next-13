@@ -1,11 +1,9 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import React, { useState, FormEvent, useRef } from "react";
+import React, { useState, FormEvent, useRef, useEffect } from "react";
 import AddConnectionSection from "../../../../../components/AddConnectionSection";
 import BackButton from "../../../../../components/BackButton";
 import CustomButton from "../../../../../components/CustomButton";
-import CustomSelect from "../../../../../components/CustomSelect";
 import CustomTextInput from "../../../../../components/CustomTextInput";
 import PageTitle from "../../../../../components/PageTitle";
 import { useFormContext } from "../../../../../contexts/FormContext";
@@ -17,23 +15,32 @@ import {
 } from "../../../../../formValidation";
 import {
     Connection,
-    DeviceType,
     FormMessageTypes,
     NewDevice,
+    SelectOption,
 } from "../../../../../types";
-import { getErrorMessages, noop } from "../../../../../utils";
+import {
+    getErrorMessages,
+    getSelectionOptions,
+    noop,
+} from "../../../../../utils";
 import Avatar from "../../../../../components/Avatar";
 import Icons from "../../../../../icons";
 import { useNavContext } from "../../../../../contexts/NavContext";
-import { addDoc, collection } from "firebase/firestore";
 import { db } from "../../../../../firebase/clientApp";
-import { connectionTypes, deviceTypes } from "../../../../../consts";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+    fetchConnectors,
+    fetchDeviceTypes,
+    fetchFormFactors,
+} from "../../../../../bff/requests";
+import { DeviceType, Connector, FormFactor } from "@prisma/client";
+import CustomMultiSelect from "../../../../../components/CustomMultiSelect";
+import CustomSelect from "../../../../../components/CustomSelect";
 
 interface Props {}
 
 const AddNewDevice = ({}: Props) => {
-    const storage = getStorage();
+    db;
     const {
         formMessages,
         file,
@@ -45,12 +52,12 @@ const AddNewDevice = ({}: Props) => {
     const { environment, navOpen } = useNavContext();
     const titleRef = useRef<HTMLInputElement>(null);
     const manufacturerRef = useRef<HTMLInputElement>(null);
-    const deviceTypeRef = useRef<HTMLInputElement>(null);
+    const deviceTypesRef = useRef<HTMLInputElement>(null);
+    const formFactorRef = useRef<HTMLInputElement>(null);
     const nameRef = useRef<HTMLInputElement>(null);
     const descriptionRef = useRef<HTMLInputElement>(null);
     const connectorRef = useRef<HTMLInputElement>(null);
     const imageRef = useRef<HTMLInputElement>(null);
-    const router = useRouter();
     const [errors, setErrors] = useState([]);
     const [connectionErrors, setConnectionErrors] = useState([]);
     const [audioConnectionShow, setAudioConnectionFormShow] =
@@ -60,8 +67,44 @@ const AddNewDevice = ({}: Props) => {
     const [audioConnections, setAudioConnections] = useState<Connection[]>([]);
     const [midiConnections, setMidiConnections] = useState<Connection[]>([]);
     const [descriptions, setDescriptions] = useState<string[]>([]);
-    const [submitting, setSubmitting] = useState<boolean>(false);
     const [triggerResetValue, setTriggerResetValue] = useState<boolean>(false);
+    const [typeOptions, setTypeOptions] = useState<SelectOption[]>([]);
+    const [connectorOptions, setConnectorOptions] = useState<SelectOption[]>(
+        []
+    );
+    const [formFactorOptions, setFormFactorOptions] = useState<SelectOption[]>(
+        []
+    );
+
+    useEffect(() => {
+        (async () => {
+            await getSelectOptions();
+        })();
+    }, []);
+
+    const getSelectOptions = async () => {
+        setTypeOptions(
+            getSelectionOptions(
+                ((await fetchDeviceTypes()) as DeviceType[])
+                    .map((t) => t.name)
+                    .sort()
+            )
+        );
+        setConnectorOptions(
+            getSelectionOptions(
+                ((await fetchConnectors()) as Connector[])
+                    .map((t) => t.name)
+                    .sort()
+            )
+        );
+        setFormFactorOptions(
+            getSelectionOptions(
+                ((await fetchFormFactors()) as FormFactor[])
+                    .map((t) => t.name)
+                    .sort()
+            )
+        );
+    };
 
     const connectionSections = [
         {
@@ -102,7 +145,6 @@ const AddNewDevice = ({}: Props) => {
                 }
             }, 0);
         } catch (err: any) {
-            setSubmitting(false);
             setConnectionErrors(err.errors);
             return false;
         }
@@ -110,17 +152,22 @@ const AddNewDevice = ({}: Props) => {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setErrors([]);
         try {
             AddDeviceSchema.parse({
                 title: titleRef.current?.value,
                 manufacturer: manufacturerRef.current?.value,
-                deviceType: deviceTypeRef.current?.value,
+                deviceTypes: deviceTypesRef.current?.value
+                    ? JSON.parse(deviceTypesRef.current?.value)
+                    : [""],
+                formFactor: formFactorRef.current?.value,
             });
 
             if (
                 titleRef.current &&
                 manufacturerRef.current &&
-                deviceTypeRef.current
+                deviceTypesRef.current &&
+                formFactorRef.current
             ) {
                 addFormMessages(
                     new Set([
@@ -141,35 +188,13 @@ const AddNewDevice = ({}: Props) => {
                 const newDevice: NewDevice = {
                     title: titleRef.current?.value,
                     manufacturer: manufacturerRef.current?.value,
-                    deviceTypes: [deviceTypeRef.current?.value] as DeviceType[],
+                    deviceTypes: JSON.parse(deviceTypesRef.current?.value),
                     connections: [...audioConnections, ...midiConnections],
                     requiresVerification: environment === "prod",
+                    isTestDevice: environment !== "prod",
                 };
 
                 try {
-                    const docRef = await addDoc(
-                        collection(
-                            db,
-                            environment === "prod" ? "devices" : "testDevices"
-                        ),
-                        newDevice
-                    );
-
-                    if (imageRef.current?.files) {
-                        const storageRef = ref(
-                            storage,
-                            `${
-                                environment === "prod"
-                                    ? "gear_images"
-                                    : "gear_images_test"
-                            }/${docRef.id}`
-                        );
-                        await uploadBytes(
-                            storageRef,
-                            imageRef.current?.files[0]
-                        );
-                    }
-
                     addFormMessages(
                         new Set([
                             {
@@ -187,7 +212,6 @@ const AddNewDevice = ({}: Props) => {
 
             return true;
         } catch (err: any) {
-            setSubmitting(false);
             setErrors(err.errors);
             return false;
         }
@@ -262,100 +286,132 @@ const AddNewDevice = ({}: Props) => {
                 noValidate={true}
                 onClick={noop}
             >
-                <div className="w-full flex flex-col justify-center items-center">
-                    <CustomTextInput
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
-                        id="title"
-                        type="text"
-                        label="Title *"
-                        name="title"
-                        ref={titleRef}
-                        errorMessages={getErrorMessages(errors, "title")}
-                    />
-                    <CustomTextInput
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
-                        id="manufacturer"
-                        type="text"
-                        label="Manufacturer *"
-                        name="manufacturer"
-                        ref={manufacturerRef}
-                        errorMessages={getErrorMessages(errors, "manufacturer")}
-                    />
-                    <CustomSelect
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
-                        name="deviceType"
-                        options={deviceTypes.map((type) => ({
-                            value: type === "Please select" ? "" : type,
-                            label: type,
-                        }))}
-                        label="Device type *"
-                        ref={deviceTypeRef}
-                        errorMessages={getErrorMessages(errors, "deviceType")}
-                    />
-                    <CustomTextInput
-                        className={`mt-16 ${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
-                        type="file"
-                        id="avatar"
-                        label="Device image (jpg, jpeg, png)"
-                        name="avatar"
-                        ref={imageRef}
-                        errorMessages={getErrorMessages(errors, "deviceImage")}
-                        isFile={true}
-                        borderless={true}
-                        scaleLabel={false}
-                        resetValue={triggerResetValue}
-                        hide={file.length > 0}
-                    />
-                    {file && (
-                        <Avatar
-                            image={file}
-                            containerClassname="w-3/4 mb-4 mt-6"
-                            icon={
-                                <Icons
-                                    iconType="close"
-                                    className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
-                                    onClick={handleDeleteAvatar}
-                                    fontSize="92px"
+                {typeOptions?.length > 0 && formFactorOptions?.length > 0 && (
+                    <div className="w-full flex flex-col justify-center items-center">
+                        <CustomTextInput
+                            className={`${
+                                formMessages.size > 0
+                                    ? "pointer-events-none"
+                                    : ""
+                            }`}
+                            id="title"
+                            type="text"
+                            label="Title *"
+                            name="title"
+                            ref={titleRef}
+                            errorMessages={getErrorMessages(errors, "title")}
+                        />
+                        <CustomTextInput
+                            className={`${
+                                formMessages.size > 0
+                                    ? "pointer-events-none"
+                                    : ""
+                            }`}
+                            id="manufacturer"
+                            type="text"
+                            label="Manufacturer *"
+                            name="manufacturer"
+                            ref={manufacturerRef}
+                            errorMessages={getErrorMessages(
+                                errors,
+                                "manufacturer"
+                            )}
+                        />
+                        <CustomMultiSelect
+                            className={`${
+                                formMessages.size > 0
+                                    ? "pointer-events-none"
+                                    : ""
+                            }`}
+                            name="deviceTypes"
+                            options={typeOptions}
+                            label="Device Types"
+                            ref={deviceTypesRef}
+                            errorMessages={getErrorMessages(
+                                errors,
+                                "deviceTypes"
+                            )}
+                        />
+                        <CustomSelect
+                            className={`${
+                                formMessages.size > 0
+                                    ? "pointer-events-none"
+                                    : ""
+                            }`}
+                            name="formFactor"
+                            options={formFactorOptions}
+                            label="Form Factor"
+                            ref={formFactorRef}
+                            errorMessages={getErrorMessages(
+                                errors,
+                                "formFactor"
+                            )}
+                        />
+                        <div className="relative top-6 flex flex-col items-center">
+                            <CustomTextInput
+                                className={`${
+                                    formMessages.size > 0
+                                        ? "pointer-events-none"
+                                        : ""
+                                }`}
+                                type="file"
+                                id="avatar"
+                                label="Device image (jpg, jpeg, png)"
+                                name="avatar"
+                                ref={imageRef}
+                                errorMessages={getErrorMessages(
+                                    errors,
+                                    "deviceImage"
+                                )}
+                                isFile={true}
+                                borderless={true}
+                                scaleLabel={false}
+                                resetValue={triggerResetValue}
+                                hide={file.length > 0}
+                            />
+                            {file && (
+                                <Avatar
+                                    imageClassname="rounded-none"
+                                    image={file}
+                                    containerClassname="w-3/4 mb-4 mt-6"
+                                    fit="contain"
+                                    icon={
+                                        <Icons
+                                            iconType="close"
+                                            className="relative -top-6 border-2 rounded-full bg-primary-light text-primary"
+                                            onClick={handleDeleteAvatar}
+                                            fontSize="92px"
+                                        />
+                                    }
                                 />
-                            }
+                            )}
+                        </div>
+                        {connectionSections.map((section) => (
+                            <AddConnectionSection
+                                key={section.title}
+                                title={section.title}
+                                connectionShow={section.connectionShow}
+                                connections={section.connections}
+                                connectorRef={connectorRef}
+                                descriptionRef={descriptionRef}
+                                errors={connectionErrors}
+                                descriptions={descriptions}
+                                nameRef={nameRef}
+                                options={connectorOptions}
+                                onAddConnection={section.onAddConnection}
+                                onAddDescription={addDescrption}
+                                onDeleteConnection={section.onDeleteConnection}
+                                onHideForm={section.onHideForm}
+                                onShowForm={section.onShowForm}
+                            />
+                        ))}
+                        <CustomButton
+                            label="Save"
+                            type="submit"
+                            buttonClassName={`authSubmitButton mt-10`}
                         />
-                    )}
-                    {connectionSections.map((section) => (
-                        <AddConnectionSection
-                            key={section.title}
-                            title={section.title}
-                            connectionShow={section.connectionShow}
-                            connections={section.connections}
-                            connectorRef={connectorRef}
-                            descriptionRef={descriptionRef}
-                            errors={connectionErrors}
-                            descriptions={descriptions}
-                            nameRef={nameRef}
-                            options={connectionTypes.map((type) => ({
-                                value: type === "Please select" ? "" : type,
-                                label: type,
-                            }))}
-                            onAddConnection={section.onAddConnection}
-                            onAddDescription={addDescrption}
-                            onDeleteConnection={section.onDeleteConnection}
-                            onHideForm={section.onHideForm}
-                            onShowForm={section.onShowForm}
-                        />
-                    ))}
-                    <CustomButton
-                        label="Save"
-                        type="submit"
-                        buttonClassName={`authSubmitButton mt-10`}
-                    />
-                </div>
+                    </div>
+                )}
             </form>
         </div>
     );

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 interface Props {
     errorMessages?: string[];
@@ -6,7 +6,7 @@ interface Props {
 
 const ErrorMessages = ({ errorMessages }: Props) => {
     return (
-        <div className="text-error">
+        <div className="text-error text-lg absolute">
             {errorMessages &&
                 errorMessages.length > 0 &&
                 errorMessages.map((error) => (

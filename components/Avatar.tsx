@@ -5,9 +5,17 @@ interface Props {
     image: string;
     containerClassname?: string;
     icon: ReactNode;
+    imageClassname?: string;
+    fit?: "cover" | "contain" | "fill";
 }
 
-const Avatar = ({ image = "", containerClassname, icon }: Props) => {
+const Avatar = ({
+    image = "",
+    containerClassname,
+    icon,
+    imageClassname = "rounded-full",
+    fit = "cover",
+}: Props) => {
     return (
         <div
             className={`w-full flex flex-col justify-center relative items-center ${containerClassname}`}
@@ -16,8 +24,8 @@ const Avatar = ({ image = "", containerClassname, icon }: Props) => {
                 containerClassname="w-full aspect-square relative"
                 title="avatar"
                 image={{ name: "", url: image }}
-                imageClassname="rounded-full"
-                fit="cover"
+                imageClassname={imageClassname}
+                fit={fit}
                 size={{
                     width: 200,
                     height: 200,
