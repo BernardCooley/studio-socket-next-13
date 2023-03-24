@@ -23,10 +23,27 @@ export const theme = extendTheme({
                 primary: {
                     color: primaryLight,
                     backgroundColor: primary,
+
+                    _hover: {
+                        color: primary,
+                        backgroundColor: primaryLight,
+                    },
+                    _focusVisible: {
+                        boxShadow: "transparent",
+                    },
                 },
                 ghost: {
                     backgroundColor: "transparent",
                     border: "none",
+                    _active: {
+                        backgroundColor: "transparent",
+                    },
+                    _hover: {
+                        backgroundColor: "transparent",
+                    },
+                    _focusVisible: {
+                        boxShadow: "transparent",
+                    },
                 },
             },
             baseStyle: {
