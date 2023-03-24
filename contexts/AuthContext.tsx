@@ -5,12 +5,19 @@ interface AuthContextProps {
     updateUser: (user: any) => void;
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-    user: null,
-    updateUser: () => {},
-});
+export const AuthContext = createContext<AuthContextProps | null>(null);
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = () => {
+    const authContext = useContext(AuthContext);
+
+    if (!authContext) {
+        throw new Error(
+            "useAuthContext has to be used within <AuthContext.Provider>"
+        );
+    }
+
+    return authContext;
+};
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<any>(null);

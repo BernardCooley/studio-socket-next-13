@@ -29,38 +29,21 @@ interface ODevFilterContextProps {
     updateSkip: (value: number) => void;
 }
 
-export const ODevFilterContext = createContext<ODevFilterContextProps>({
-    filterModalShowing: false,
-    showFilter: () => {},
-    hideFilter: () => {},
-    sortOrFilter: "sort",
-    sortBy: [
-        {
-            title: "asc",
-        },
-    ],
-    updateSortBy: () => {},
-    filterKeys: [],
-    clearFilterKeys: () => {},
-    updateFilterKeys: () => {},
-    filteredByLabel: [],
-    updateFilteredByLabel: () => {},
-    selectedFilterOptions: null,
-    updateSelectedFilterOptions: () => {},
-    clearSelectedFilterOptions: () => {},
-    searchQuery: [],
-    updateSearchQuery: () => {},
-    searchLabel: [],
-    updateSearchLabel: () => {},
-    andOr: "AND",
-    updateAndOr: () => {},
-    limit: 50,
-    updateLimit: () => {},
-    skip: 0,
-    updateSkip: () => {},
-});
+export const ODevFilterContext = createContext<ODevFilterContextProps | null>(
+    null
+);
 
-export const useODevFilterContext = () => useContext(ODevFilterContext);
+export const useODevFilterContext = () => {
+    const ODevContext = useContext(ODevFilterContext);
+
+    if (!ODevContext) {
+        throw new Error(
+            "useODevFilterContext has to be used within <ODevFilterContext.Provider>"
+        );
+    }
+
+    return ODevContext;
+};
 
 export const ODevFilterContextProvider = ({
     children,

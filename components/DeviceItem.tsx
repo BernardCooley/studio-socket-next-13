@@ -6,6 +6,7 @@ import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import useUpdateDialog from "../hooks/useUpdateDialog";
 import Icons, { DeviceIcon } from "../icons";
 import { FormMessageTypes, IDevice } from "../types";
+import { motion } from "framer-motion";
 
 interface Props {
     device: IDevice;
@@ -21,6 +22,7 @@ interface IDeviceIconProps {
 }
 
 const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
+    const Frame = motion.div;
     const { triggerRefetch } = useYDevFilterContext();
 
     const { update } = useUpdateDialog();
@@ -117,7 +119,12 @@ const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
     };
 
     return (
-        <div className="border-primary-light-border border-2 shadow-lg rounded-md">
+        <Frame
+            className="border-primary-light-border border-2 shadow-lg rounded-md relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            layout
+        >
             {device && Object.keys(device).length > 0 && (
                 <div className="p-2 h-full flex relative items-start">
                     <Link
@@ -162,7 +169,7 @@ const DeviceItem = ({ device, href = "", listId = "", userId }: Props) => {
                     </div>
                 </div>
             )}
-        </div>
+        </Frame>
     );
 };
 

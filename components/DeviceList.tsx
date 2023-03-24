@@ -1,3 +1,4 @@
+import { AnimatePresence } from "framer-motion";
 import React from "react";
 import { IOrderBy } from "../bff/types";
 import { useSearchContext } from "../contexts/SearchContext";
@@ -64,17 +65,19 @@ const DeviceList = ({
         }
         return (
             <>
-                {devices &&
-                    devices.length > 0 &&
-                    devices.map((device) => (
-                        <DeviceItem
-                            listId={listId}
-                            key={device.id}
-                            device={device}
-                            href={routes.device(device.id).as}
-                            userId={userId}
-                        />
-                    ))}
+                <AnimatePresence>
+                    {devices &&
+                        devices.length > 0 &&
+                        devices.map((device) => (
+                            <DeviceItem
+                                listId={listId}
+                                key={device.id}
+                                device={device}
+                                href={routes.device(device.id).as}
+                                userId={userId}
+                            />
+                        ))}
+                </AnimatePresence>
             </>
         );
     };

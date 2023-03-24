@@ -31,40 +31,21 @@ interface YDevFilterContextProps {
     triggerRefetch: () => void;
 }
 
-export const YDevFilterContext = createContext<YDevFilterContextProps>({
-    filterModalShowing: false,
-    showFilter: () => {},
-    hideFilter: () => {},
-    sortOrFilter: "sort",
-    sortBy: [
-        {
-            title: "asc",
-        },
-    ],
-    updateSortBy: () => {},
-    filterKeys: [],
-    clearFilterKeys: () => {},
-    updateFilterKeys: () => {},
-    filteredByLabel: [],
-    updateFilteredByLabel: () => {},
-    selectedFilterOptions: null,
-    updateSelectedFilterOptions: () => {},
-    clearSelectedFilterOptions: () => {},
-    searchQuery: [],
-    updateSearchQuery: () => {},
-    searchLabel: [],
-    updateSearchLabel: () => {},
-    andOr: "AND",
-    updateAndOr: () => {},
-    limit: 50,
-    updateLimit: () => {},
-    skip: 0,
-    updateSkip: () => {},
-    refetch: false,
-    triggerRefetch: () => {},
-});
+export const YDevFilterContext = createContext<YDevFilterContextProps | null>(
+    null
+);
 
-export const useYDevFilterContext = () => useContext(YDevFilterContext);
+export const useYDevFilterContext = () => {
+    const yDevContext = useContext(YDevFilterContext);
+
+    if (!yDevContext) {
+        throw new Error(
+            "useYDevFilterContext has to be used within <YDevFilterContext.Provider>"
+        );
+    }
+
+    return yDevContext;
+};
 
 export const YDevFilterContextProvider = ({
     children,

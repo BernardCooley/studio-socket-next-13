@@ -20,25 +20,19 @@ interface FormContextProps {
     updateLoadingMessage: (value: string) => void;
 }
 
-export const FormContext = createContext<FormContextProps>({
-    icon: <Icons iconType="warning" className="text-error" fontSize="132px" />,
-    updateIcon: () => {},
-    file: "",
-    updateFile: () => {},
-    formMessages: new Set(),
-    addFormMessages: () => {},
-    clearFormMessages: () => {},
-    dialogButtons: [],
-    updateDialogButtons: () => {},
-    clearDialogButtons: () => {},
-    resetIcon: () => {},
-    canCloseDialog: false,
-    updateCanCloseDialog: () => {},
-    loadingMessage: "",
-    updateLoadingMessage: () => {},
-});
+export const FormContext = createContext<FormContextProps | null>(null);
 
-export const useFormContext = () => useContext(FormContext);
+export const useFormContext = () => {
+    const formContext = useContext(FormContext);
+
+    if (!formContext) {
+        throw new Error(
+            "useFormContext must be used within a FormContextProvider"
+        );
+    }
+
+    return formContext;
+};
 
 export const FormContextProvider = ({ children }: { children: ReactNode }) => {
     const [formMessages, setFormMessages] = useState<Set<FormMessage>>(

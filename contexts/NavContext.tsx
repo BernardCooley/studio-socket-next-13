@@ -15,16 +15,19 @@ interface NavContextProps {
     environment: "dev" | "prod";
 }
 
-export const NavContext = createContext<NavContextProps>({
-    navOpen: false,
-    closeNav: () => {},
-    openNav: () => {},
-    deviceListInView: "yours",
-    updateDeviceListInView: () => {},
-    environment: "dev",
-});
+export const NavContext = createContext<NavContextProps | null>(null);
 
-export const useNavContext = () => useContext(NavContext);
+export const useNavContext = () => {
+    const ODevContext = useContext(NavContext);
+
+    if (!ODevContext) {
+        throw new Error(
+            "useNavContext has to be used within <NavContext.Provider>"
+        );
+    }
+
+    return ODevContext;
+};
 
 export const NavContextProvider = ({ children }: { children: ReactNode }) => {
     const [navOpen, setNavOpen] = useState<boolean>(false);

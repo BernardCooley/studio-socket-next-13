@@ -6,13 +6,19 @@ interface SearchContextProps {
     closeSearch: () => void;
 }
 
-export const SearchContext = createContext<SearchContextProps>({
-    searchOpen: false,
-    openSearch: () => {},
-    closeSearch: () => {},
-});
+export const SearchContext = createContext<SearchContextProps | null>(null);
 
-export const useSearchContext = () => useContext(SearchContext);
+export const useSearchContext = () => {
+    const searchContext = useContext(SearchContext);
+
+    if (!searchContext) {
+        throw new Error(
+            "useSearchContext has to be used within <SearchContext.Provider>"
+        );
+    }
+
+    return searchContext;
+};
 
 export const SearchContextProvider = ({
     children,
