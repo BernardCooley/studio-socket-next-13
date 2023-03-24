@@ -11,6 +11,7 @@ import FilterIcons from "./FilterIcons";
 import FilterModal from "./FilterModal";
 import FilterSortLabel from "./FilterSortLabel";
 import PageTitle from "./PageTitle";
+import SearchModal from "./SearchModal";
 import ToTop from "./ToTop";
 
 interface Props {
@@ -89,6 +90,7 @@ const DeviceList = ({
             onScroll={onScroll}
             id={listId}
         >
+            <SearchModal searchType="devices" />
             <FilterModal />
             <FilterIcons
                 filterKeys={filterKeys}

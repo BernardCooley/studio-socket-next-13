@@ -1,6 +1,17 @@
 "use client";
 
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+} from "@chakra-ui/react";
 import React, { FormEvent, useRef, useState } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import { useNavContext } from "../contexts/NavContext";
@@ -117,18 +128,23 @@ const SearchModal = ({ searchType }: Props) => {
     };
 
     return (
-        <div>
-            {searchOpen && (
-                <div className="absolute modal z-50">
-                    <Icons
-                        iconType="close"
-                        className="z-30 absolute right-2 top-2"
-                        onClick={closeSearch}
-                        fontSize="92px"
-                    />
-                    <div className="w-full text-2xl mb-4">
-                        Search {searchType ? searchType : ""}
-                    </div>
+        <Modal
+            isOpen={searchOpen}
+            onClose={closeSearch}
+            blockScrollOnMount
+            isCentered
+            returnFocusOnClose
+            size="xl"
+        >
+            <ModalOverlay />
+            <ModalContent
+                fontFamily="default"
+                w="90vw"
+                bg="brand.primary-light"
+            >
+                <ModalHeader>Search {searchType ? searchType : ""}</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
                     <CustomTextInput
                         className="mt-10"
                         name="search"
@@ -138,6 +154,9 @@ const SearchModal = ({ searchType }: Props) => {
                         ref={searchRef}
                         errorMessages={getErrorMessages(errors, "search")}
                     />
+                </ModalBody>
+
+                <ModalFooter>
                     <ButtonGroup
                         w="full"
                         display="flex"
@@ -163,9 +182,9 @@ const SearchModal = ({ searchType }: Props) => {
                             Search
                         </Button>
                     </ButtonGroup>
-                </div>
-            )}
-        </div>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
     );
 };
 
