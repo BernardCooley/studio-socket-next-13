@@ -1,9 +1,6 @@
 import React from "react";
 import { AuthContextProvider } from "./AuthContext";
 import { NavContextProvider } from "./NavContext";
-import { ODevFilterContextProvider } from "./ODevFilterContext";
-import { SearchContextProvider } from "./SearchContext";
-import { YDevFilterContextProvider } from "./YDevFilterContext";
 
 interface Props {
     children: React.ReactNode;
@@ -12,13 +9,7 @@ interface Props {
 const AllContexts = ({ children }: Props) => {
     return (
         <AuthContextProvider>
-            <SearchContextProvider>
-                <ODevFilterContextProvider>
-                    <YDevFilterContextProvider>
-                        <NavContextProvider>{children}</NavContextProvider>
-                    </YDevFilterContextProvider>
-                </ODevFilterContextProvider>
-            </SearchContextProvider>
+            <NavContextProvider>{children}</NavContextProvider>
         </AuthContextProvider>
     );
 };
