@@ -1,9 +1,9 @@
+import { Button } from "@chakra-ui/react";
 import React, { useRef } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import useOnClickOutside from "../hooks/useClickOutside";
 import Icons from "../icons";
 import { FormMessage, FormMessageType, FormMessageTypes } from "../types";
-import CustomButton from "./CustomButton";
 
 interface Props {
     messages: Set<FormMessage>;
@@ -82,13 +82,14 @@ const Dialog = ({ messages, messageIcon }: Props) => {
                             {dialogButtons && dialogButtons.length > 0 && (
                                 <div className="w-full flex justify-around text-primary-light mt-4">
                                     {dialogButtons.map((button) => (
-                                        <CustomButton
-                                            onClick={button.onClick}
+                                        <Button
                                             key={button.text}
-                                            label={button.text}
-                                            type="button"
-                                            buttonClassName={button.classes}
-                                        />
+                                            size="lg"
+                                            variant="primary"
+                                            onClick={button.onClick}
+                                        >
+                                            {button.text}
+                                        </Button>
                                     ))}
                                 </div>
                             )}

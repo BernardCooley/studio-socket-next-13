@@ -16,7 +16,6 @@ import {
 import { useFormContext } from "../../../../contexts/FormContext";
 import { getErrorMessages } from "../../../../utils";
 import DetailItem from "../../../../components/DetailItem";
-import CustomButton from "../../../../components/CustomButton";
 import { useNavContext } from "../../../../contexts/NavContext";
 import { useAuthContext } from "../../../../contexts/AuthContext";
 import {
@@ -30,6 +29,7 @@ import {
     uploadFirebaseImage,
 } from "../../../../firebase/functions";
 import useUpdateDialog from "../../../../hooks/useUpdateDialog";
+import { Button } from "@chakra-ui/react";
 
 interface Props {}
 
@@ -435,12 +435,17 @@ const Account = ({}: Props) => {
                     />
                 </div>
             )}
-            <CustomButton
-                label="Delete account"
-                type="button"
-                onClick={() => deleteAccount()}
-                buttonClassName="text-error text-xl absolute bottom-4 right-4"
-            />
+            <Button
+                pos="absolute"
+                bottom="4"
+                right="4"
+                size="lg"
+                variant="ghost"
+                colorScheme="red"
+                onClick={deleteAccount}
+            >
+                Delete account
+            </Button>
         </div>
     );
 };

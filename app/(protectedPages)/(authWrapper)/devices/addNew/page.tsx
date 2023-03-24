@@ -3,7 +3,6 @@
 import React, { useState, FormEvent, useRef, useEffect } from "react";
 import AddConnectionSection from "../../../../../components/AddConnectionSection";
 import BackButton from "../../../../../components/BackButton";
-import CustomButton from "../../../../../components/CustomButton";
 import CustomTextInput from "../../../../../components/CustomTextInput";
 import PageTitle from "../../../../../components/PageTitle";
 import { useFormContext } from "../../../../../contexts/FormContext";
@@ -36,6 +35,7 @@ import {
 import { DeviceType, Connector, FormFactor } from "@prisma/client";
 import CustomMultiSelect from "../../../../../components/CustomMultiSelect";
 import CustomSelect from "../../../../../components/CustomSelect";
+import { Button } from "@chakra-ui/react";
 
 interface Props {}
 
@@ -405,11 +405,15 @@ const AddNewDevice = ({}: Props) => {
                                 onShowForm={section.onShowForm}
                             />
                         ))}
-                        <CustomButton
-                            label="Save"
+                        <Button
+                            mt="82px"
+                            borderRadius="full"
+                            size="2xl"
+                            variant="primary"
                             type="submit"
-                            buttonClassName={`authSubmitButton mt-10`}
-                        />
+                        >
+                            Save
+                        </Button>
                     </div>
                 )}
             </form>

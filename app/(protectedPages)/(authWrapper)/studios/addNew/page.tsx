@@ -1,11 +1,11 @@
 "use client";
 
+import { Button } from "@chakra-ui/react";
 import { addDoc, collection } from "firebase/firestore";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import BackButton from "../../../../../components/BackButton";
-import CustomButton from "../../../../../components/CustomButton";
 import CustomTextInput from "../../../../../components/CustomTextInput";
 import PageTitle from "../../../../../components/PageTitle";
 import { useFormContext } from "../../../../../contexts/FormContext";
@@ -118,11 +118,15 @@ const AddNewStudio = ({}: Props) => {
                         ref={titleRef}
                         errorMessages={getErrorMessages(errors, "title")}
                     />
-                    <CustomButton
-                        label="Save"
+                    <Button
+                        mt="82px"
+                        borderRadius="full"
+                        size="2xl"
+                        variant="primary"
                         type="submit"
-                        buttonClassName={`authSubmitButton mt-10`}
-                    />
+                    >
+                        Save
+                    </Button>
                 </div>
             </form>
         </div>

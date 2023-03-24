@@ -8,6 +8,7 @@ import routes from "../routes";
 import { IDevice } from "../types";
 import DeviceItem from "./DeviceItem";
 import FilterIcons from "./FilterIcons";
+import FilterModal from "./FilterModal";
 import FilterSortLabel from "./FilterSortLabel";
 import PageTitle from "./PageTitle";
 import ToTop from "./ToTop";
@@ -88,6 +89,7 @@ const DeviceList = ({
             onScroll={onScroll}
             id={listId}
         >
+            <FilterModal />
             <FilterIcons
                 filterKeys={filterKeys}
                 sortBy={sortBy}

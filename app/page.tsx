@@ -2,11 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import ImageWithFallback from "../components/ImageWithFallback";
-import CustomButton from "../components/CustomButton";
 import { useRouter } from "next/navigation";
 import { IFirebaseImage } from "../types";
 import { getFirebaseImage } from "../firebase/functions";
 import { signIn } from "next-auth/react";
+import { Button } from "@chakra-ui/react";
 
 const listItems = [
     "Create a collection of your devices",
@@ -61,11 +61,9 @@ const Landing = ({}: Props) => {
         <div className="Home bg-primary-light">
             <section className="text-primary-light flex flex-col items-center bg-modular bg-centered">
                 <div className="Links p-6 flex justify-between w-full text-2xl font-light">
-                    <CustomButton
-                        label="Sign in"
-                        type="button"
-                        onClick={login}
-                    />
+                    <Button size="lg" variant="ghost" onClick={login}>
+                        Sign in
+                    </Button>
                 </div>
                 <div className="Logo w-full flex justify-center">
                     <ImageWithFallback

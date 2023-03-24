@@ -4,7 +4,6 @@
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import BackButton from "../../../../../components/BackButton";
-import CustomButton from "../../../../../components/CustomButton";
 import DetailItem from "../../../../../components/DetailItem";
 import ImageWithFallback from "../../../../../components/ImageWithFallback";
 import { useFormContext } from "../../../../../contexts/FormContext";
@@ -20,6 +19,7 @@ import routes from "../../../../../routes";
 import Connections from "../../../../../components/Connections";
 import { useNavContext } from "../../../../../contexts/NavContext";
 import { fetchDeviceById } from "../../../../../bff/requests";
+import { Button } from "@chakra-ui/react";
 
 interface Props {
     params: { id: number };
@@ -208,12 +208,15 @@ const Device = ({ params }: Props) => {
                                 <Connections connections={device.connections} />
                             )}
                     </div>
-                    <CustomButton
-                        label="Add to your devices"
-                        type="button"
-                        buttonClassName="bg-primary text-primary-light p-3 px-6 rounded-full shadow-2xl text-2xl"
+                    <Button
+                        mt="152px"
+                        borderRadius="full"
+                        size="2xl"
+                        variant="primary"
                         onClick={handleClick}
-                    />
+                    >
+                        Add to your devices
+                    </Button>
                 </>
             )}
         </div>

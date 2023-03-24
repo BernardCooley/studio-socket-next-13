@@ -1,21 +1,31 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from "react";
-import { sortButtons } from "../consts";
+import {
+    Button,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    ButtonGroup,
+    Box,
+    VStack,
+} from "@chakra-ui/react";
+import CustomMultiSelect from "./CustomMultiSelect";
 import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../contexts/ODevFilterContext";
-import Icons from "../icons";
-import CustomButton from "./CustomButton";
 import { useNavContext } from "../contexts/NavContext";
 import { IOrderBy } from "../bff/types";
 import { getSelectionOptions, shallowEqual } from "../utils";
-import { FilterKeys, SelectedFilterOptions, SelectOption } from "../types";
-import CustomMultiSelect from "./CustomMultiSelect";
 import {
     fetchConnectors,
     fetchDeviceTypes,
     fetchFormFactors,
 } from "../bff/requests";
 import { Connector, DeviceType, FormFactor } from "@prisma/client";
+import { FilterKeys, SelectedFilterOptions, SelectOption } from "../types";
+import { sortButtons } from "../consts";
 
 interface Props {}
 
@@ -203,39 +213,6 @@ const FilterModal = ({}: Props) => {
         }
     };
 
-    const Sort = () => {
-        return (
-            <>
-                <div className="mb-10">
-                    {sortButtons.map((button) => (
-                        <CustomButton
-                            buttonClassName={`filterSortButton ${
-                                shallowEqual(sort[0], button.sortKey[0])
-                                    ? "filterSortButtonActive"
-                                    : "filterSortButtonInactive"
-                            }`}
-                            labelClassName="text-xl"
-                            key={button.sortKey[0].toString()}
-                            label={button.label}
-                            type="button"
-                            onClick={() => setSort(button.sortKey)}
-                        />
-                    ))}
-                </div>
-                <div className="flex justify-between w-full">
-                    <CustomButton
-                        disabled={sort.length === 0}
-                        buttonClassName="filterSortDialogButton"
-                        labelClassName="text-xl"
-                        label="Show results"
-                        type="button"
-                        onClick={handleSubmitSort}
-                    />
-                </div>
-            </>
-        );
-    };
-
     const getDefaultOption = (filterField: string): SelectOption[] | null => {
         if (!isAllDevices) {
             if (yourDevicesSelectedFilterOptions) {
@@ -254,72 +231,131 @@ const FilterModal = ({}: Props) => {
         return null;
     };
 
-    const Filter = () => {
+    const SortBody = () => {
         return (
-            <>
-                <div className="w-full">
-                    <CustomMultiSelect
-                        name="Device Type"
-                        options={types}
-                        label="Device Type"
-                        ref={refs.deviceTypes}
-                        errorMessages={[]}
-                        defaultOptions={getDefaultOption("deviceTypes")}
-                    />
-                    <CustomMultiSelect
-                        name="Connector"
-                        options={connectors}
-                        label="Connector"
-                        ref={refs.connectors}
-                        errorMessages={[]}
-                        defaultOptions={getDefaultOption("connectors")}
-                    />
-                    <CustomMultiSelect
-                        name="Form factor"
-                        options={formFactors}
-                        label="Form factor"
-                        ref={refs.formFactors}
-                        errorMessages={[]}
-                        defaultOptions={getDefaultOption("formFactors")}
-                    />
-                </div>
-                <div className="flex justify-between w-full">
-                    <CustomButton
-                        buttonClassName="filterSortDialogButton"
-                        labelClassName="text-xl"
-                        label="Clear"
-                        type="button"
-                        onClick={handleClearFilters}
-                    />
-                    <CustomButton
-                        buttonClassName="filterSortDialogButton"
-                        labelClassName="text-xl"
-                        label="Show results"
-                        type="button"
-                        onClick={handleSubmitFilters}
-                    />
-                </div>
-            </>
+            <Box mb="50px">
+                <ButtonGroup gap="4" flexWrap="wrap" flexDir="column" w="full">
+                    {sortButtons.map((button) => (
+                        <Button
+                            size="lg"
+                            key={button.sortKey[0].toString()}
+                            isDisabled={sort.length === 0}
+                            isActive={shallowEqual(sort[0], button.sortKey[0])}
+                            variant={
+                                shallowEqual(sort[0], button.sortKey[0])
+                                    ? "primary"
+                                    : "ghost"
+                            }
+                            onClick={() => setSort(button.sortKey)}
+                        >
+                            {button.label}
+                        </Button>
+                    ))}
+                </ButtonGroup>
+            </Box>
+        );
+    };
+
+    const SortFooter = () => {
+        return (
+            <Box>
+                <Button
+                    size="lg"
+                    isDisabled={sort.length === 0}
+                    variant="primary"
+                    onClick={handleSubmitSort}
+                >
+                    Show results
+                </Button>
+            </Box>
+        );
+    };
+
+    const FilterBody = () => {
+        return (
+            <VStack align="stretch">
+                <CustomMultiSelect
+                    name="Device Type"
+                    options={types}
+                    label="Device Type"
+                    ref={refs.deviceTypes}
+                    errorMessages={[]}
+                    defaultOptions={getDefaultOption("deviceTypes")}
+                />
+                <CustomMultiSelect
+                    name="Connector"
+                    options={connectors}
+                    label="Connector"
+                    ref={refs.connectors}
+                    errorMessages={[]}
+                    defaultOptions={getDefaultOption("connectors")}
+                />
+                <CustomMultiSelect
+                    name="Form factor"
+                    options={formFactors}
+                    label="Form factor"
+                    ref={refs.formFactors}
+                    errorMessages={[]}
+                    defaultOptions={getDefaultOption("formFactors")}
+                />
+            </VStack>
+        );
+    };
+
+    const FilterFooter = () => {
+        return (
+            <ButtonGroup gap="4">
+                <Button
+                    size="lg"
+                    variant="primary"
+                    onClick={handleClearFilters}
+                >
+                    Clear
+                </Button>
+                <Button
+                    size="lg"
+                    variant="primary"
+                    onClick={handleSubmitFilters}
+                    fontSize="lg"
+                >
+                    Show results
+                </Button>
+            </ButtonGroup>
         );
     };
 
     return (
-        <div>
-            {filterModalShowing && (
-                <div className="absolute modal z-50">
-                    <Icons
-                        iconType="close"
-                        className="z-30 absolute right-2 top-2"
-                        onClick={hideFilter}
-                        fontSize="92px"
-                    />
-                    <div className="w-full text-2xl mb-4">
-                        {sortOrFilter === "sort" ? "Sort by" : "Filter by"}
-                    </div>
-                    {sortOrFilter === "sort" ? <Sort /> : <Filter />}
-                </div>
-            )}
-        </div>
+        <Modal
+            isOpen={filterModalShowing}
+            onClose={hideFilter}
+            blockScrollOnMount
+            isCentered
+            returnFocusOnClose
+            size="xl"
+        >
+            <ModalOverlay />
+            <ModalContent
+                fontFamily="default"
+                w="90vw"
+                bg="brand.primary-light"
+            >
+                <ModalHeader>
+                    {sortOrFilter === "sort" ? "Sort by" : "Filter by"}
+                </ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                    {sortOrFilter === "sort" ? <SortBody /> : <FilterBody />}
+                </ModalBody>
+
+                <ModalFooter>
+                    {sortOrFilter === "sort" ? (
+                        <SortFooter />
+                    ) : (
+                        <FilterFooter />
+                    )}
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
     );
 };
 

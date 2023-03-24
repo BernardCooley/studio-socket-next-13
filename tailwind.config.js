@@ -1,5 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+    corePlugins: {
+        preflight: false,
+    },
     mode: "jit",
     content: [
         "./app/**/*.{js,ts,jsx,tsx}",

@@ -1,5 +1,6 @@
 "use client";
 
+import { Button, ButtonGroup } from "@chakra-ui/react";
 import React, { FormEvent, useRef, useState } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import { useNavContext } from "../contexts/NavContext";
@@ -10,7 +11,6 @@ import { SearchSchema } from "../formValidation";
 import Icons from "../icons";
 import { FormMessageTypes } from "../types";
 import { getErrorMessages } from "../utils";
-import CustomButton from "./CustomButton";
 import CustomTextInput from "./CustomTextInput";
 
 interface Props {
@@ -138,27 +138,31 @@ const SearchModal = ({ searchType }: Props) => {
                         ref={searchRef}
                         errorMessages={getErrorMessages(errors, "search")}
                     />
-                    <div>
-                        <CustomButton
-                            disabled={
+                    <ButtonGroup
+                        w="full"
+                        display="flex"
+                        justifyContent="space-between"
+                    >
+                        <Button
+                            isDisabled={
                                 isAllDevices
                                     ? allDevicesSearchLabel.length === 0
                                     : yourDevicesSearchLabel.length === 0
                             }
-                            buttonClassName="filterSortDialogButton"
-                            labelClassName="text-xl"
-                            label="Clear"
-                            type="button"
+                            size="lg"
+                            variant="primary"
                             onClick={clearSearch}
-                        />
-                        <CustomButton
-                            buttonClassName="filterSortDialogButton"
-                            labelClassName="text-xl"
-                            label="Search"
-                            type="button"
+                        >
+                            Clear
+                        </Button>
+                        <Button
+                            size="lg"
+                            variant="primary"
                             onClick={handleSearch}
-                        />
-                    </div>
+                        >
+                            Search
+                        </Button>
+                    </ButtonGroup>
                 </div>
             )}
         </div>

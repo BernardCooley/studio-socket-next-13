@@ -1,9 +1,9 @@
+import { Button, ButtonGroup } from "@chakra-ui/react";
 import React, { RefObject } from "react";
 import { useFormContext } from "../contexts/FormContext";
 import Icons from "../icons";
 import { SelectOption } from "../types";
 import { getErrorMessages } from "../utils";
-import CustomButton from "./CustomButton";
 import CustomSelect from "./CustomSelect";
 import CustomTextInput from "./CustomTextInput";
 
@@ -90,20 +90,18 @@ const AddConnectionForm = ({
                         ref={connectorRef}
                         errorMessages={getErrorMessages(errors, "connector")}
                     />
-                    <div className="w-full flex justify-between">
-                        <CustomButton
+                    <ButtonGroup display="flex" justifyContent="space-between">
+                        <Button
+                            size="lg"
+                            variant="primary"
                             onClick={onCancelClick}
-                            label="Cancel"
-                            type="button"
-                            buttonClassName={`mt-4 buttonSmall`}
-                        />
-                        <CustomButton
-                            onClick={onSubmit}
-                            label="Add"
-                            type="button"
-                            buttonClassName={`mt-4 buttonSmall`}
-                        />
-                    </div>
+                        >
+                            Cancel
+                        </Button>
+                        <Button size="lg" variant="primary" onClick={onSubmit}>
+                            Add
+                        </Button>
+                    </ButtonGroup>
                 </div>
             </div>
         </div>
