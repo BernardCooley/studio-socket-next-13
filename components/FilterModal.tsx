@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from "react";
 import {
     Button,
@@ -13,10 +14,7 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import CustomMultiSelect from "./CustomMultiSelect";
-import { useYDevFilterContext } from "../contexts/YDevFilterContext";
-import { useODevFilterContext } from "../contexts/ODevFilterContext";
-import { useNavContext } from "../contexts/NavContext";
-import { IOrderBy } from "../bff/types";
+import { IOrderBy, SortFilter } from "../bff/types";
 import { getSelectionOptions, shallowEqual } from "../utils";
 import {
     fetchConnectors,
@@ -27,9 +25,35 @@ import { Connector, DeviceType, FormFactor } from "@prisma/client";
 import { FilterKeys, SelectedFilterOptions, SelectOption } from "../types";
 import { sortButtons } from "../consts";
 
-interface Props {}
+interface Props {
+    sortOrFilter: SortFilter;
+    filterModalShowing: boolean;
+    hideFilter: () => void;
+    updateSortBy: (sort: IOrderBy[]) => void;
+    sortBy: IOrderBy[];
+    filterKeys: FilterKeys[];
+    clearFilterKeys: () => void;
+    updateFilterKeys: (filterKeys: FilterKeys[]) => void;
+    updateFilteredByLabel: (label: string[]) => void;
+    updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
+    selectedFilterOptions: SelectedFilterOptions | null;
+    clearSelectedFilterOptions: () => void;
+}
 
-const FilterModal = ({}: Props) => {
+const FilterModal = ({
+    sortOrFilter,
+    filterModalShowing,
+    hideFilter,
+    updateSortBy,
+    sortBy,
+    filterKeys,
+    clearFilterKeys,
+    updateFilterKeys,
+    updateFilteredByLabel,
+    updateSelectedFilterOptions,
+    selectedFilterOptions,
+    clearSelectedFilterOptions,
+}: Props) => {
     const [types, setTypes] = useState<SelectOption[]>([]);
     const [connectors, setConnectors] = useState<SelectOption[]>([]);
     const [formFactors, setFormFactors] = useState<SelectOption[]>([]);
@@ -40,42 +64,9 @@ const FilterModal = ({}: Props) => {
         connectors: useRef<HTMLInputElement>(null),
         formFactors: useRef<HTMLInputElement>(null),
     };
-    const {
-        filterModalShowing,
-        hideFilter,
-        updateSortBy: updateYourDevicesSortBy,
-        sortBy: yourDevicesSortBy,
-        sortOrFilter,
-        filterKeys: yourDevicesFilterKeys,
-        clearFilterKeys: clearYourDevicesFilterKeys,
-        updateFilterKeys: updateYourDevicesFilterKeys,
-        updateFilteredByLabel: updateYourDevicesFilteredByLabel,
-        updateSelectedFilterOptions: updateYourDevicesSelectedFilterOptions,
-        selectedFilterOptions: yourDevicesSelectedFilterOptions,
-        clearSelectedFilterOptions: clearYourDevicesSelectedFilterOptions,
-    } = useYDevFilterContext();
 
-    const {
-        updateSortBy: updateAllDevicesSortBy,
-        sortBy: allDevicesSortBy,
-        filterKeys: allDevicesFilterKeys,
-        clearFilterKeys: clearAllDevicesFilterKeys,
-        updateFilterKeys: updateAllDevicesFilterKeys,
-        updateFilteredByLabel: updateAllDevicesFilteredByLabel,
-        updateSelectedFilterOptions: updateAllDevicesSelectedFilterOptions,
-        selectedFilterOptions: allDevicesSelectedFilterOptions,
-        clearSelectedFilterOptions: clearAllDevicesSelectedFilterOptions,
-    } = useODevFilterContext();
-
-    const { deviceListInView } = useNavContext();
-    const isAllDevices = deviceListInView === "ours";
-
-    const [filterList, setFilterList] = useState<FilterKeys[]>(
-        !isAllDevices ? yourDevicesFilterKeys : allDevicesFilterKeys
-    );
-    const [sort, setSort] = useState<IOrderBy[]>(
-        !isAllDevices ? yourDevicesSortBy : allDevicesSortBy
-    );
+    const [filterList, setFilterList] = useState<FilterKeys[]>(filterKeys);
+    const [sort, setSort] = useState<IOrderBy[]>(sortBy);
 
     useEffect(() => {
         (async () => {
@@ -84,23 +75,16 @@ const FilterModal = ({}: Props) => {
     }, []);
 
     useEffect(() => {
-        setFilterList(
-            !isAllDevices ? yourDevicesFilterKeys : allDevicesFilterKeys
-        );
-        setSort(!isAllDevices ? yourDevicesSortBy : allDevicesSortBy);
-    }, [filterModalShowing, deviceListInView]);
+        setFilterList(filterKeys);
+        setSort(sortBy);
+    }, [filterModalShowing]);
 
     const handleClearFilters = () => {
         hideFilter();
-        if (isAllDevices) {
-            clearAllDevicesFilterKeys();
-            updateAllDevicesFilteredByLabel([]);
-            clearAllDevicesSelectedFilterOptions();
-        } else {
-            clearYourDevicesFilterKeys();
-            updateYourDevicesFilteredByLabel([]);
-            clearYourDevicesSelectedFilterOptions();
-        }
+
+        clearFilterKeys();
+        updateFilteredByLabel([]);
+        clearSelectedFilterOptions();
         setFilterList([]);
     };
 
@@ -130,11 +114,7 @@ const FilterModal = ({}: Props) => {
 
     const handleSubmitSort = () => {
         hideFilter();
-        if (!isAllDevices) {
-            updateYourDevicesSortBy(sort);
-        } else if (isAllDevices) {
-            updateAllDevicesSortBy(sort);
-        }
+        updateSortBy(sort);
     };
 
     const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
@@ -202,30 +182,17 @@ const FilterModal = ({}: Props) => {
             .map((key) => key.filters.join(", "));
 
         hideFilter();
-        if (!isAllDevices) {
-            updateYourDevicesSelectedFilterOptions(selectedFilterOptions);
-            updateYourDevicesFilteredByLabel(filterLabels);
-            updateYourDevicesFilterKeys(buildFilterQuery(selectedFilters));
-        } else if (isAllDevices) {
-            updateAllDevicesSelectedFilterOptions(selectedFilterOptions);
-            updateAllDevicesFilteredByLabel(filterLabels);
-            updateAllDevicesFilterKeys(buildFilterQuery(selectedFilters));
-        }
+
+        updateSelectedFilterOptions(selectedFilterOptions);
+        updateFilteredByLabel(filterLabels);
+        updateFilterKeys(buildFilterQuery(selectedFilters));
     };
 
     const getDefaultOption = (filterField: string): SelectOption[] | null => {
-        if (!isAllDevices) {
-            if (yourDevicesSelectedFilterOptions) {
-                return yourDevicesSelectedFilterOptions[
-                    filterField as keyof typeof yourDevicesSelectedFilterOptions
-                ];
-            }
-        } else if (isAllDevices) {
-            if (allDevicesSelectedFilterOptions) {
-                return allDevicesSelectedFilterOptions[
-                    filterField as keyof typeof allDevicesSelectedFilterOptions
-                ];
-            }
+        if (selectedFilterOptions) {
+            return selectedFilterOptions[
+                filterField as keyof typeof selectedFilterOptions
+            ];
         }
 
         return null;

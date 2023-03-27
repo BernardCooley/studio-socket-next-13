@@ -18,11 +18,13 @@ const FilterSortLabel = ({ sortBy, filterKeys, searchKeys }: Props) => {
 
     const getSortTitle = (sortKey: IOrderBy) => {
         let sort = "";
-        sortButtons.forEach((button) => {
-            if (shallowEqual(button.sortKey[0], sortKey[0])) {
-                sort = button.label;
-            }
-        });
+        if (sortKey[0]) {
+            sortButtons.forEach((button) => {
+                if (shallowEqual(button.sortKey[0], sortKey[0])) {
+                    sort = button.label;
+                }
+            });
+        }
         setParsedSortKey(sort);
     };
 

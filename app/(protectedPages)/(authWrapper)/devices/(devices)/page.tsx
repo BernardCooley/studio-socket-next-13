@@ -5,7 +5,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useYDevFilterContext } from "../../../../../contexts/YDevFilterContext";
 import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
 import { useNavContext } from "../../../../../contexts/NavContext";
-import DeviceList from "../../../../../components/DeviceList";
 import { useSearchContext } from "../../../../../contexts/SearchContext";
 import useIntersectionObserver from "@react-hook/intersection-observer";
 import Icons from "../../../../../icons";
@@ -14,6 +13,8 @@ import { fetchDevices, IRequestOptions } from "../../../../../bff/requests";
 import { useFormContext } from "../../../../../contexts/FormContext";
 import { useSession } from "next-auth/react";
 import { FormMessageTypes, IDevice } from "../../../../../types";
+
+// TODO - Delete this page when devices are done
 
 interface Props {}
 
@@ -59,53 +60,31 @@ const Devices = ({}: Props) => {
         useState<boolean>(false);
 
     useEffect(() => {
-        onLoadingChange(moreLoading);
-    }, [moreLoading]);
-
-    const onLoadingChange = (isLoading: boolean) => {
-        if (isLoading) {
-            addFormMessages(
-                new Set([
-                    {
-                        message: "Loading more devices...",
-                        type: FormMessageTypes.INFO,
-                    },
-                ])
-            );
-            updateIcon(
-                <Icons
-                    iconType="formLoading"
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            );
-        } else {
-            setTimeout(() => {
-                addFormMessages(new Set([]));
-            }, 500);
-        }
-    };
-
-    useEffect(() => {
         scroll(false);
         // TODO: not getting devices every time
         getDevices(false);
     }, [refetch]);
 
-    useEffect(() => {
-        getDevices(true);
-        if (isIntersecting) {
-            getDevices(false);
-        }
-    }, [
-        allDevicesSortBy,
-        yourDevicesSortBy,
-        yourDevicesFilterKeys,
-        allDevicesFilterKeys,
-        user,
-        allDevicesSearchQuery,
-        yourDevicesSearchQuery,
-    ]);
+    useEffect(
+        () => {
+            // getDevices(true);
+            if (isIntersecting) {
+                getDevices(false);
+            } else {
+                getDevices(true);
+            }
+        },
+        [
+            // allDevicesSortBy,
+            // yourDevicesSortBy,
+            // yourDevicesFilterKeys,
+            // allDevicesFilterKeys,
+            // user,
+            // allDevicesSearchQuery,
+            // yourDevicesSearchQuery,
+            // isIntersecting,
+        ]
+    );
 
     useEffect(() => {
         updateDeviceListInView(isIntersecting ? "yours" : "ours");
@@ -229,40 +208,7 @@ const Devices = ({}: Props) => {
             <div
                 ref={scrollElementRef}
                 className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
-            >
-                <DeviceList
-                    onScroll={(e) =>
-                        yourDevices && yourDevices.length > 0
-                            ? handleVerticalScroll(e, false)
-                            : null
-                    }
-                    onScrollClick={() => scroll(true)}
-                    elementRef={yourDevicesRef}
-                    devices={yourDevices}
-                    pageTitle="Your devices"
-                    iconType="right"
-                    sortBy={yourDevicesSortBy}
-                    filterKeys={yourDevicesFilteredByLabel}
-                    showToTopButton={showYourToTopButton && isIntersecting}
-                    listId="yours"
-                    userId={user?.user.id}
-                    searchKeys={yourDevicesSearchLabel}
-                />
-                <DeviceList
-                    onScroll={(e) => handleVerticalScroll(e, true)}
-                    onScrollClick={() => scroll(false)}
-                    elementRef={ourDevicesRef}
-                    devices={allDevices}
-                    pageTitle="Our devices"
-                    iconType="left"
-                    sortBy={allDevicesSortBy}
-                    filterKeys={allDevicesFilteredByLabel}
-                    showToTopButton={showAllToTopButton && !isIntersecting}
-                    listId="ours"
-                    userId={user?.user.id}
-                    searchKeys={allDevicesSearchLabel}
-                />
-            </div>
+            ></div>
         </div>
     );
 };

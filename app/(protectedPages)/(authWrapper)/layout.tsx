@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
+import { ToastProvider } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { getUserProfile } from "../../../bff/requests";
@@ -25,7 +26,12 @@ const AuthWrapperLayout = ({ children }: Props) => {
         }
     };
 
-    return <div className="relative h-full  min-h-screen">{children}</div>;
+    return (
+        <>
+            <ToastProvider />
+            <div className="relative h-full  min-h-screen">{children}</div>
+        </>
+    );
 };
 
 export default AuthWrapperLayout;

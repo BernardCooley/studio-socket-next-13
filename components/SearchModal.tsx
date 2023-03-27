@@ -1,7 +1,6 @@
 "use client";
 
 import {
-    Box,
     Button,
     ButtonGroup,
     Modal,
@@ -14,39 +13,28 @@ import {
 } from "@chakra-ui/react";
 import React, { FormEvent, useRef, useState } from "react";
 import { useFormContext } from "../contexts/FormContext";
-import { useNavContext } from "../contexts/NavContext";
-import { useODevFilterContext } from "../contexts/ODevFilterContext";
 import { useSearchContext } from "../contexts/SearchContext";
-import { useYDevFilterContext } from "../contexts/YDevFilterContext";
 import { SearchSchema } from "../formValidation";
-import Icons from "../icons";
-import { FormMessageTypes } from "../types";
 import { getErrorMessages } from "../utils";
 import CustomTextInput from "./CustomTextInput";
 
 interface Props {
     searchType: string | undefined;
+    updateSearchQuery: (query: any[]) => void;
+    updateSearchLabel: (label: string[]) => void;
+    searchLabel: string[];
 }
 
-const SearchModal = ({ searchType }: Props) => {
+const SearchModal = ({
+    searchType,
+    updateSearchQuery,
+    updateSearchLabel,
+    searchLabel,
+}: Props) => {
     const searchRef = useRef<HTMLInputElement>(null);
     const { searchOpen, closeSearch } = useSearchContext();
     const [errors, setErrors] = useState([]);
     const { addFormMessages, updateIcon } = useFormContext();
-    const {
-        updateSearchQuery: updateYourDevicesSearchQuery,
-        updateSearchLabel: updateYourDevicesSearchLabel,
-        searchLabel: yourDevicesSearchLabel,
-    } = useYDevFilterContext();
-
-    const {
-        updateSearchQuery: updateAllDevicesSearchQuery,
-        updateSearchLabel: updateAllDevicesSearchLabel,
-        searchLabel: allDevicesSearchLabel,
-    } = useODevFilterContext();
-
-    const { deviceListInView } = useNavContext();
-    const isAllDevices = deviceListInView === "ours";
 
     const handleSearch = (e: FormEvent) => {
         setErrors([]);
@@ -56,45 +44,14 @@ const SearchModal = ({ searchType }: Props) => {
 
     const search = async () => {
         if (searchRef.current) {
-            addFormMessages(
-                new Set([
-                    {
-                        message: "Searching...",
-                        type: FormMessageTypes.INFO,
+            updateSearchLabel([`Title: ${searchRef.current.value}`]);
+            updateSearchQuery([
+                {
+                    title: {
+                        search: searchRef.current.value,
                     },
-                ])
-            );
-            updateIcon(
-                <Icons
-                    iconType="searching"
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            );
-
-            if (isAllDevices) {
-                updateAllDevicesSearchLabel([
-                    `Title: ${searchRef.current.value}`,
-                ]);
-                updateAllDevicesSearchQuery([
-                    {
-                        title: {
-                            search: searchRef.current.value,
-                        },
-                    },
-                ]);
-            } else {
-                updateYourDevicesSearchLabel([
-                    `Title: ${searchRef.current.value}`,
-                ]);
-                updateYourDevicesSearchQuery([
-                    {
-                        title: {
-                            search: searchRef.current.value,
-                        },
-                    },
-                ]);
-            }
+                },
+            ]);
 
             setTimeout(() => {
                 addFormMessages(new Set([]));
@@ -104,13 +61,8 @@ const SearchModal = ({ searchType }: Props) => {
     };
 
     const clearSearch = () => {
-        if (isAllDevices) {
-            updateAllDevicesSearchLabel([]);
-            updateAllDevicesSearchQuery([]);
-        } else {
-            updateYourDevicesSearchLabel([]);
-            updateYourDevicesSearchQuery([]);
-        }
+        updateSearchLabel([]);
+        updateSearchQuery([]);
         closeSearch();
     };
 
@@ -163,11 +115,7 @@ const SearchModal = ({ searchType }: Props) => {
                         justifyContent="space-between"
                     >
                         <Button
-                            isDisabled={
-                                isAllDevices
-                                    ? allDevicesSearchLabel.length === 0
-                                    : yourDevicesSearchLabel.length === 0
-                            }
+                            isDisabled={searchLabel.length === 0}
                             size="lg"
                             variant="primary"
                             onClick={clearSearch}

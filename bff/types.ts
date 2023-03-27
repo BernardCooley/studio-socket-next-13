@@ -44,3 +44,9 @@ export interface IFetchDevicesBody {
 export type AndOr = "AND" | "OR";
 
 export type SortFilter = "sort" | "filter";
+
+export interface IActionButton {
+    type: string;
+    onClick: () => void;
+    confirmAction: string;
+}

@@ -1034,8 +1034,11 @@ export interface IRoute {
 export type FormMessageType = "success" | "error" | "warning" | "info";
 
 export interface FormMessage {
-    message: string;
+    headerText: string;
+    bodyText: string;
     type: FormMessageType;
+    actionType: string;
+    successMessage: string;
 }
 
 export enum FormMessageTypes {

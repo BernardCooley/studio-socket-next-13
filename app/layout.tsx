@@ -18,7 +18,7 @@ export default function RootLayout({ children }: Props) {
                 <title>Studio socket</title>
                 <meta name="viewport" />
             </Head>
-            <SessionProvider>
+            <SessionProvider refetchInterval={5 * 60}>
                 <body>
                     <ThemeProvider theme={theme}>
                         <FormContextProvider>

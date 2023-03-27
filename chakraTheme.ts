@@ -18,6 +18,14 @@ export const theme = extendTheme({
         primary: `0 0 0 1px ${primary}`,
     },
     components: {
+        Spinner: {
+            sizes: {
+                "2xl": {
+                    h: "332px",
+                    w: "332px",
+                },
+            },
+        },
         Button: {
             variants: {
                 primary: {

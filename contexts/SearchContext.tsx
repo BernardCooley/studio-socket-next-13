@@ -1,9 +1,12 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
+import { ISearchQuery } from "../bff/types";
 
 interface SearchContextProps {
     searchOpen: boolean;
     openSearch: () => void;
     closeSearch: () => void;
+    searchQuery: ISearchQuery[];
+    updateSearchQuery: (value: ISearchQuery[]) => void;
 }
 
 export const SearchContext = createContext<SearchContextProps | null>(null);
@@ -26,6 +29,7 @@ export const SearchContextProvider = ({
     children: ReactNode;
 }) => {
     const [searchOpen, setSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState<ISearchQuery[]>([]);
 
     const openSearch = () => {
         setSearchOpen(true);
@@ -35,12 +39,18 @@ export const SearchContextProvider = ({
         setSearchOpen(false);
     };
 
+    const updateSearchQuery = (value: ISearchQuery[]) => {
+        setSearchQuery(value);
+    };
+
     return (
         <SearchContext.Provider
             value={{
                 searchOpen,
                 openSearch,
                 closeSearch,
+                searchQuery,
+                updateSearchQuery,
             }}
         >
             {children}

@@ -1,103 +1,72 @@
-import { Button } from "@chakra-ui/react";
-import React, { useRef } from "react";
-import { useFormContext } from "../contexts/FormContext";
-import useOnClickOutside from "../hooks/useClickOutside";
-import Icons from "../icons";
-import { FormMessage, FormMessageType, FormMessageTypes } from "../types";
+import {
+    AlertDialog,
+    AlertDialogBody,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogOverlay,
+    Button,
+    ButtonGroup,
+} from "@chakra-ui/react";
+import React from "react";
+import { DialogButton } from "../types";
 
 interface Props {
-    messages: Set<FormMessage>;
-    messageIcon: React.ReactNode;
+    isOpen: boolean;
+    cancelRef: React.RefObject<HTMLButtonElement>;
+    onClose: () => void;
+    headerText: string;
+    bodyText: string;
+    buttons: DialogButton[];
 }
 
-const Dialog = ({ messages, messageIcon }: Props) => {
-    const dialogRef = useRef(null);
-    const {
-        clearFormMessages,
-        dialogButtons,
-        canCloseDialog,
-        addFormMessages,
-        loadingMessage,
-    } = useFormContext();
-
-    const handleClickOutside = () => {
-        clearFormMessages();
-    };
-
-    useOnClickOutside(dialogRef, handleClickOutside);
-
-    const getBorderColour = (type: FormMessageType) => {
-        switch (type) {
-            case FormMessageTypes.ERROR:
-                return "error";
-            case FormMessageTypes.WARNING:
-                return "warning";
-            case FormMessageTypes.SUCCESS:
-                return "success";
-            case FormMessageTypes.INFO:
-                return "primary";
-            default:
-        }
-    };
-
+const Dialog = ({
+    isOpen = false,
+    cancelRef,
+    onClose,
+    headerText,
+    bodyText,
+    buttons,
+}: Props) => {
     return (
-        <>
-            {messages && messages.size > 0 && (
-                <div
-                    ref={dialogRef}
-                    className={`modal z-50 realtive border-${getBorderColour(
-                        Array.from(messages)[0].type
-                    )}`}
+        <AlertDialog
+            isOpen={isOpen}
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            closeOnOverlayClick
+            isCentered
+            size="xl"
+        >
+            <AlertDialogOverlay>
+                <AlertDialogContent
+                    mt="500px"
+                    w="90vw"
+                    fontFamily="default"
+                    bg="brand.primary-light"
                 >
-                    {loadingMessage.length > 0 ? (
-                        <div className="text-xl">{loadingMessage}</div>
-                    ) : (
-                        <>
-                            {canCloseDialog && (
-                                <div className="w-full flex justify-end">
-                                    <Icons
-                                        iconType="close"
-                                        onClick={() =>
-                                            addFormMessages(new Set([]))
-                                        }
-                                        fontSize="92px"
-                                    />
-                                </div>
-                            )}
-                            <div className="flex items-center">
-                                <div className="min-h-dialog flex items-center pr-4">
-                                    {messageIcon}
-                                </div>
-                                <div>
-                                    {Array.from(messages).map((message) => (
-                                        <div
-                                            className="text-xl"
-                                            key={JSON.stringify(message)}
-                                        >
-                                            {message.message}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                            {dialogButtons && dialogButtons.length > 0 && (
-                                <div className="w-full flex justify-around text-primary-light mt-4">
-                                    {dialogButtons.map((button) => (
-                                        <Button
-                                            key={button.text}
-                                            size="lg"
-                                            variant="primary"
-                                            onClick={button.onClick}
-                                        >
-                                            {button.text}
-                                        </Button>
-                                    ))}
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-            )}
-        </>
+                    <AlertDialogHeader fontSize="xl" fontWeight="bold">
+                        {headerText}
+                    </AlertDialogHeader>
+
+                    <AlertDialogBody>{bodyText}</AlertDialogBody>
+
+                    <AlertDialogFooter>
+                        <ButtonGroup gap="4">
+                            {buttons.map((button) => (
+                                <Button
+                                    variant="primary"
+                                    key={button.text}
+                                    ref={cancelRef}
+                                    onClick={button.onClick}
+                                >
+                                    {button.text}
+                                </Button>
+                            ))}
+                        </ButtonGroup>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialogOverlay>
+        </AlertDialog>
     );
 };
 

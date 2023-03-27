@@ -30,7 +30,7 @@ import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 
-const deviceIcons = {
+export const deviceIcons = {
     Turntable: "/assets/icons/devices/turntable.png",
     Speaker: "/assets/icons/devices/speaker.png",
     "DJ Mixer": "/assets/icons/devices/dj_mixer.png",

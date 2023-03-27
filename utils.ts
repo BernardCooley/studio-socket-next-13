@@ -1,4 +1,4 @@
-import { SelectOption } from "./types";
+import { FormMessage, FormMessageTypes, SelectOption } from "./types";
 
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
     if (!errors || errors.length === 0) return [];
@@ -63,4 +63,38 @@ export const noopPromise = (): Promise<{ [key: string]: string } | null> => {
             });
         }, 2000);
     });
+};
+
+export const getDialogMessages = (actionType: string): FormMessage | null => {
+    let message = null;
+    switch (actionType) {
+        case "remove":
+            message = {
+                headerText: "Remove Device",
+                bodyText: "Are you sure you want to remove this device?",
+                type: FormMessageTypes.WARNING,
+                actionType: "remove",
+                successMessage: "Device removed successfully",
+            };
+            break;
+        case "add":
+            message = {
+                headerText: "Add device to your library",
+                bodyText: "Are you sure you want to add this device?",
+                type: FormMessageTypes.WARNING,
+                actionType: "add",
+                successMessage: "Device added successfully",
+            };
+            break;
+        case "edit":
+            message = {
+                headerText: "Edit Device",
+                bodyText: "Are you sure you want to edit this device?",
+                type: FormMessageTypes.WARNING,
+                actionType: "edit",
+                successMessage: "",
+            };
+            break;
+    }
+    return message;
 };
