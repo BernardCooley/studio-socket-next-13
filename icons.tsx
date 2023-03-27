@@ -29,6 +29,7 @@ import Image from "next/image";
 import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 
 export const deviceIcons = {
     Turntable: "/assets/icons/devices/turntable.png",
@@ -164,6 +165,7 @@ const Icons = ({
         chevronRight: <ArrowForwardIosIcon {...attributes} />,
         chevronLeft: <ArrowBackIosNewIcon {...attributes} />,
         chevronDown: <KeyboardArrowDownIcon {...attributes} />,
+        chevronUp: <ExpandLessIcon {...attributes} />,
         add: <AddIcon {...attributes} />,
         edit: <EditIcon {...attributes} />,
         tick: <DoneIcon {...attributes} />,

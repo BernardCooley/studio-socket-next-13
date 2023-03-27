@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import React from "react";
 
 interface Props {
@@ -6,9 +7,15 @@ interface Props {
 
 const PageTitle = ({ title }: Props) => {
     return (
-        <div className="text-5xl w-full text-center capitalize font-default">
+        <Box
+            fontSize="xl"
+            w="full"
+            textAlign="center"
+            textTransform="capitalize"
+            fontFamily="default"
+        >
             {title}
-        </div>
+        </Box>
     );
 };
 

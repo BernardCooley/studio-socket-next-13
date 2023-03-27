@@ -1,16 +1,23 @@
-import React, { useRef } from "react";
+import React from "react";
 import Link from "next/link";
 import Icons from "../icons";
 import routes from "../routes";
 import { useNavContext } from "../contexts/NavContext";
-import useOnClickOutside from "../hooks/useClickOutside";
+import {
+    Box,
+    Center,
+    Drawer,
+    DrawerBody,
+    DrawerContent,
+    DrawerHeader,
+    DrawerOverlay,
+    HStack,
+} from "@chakra-ui/react";
 
 interface Props {}
 
 const Navigation = ({}: Props) => {
     const { navOpen, closeNav, openNav } = useNavContext();
-    const navigationRef = useRef<HTMLDivElement>(null);
-    useOnClickOutside(navigationRef, closeNav);
 
     const navLinks = [
         {
@@ -25,73 +32,78 @@ const Navigation = ({}: Props) => {
             name: "Studios",
             path: routes.studios().as,
         },
+        {
+            name: "Account",
+            path: routes.account().as,
+        },
     ];
 
     return (
-        <div
-            className={`font-default fixed top-0 w-full pt-2 bg-primary px-4 ease-in-out duration-200 shadow-3xl z-40 ${
-                navOpen ? "h-72" : "h-11"
-            }`}
-            ref={navigationRef}
-        >
-            <div
-                className={`flex justify-between ${
-                    navOpen ? "" : "items-center"
-                }`}
+        <>
+            <HStack
+                bg="brand.primary"
+                color="brand.primary-light"
+                justifyContent="space-between"
+                alignItems="center"
+                fontFamily="default"
+                px="2"
+                shadow="xl"
+                position="fixed"
+                w="full"
+                zIndex="40"
             >
-                {!navOpen ? (
-                    <Icons
-                        iconType="menu"
-                        className="text-primary-light"
-                        onClick={openNav}
-                        fontSize="72px"
-                    />
-                ) : (
-                    <Link
-                        className=""
-                        href={routes.account().as}
-                        onClick={closeNav}
-                    >
-                        <Icons
-                            iconType="account"
-                            className="text-primary-light"
-                            fontSize="84px"
-                        />
-                    </Link>
-                )}
-
-                <div
-                    className={`text-primary-light text-2xl ease-in-out duration-200`}
-                >
-                    Studio Socket
-                </div>
-            </div>
-
-            <div
-                className={`mt-10 font-regular text-primary-light text-3xl w-full flex justify-center items-center flex-col ease-in-out duration-200 ${
-                    navOpen ? "opacity-100" : "opacity-0 h-0 mt-0"
-                }`}
-            >
-                {navLinks.map((link) => (
-                    <Link
-                        key={link.name}
-                        className={`my-3 ${navOpen ? "block" : "hidden"}`}
-                        href={link.path}
-                        onClick={closeNav}
-                    >
-                        {link.name}
-                    </Link>
-                ))}
-            </div>
-            {navOpen && (
                 <Icons
-                    iconType="close"
-                    className="text-primary-light relative bottom-8"
-                    onClick={closeNav}
-                    fontSize="92px"
+                    iconType="menu"
+                    onClick={openNav}
+                    fontSize="32px"
+                    className="text-primary-light"
                 />
-            )}
-        </div>
+                <Box color="brand.primary-light" fontSize="sm">
+                    Studio Socket
+                </Box>
+            </HStack>
+            <Drawer
+                placement="top"
+                onClose={closeNav}
+                isOpen={navOpen}
+                blockScrollOnMount
+                closeOnEsc
+                preserveScrollBarGap
+                closeOnOverlayClick
+            >
+                <DrawerOverlay />
+                <DrawerContent
+                    bg="brand.primary"
+                    color="brand.primary-light"
+                    fontFamily="default"
+                >
+                    <Icons
+                        iconType="chevronUp"
+                        className="text-primary-light relative top-1 left-1"
+                        onClick={closeNav}
+                        fontSize="62px"
+                    />
+                    <DrawerHeader borderBottomWidth="1px">
+                        <Center>Studio Socket</Center>
+                    </DrawerHeader>
+                    <DrawerBody>
+                        {navLinks.map((link) => (
+                            <Center key={link.name}>
+                                <Link
+                                    className={`my-1 ${
+                                        navOpen ? "block" : "hidden"
+                                    }`}
+                                    href={link.path}
+                                    onClick={closeNav}
+                                >
+                                    {link.name}
+                                </Link>
+                            </Center>
+                        ))}
+                    </DrawerBody>
+                </DrawerContent>
+            </Drawer>
+        </>
     );
 };
 

@@ -175,7 +175,7 @@ const YourDevices = ({}: Props) => {
     };
 
     return (
-        <Box pt="152px" onScroll={handleVerticalScroll}>
+        <Box pt="52px" onScroll={handleVerticalScroll}>
             <Dialog
                 headerText={dialogMessage?.headerText || ""}
                 bodyText={dialogMessage?.bodyText || ""}
@@ -241,12 +241,7 @@ const YourDevices = ({}: Props) => {
                 sortBy={sortBy}
                 searchKeys={searchLabel}
             />
-            <VStack
-                gap={3}
-                mx={3}
-                align="stretch"
-                onScroll={handleVerticalScroll}
-            >
+            <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>
                 <AnimatePresence>
                     {devices &&
                         devices.length > 0 &&

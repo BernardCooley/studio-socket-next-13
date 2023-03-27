@@ -35,7 +35,7 @@ const DeviceItem = memo(
         const ActionIcon = ({
             type,
             onClick,
-            fontSize = "64px",
+            fontSize = "34px",
         }: IDeviceIconProps): JSX.Element => {
             return (
                 <div
@@ -64,10 +64,11 @@ const DeviceItem = memo(
             >
                 <HStack
                     w="full"
-                    pl="45px"
+                    p="16px"
                     borderRadius="lg"
                     border="1px"
                     borderColor="dark.500"
+                    mt="0px"
                 >
                     <Link className="flex grow items-center" href={href}>
                         <Box>
@@ -81,25 +82,25 @@ const DeviceItem = memo(
                                 }
                                 alt={device.deviceTypes[0]?.name}
                                 fit="contain"
-                                htmlWidth="150px"
+                                htmlWidth="50px"
                             />
                         </Box>
-                        <CardBody ml="12px">
-                            <Heading size="md" my="0px">
+                        <CardBody ml="12px" p="0px">
+                            <Heading fontSize="16px" my="0px">
                                 {device.manufacturers
                                     .map((manufacturer) => manufacturer.name)
                                     .join(", ")}
                             </Heading>
 
-                            <Box fontSize="52px">{device.title}</Box>
+                            <Box fontSize="22px">{device.title}</Box>
 
-                            <Box fontSize="32px">
+                            <Box fontSize="12px">
                                 {device.deviceTypes[0]?.name}
                             </Box>
                         </CardBody>
                     </Link>
 
-                    <CardFooter h="full">
+                    <CardFooter h="full" p="0px">
                         <Flex
                             justifyContent="space-between"
                             direction="column"
@@ -109,7 +110,7 @@ const DeviceItem = memo(
                                 <ActionIcon
                                     key={actionButton.type}
                                     type={actionButton.type}
-                                    fontSize="80px"
+                                    fontSize="28px"
                                     onClick={() => {
                                         actionButton.onClick();
                                     }}
