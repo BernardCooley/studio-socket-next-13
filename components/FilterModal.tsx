@@ -35,7 +35,9 @@ interface Props {
     clearFilterKeys: () => void;
     updateFilterKeys: (filterList: FilterKeys[]) => void;
     updateFilteredByLabel: (label: string[]) => void;
-    updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
+    updateSelectedFilterOptions: (
+        options: SelectedFilterOptions | null
+    ) => void;
     selectedFilterOptions: SelectedFilterOptions | null;
 }
 
@@ -81,6 +83,7 @@ const FilterModal = ({
         hideFilter();
 
         clearFilterKeys();
+        updateSelectedFilterOptions(null);
         updateFilteredByLabel([]);
         setFilterList([]);
     };
@@ -114,46 +117,6 @@ const FilterModal = ({
         updateSortBy(sort);
     };
 
-    const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
-        const filts: any[] = [];
-        filterList.forEach((filter) => {
-            if (filter.name === "deviceTypes" && filter.filters[0] !== "") {
-                filts.push({
-                    deviceTypes: {
-                        some: {
-                            name: {
-                                in: filter.filters,
-                            },
-                        },
-                    },
-                });
-            }
-            if (filter.name === "formFactors" && filter.filters[0] !== "") {
-                filts.push({
-                    formFactor: {
-                        name: {
-                            in: filter.filters,
-                        },
-                    },
-                });
-            }
-            if (filter.name === "connectors" && filter.filters[0] !== "") {
-                filts.push({
-                    connections: {
-                        some: {
-                            connector: {
-                                name: {
-                                    in: filter.filters,
-                                },
-                            },
-                        },
-                    },
-                });
-            }
-        });
-        return filts;
-    };
-
     const handleSubmitFilters = () => {
         const selectedFilters = Object.keys(refs).map((refKey) => {
             return {
@@ -163,6 +126,7 @@ const FilterModal = ({
                 ],
             };
         });
+
         const selectedFilterOptions: SelectedFilterOptions = {};
         Object.keys(refs).forEach((refKey) => {
             selectedFilterOptions[refKey] = JSON.parse(

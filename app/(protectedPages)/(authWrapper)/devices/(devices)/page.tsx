@@ -9,7 +9,12 @@ import {
     removeDeviceFromUser,
 } from "../../../../../bff/requests";
 import { useSession } from "next-auth/react";
-import { FilterKeys, FormMessage, IDevice } from "../../../../../types";
+import {
+    FilterKeys,
+    FormMessage,
+    IDevice,
+    SelectedFilterOptions,
+} from "../../../../../types";
 import LoadingSpinner from "../../../../../components/LoadingSpinner";
 import {
     AndOr,
@@ -43,7 +48,6 @@ import FilterSortLabel from "../../../../../components/FilterSortLabel";
 import PageTitle from "../../../../../components/PageTitle";
 import { AnimatePresence } from "framer-motion";
 import ToTop from "../../../../../components/ToTop";
-import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Icons from "../../../../../icons";
 
@@ -70,8 +74,9 @@ const Devices = ({}: Props) => {
     const [existingParams, setExistingParams] = useState<QueryParam[]>([]);
     const toast = useToast();
     const { data: user } = useSession();
-    const { updateSelectedFilterOptions, selectedFilterOptions } =
-        useODevFilterContext();
+    const [selectedFilterOptions, setSelectedFilterOptions] =
+        useState<SelectedFilterOptions | null>(null);
+
     const [showFilterOrSort, setShowFilterOrSort] = useState<SortFilter>(null);
     const limit = 50;
     const andOr: AndOr = "AND";
@@ -139,6 +144,22 @@ const Devices = ({}: Props) => {
     useEffect(() => {
         generateSearchParams();
     }, [searchTerm]);
+
+    useEffect(() => {
+        const selectedFilterOptions1: SelectedFilterOptions = {};
+        existingParams.forEach((param) => {
+            selectedFilterOptions1[param.key] = param.value
+                .split(",")
+                .map((d: string) => {
+                    return {
+                        value: d === "" ? "" : d,
+                        label: d === "" ? "None" : d,
+                    };
+                });
+        });
+
+        setSelectedFilterOptions(selectedFilterOptions1);
+    }, [existingParams]);
 
     const showDialog = (actionType: string) => {
         setIsDialogShowing(true);
@@ -468,7 +489,7 @@ const Devices = ({}: Props) => {
                 clearFilterKeys={() => setFilterList(defaultFilterList)}
                 updateFilterKeys={setFilterList}
                 updateFilteredByLabel={setFilteredByLabel}
-                updateSelectedFilterOptions={updateSelectedFilterOptions}
+                updateSelectedFilterOptions={setSelectedFilterOptions}
                 selectedFilterOptions={selectedFilterOptions}
                 sortBy={sort}
                 filterKeys={filterList}

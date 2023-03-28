@@ -2,7 +2,6 @@
 "use client";
 
 import { Box } from "@chakra-ui/react";
-import { ODevFilterContextProvider } from "../../../../contexts/ODevFilterContext";
 import { SearchContextProvider } from "../../../../contexts/SearchContext";
 
 interface Props {
@@ -12,9 +11,7 @@ interface Props {
 const AllDevicesWrapperLayout = ({ children }: Props) => {
     return (
         <SearchContextProvider>
-            <ODevFilterContextProvider>
-                <Box>{children}</Box>
-            </ODevFilterContextProvider>
+            <Box>{children}</Box>
         </SearchContextProvider>
     );
 };
