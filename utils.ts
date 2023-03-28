@@ -1,4 +1,6 @@
-import { QueryParam } from "./bff/types";
+import { ReadonlyURLSearchParams } from "next/navigation";
+import { IOrderBy, ISearchQuery, QueryParam } from "./bff/types";
+import { defaultSortList } from "./consts";
 import {
     FilterKeys,
     FormMessage,
@@ -169,4 +171,141 @@ export const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
         }
     });
     return filts;
+};
+
+export const generateSortByFromParams = (
+    searchParams: ReadonlyURLSearchParams | null
+): { [key: string]: string }[] => {
+    const sortParam = searchParams?.get("sort")?.split("-");
+
+    if (sortParam) {
+        const key = sortParam[0];
+        const value = sortParam[1];
+        return [
+            {
+                [key]: value,
+            },
+        ];
+    }
+    return defaultSortList;
+};
+
+export const generateFilterByFromParams = (
+    searchParams: ReadonlyURLSearchParams | null
+): FilterKeys[] => {
+    const deviceTypes = searchParams?.get("deviceTypes")?.split(",");
+    const connectors = searchParams?.get("connectors")?.split(",");
+    const formFactors = searchParams?.get("formFactors")?.split(",");
+
+    const params: FilterKeys[] = [];
+
+    if (deviceTypes && deviceTypes.length > 0) {
+        params.push({
+            name: "deviceTypes",
+            filters: deviceTypes,
+        });
+    }
+    if (connectors && connectors.length > 0) {
+        params.push({
+            name: "connectors",
+            filters: connectors,
+        });
+    }
+    if (formFactors && formFactors.length > 0) {
+        params.push({
+            name: "formFactors",
+            filters: formFactors,
+        });
+    }
+
+    return params;
+};
+
+export const generateSearchQueryByParams = (
+    searchParams: ReadonlyURLSearchParams | null
+): ISearchQuery[] => {
+    const searchQuery = searchParams?.get("search");
+
+    const q: ISearchQuery[] = [];
+
+    searchQuery?.split(",").forEach((query) => {
+        const searchQuery = query.split("-");
+        const key = searchQuery[0];
+        const value = searchQuery[1];
+        q.push({
+            [key]: {
+                search: value,
+            },
+        });
+    });
+    return q;
+};
+
+export const generateSortParams = (
+    sort: IOrderBy[],
+    pathname: string,
+    existingParams: QueryParam[]
+) => {
+    const sortParams = updateParams(pathname || "", existingParams, [
+        {
+            key: "sort",
+            value: `${Object.keys(sort[0])[0]}-${Object.values(sort[0])[0]}`,
+        },
+    ]);
+    return sortParams;
+};
+
+export const generateFilterParams = (
+    filters: FilterKeys[],
+    pathname: string,
+    existingParams: QueryParam[]
+) => {
+    const params: QueryParam[] = [];
+    const paramsToRemove: string[] = [];
+
+    filters.forEach((filter) => {
+        if (filter.filters.length > 0 && filter.filters[0]) {
+            params.push({
+                key: filter.name,
+                value: filter.filters.join(","),
+            });
+        } else {
+            paramsToRemove.push(filter.name);
+        }
+    });
+    const filterParams = updateParams(
+        pathname || "",
+        existingParams,
+        params,
+        paramsToRemove
+    );
+
+    return filterParams;
+};
+
+export const generateSearchParams = (
+    searchTerm: string,
+    pathname: string,
+    existingParams: QueryParam[]
+) => {
+    let searchParams: string = "";
+    if (searchTerm.length > 0) {
+        const search: QueryParam[] = [
+            {
+                key: "search",
+                value: `title-${searchTerm}`,
+            },
+        ];
+
+        searchParams = updateParams(pathname || "", existingParams, search);
+    } else {
+        searchParams = updateParams(
+            pathname || "",
+            existingParams,
+            [],
+            ["search"]
+        );
+    }
+
+    return searchParams;
 };

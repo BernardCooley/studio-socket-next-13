@@ -29,6 +29,12 @@ import {
     updateParams,
     buildFilterQuery,
     getDialogMessages,
+    generateSortByFromParams,
+    generateFilterByFromParams,
+    generateSearchQueryByParams,
+    generateSortParams,
+    generateFilterParams,
+    generateSearchParams,
 } from "../../../../../utils";
 import {
     Box,
@@ -50,24 +56,11 @@ import { AnimatePresence } from "framer-motion";
 import ToTop from "../../../../../components/ToTop";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Icons from "../../../../../icons";
+import { defaultFilterList, defaultSortList } from "../../../../../consts";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
-    const defaultFilterList = [
-        {
-            name: "deviceTypes",
-            filters: [""],
-        },
-        {
-            name: "connectors",
-            filters: [""],
-        },
-        {
-            name: "formFactors",
-            filters: [""],
-        },
-    ];
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -82,11 +75,8 @@ const Devices = ({}: Props) => {
     const andOr: AndOr = "AND";
     const [skip, setSkip] = useState<number>(0);
     const [sortParam, setSortParam] = useState<IOrderBy[]>([]);
-    const [sort, setSort] = useState<{ [key: string]: string }[]>([
-        {
-            title: "asc",
-        },
-    ]);
+    const [sort, setSort] =
+        useState<{ [key: string]: string }[]>(defaultSortList);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
@@ -112,11 +102,57 @@ const Devices = ({}: Props) => {
             vals.push({ key, value });
         });
 
+        setSort(generateSortByFromParams(searchParams));
+        setFilterList(generateFilterByFromParams(searchParams));
+        setFilterByRequest(
+            buildFilterQuery(generateFilterByFromParams(searchParams))
+        );
+        setSearchQuery(generateSearchQueryByParams(searchParams));
         setExistingParams(vals);
-        generateSortByFromParams();
-        generateFilterByFromParams();
-        generateSearchQueryByParams();
+        setDefaultList(vals);
+    }, [searchParams]);
 
+    useEffect(() => {
+        if (sortParam.length > 0 && pathname) {
+            router.replace(
+                generateSortParams(sortParam, pathname, existingParams)
+            );
+        }
+    }, [sortParam]);
+
+    useEffect(() => {
+        if (pathname) {
+            router.replace(
+                generateFilterParams(filterList, pathname, existingParams)
+            );
+        }
+    }, [filterList]);
+
+    useEffect(() => {
+        if (pathname) {
+            router.replace(
+                generateSearchParams(searchTerm, pathname, existingParams)
+            );
+        }
+    }, [searchTerm]);
+
+    useEffect(() => {
+        const selectedFilterOptions: SelectedFilterOptions = {};
+        existingParams.forEach((param) => {
+            selectedFilterOptions[param.key] = param.value
+                .split(",")
+                .map((d: string) => {
+                    return {
+                        value: d === "" ? "" : d,
+                        label: d === "" ? "None" : d,
+                    };
+                });
+        });
+
+        setSelectedFilterOptions(selectedFilterOptions);
+    }, [existingParams]);
+
+    const setDefaultList = (vals: QueryParam[]) => {
         if (pathname === "/devices" && !searchParams?.get("list")) {
             const params = updateParams(pathname, vals, [
                 {
@@ -129,162 +165,11 @@ const Devices = ({}: Props) => {
         } else {
             setListSelected(searchParams?.get("list") as "yours" | "all");
         }
-    }, [searchParams]);
-
-    useEffect(() => {
-        if (sortParam.length > 0) {
-            generateSortParams(sortParam);
-        }
-    }, [sortParam]);
-
-    useEffect(() => {
-        generateFilterParams(filterList);
-    }, [filterList]);
-
-    useEffect(() => {
-        generateSearchParams();
-    }, [searchTerm]);
-
-    useEffect(() => {
-        const selectedFilterOptions1: SelectedFilterOptions = {};
-        existingParams.forEach((param) => {
-            selectedFilterOptions1[param.key] = param.value
-                .split(",")
-                .map((d: string) => {
-                    return {
-                        value: d === "" ? "" : d,
-                        label: d === "" ? "None" : d,
-                    };
-                });
-        });
-
-        setSelectedFilterOptions(selectedFilterOptions1);
-    }, [existingParams]);
+    };
 
     const showDialog = (actionType: string) => {
         setIsDialogShowing(true);
         setDialogMessage(getDialogMessages(actionType));
-    };
-
-    const generateFilterByFromParams = () => {
-        const deviceTypes = searchParams?.get("deviceTypes")?.split(",");
-        const connectors = searchParams?.get("connectors")?.split(",");
-        const formFactors = searchParams?.get("formFactors")?.split(",");
-
-        const params: FilterKeys[] = [];
-
-        if (deviceTypes && deviceTypes.length > 0) {
-            params.push({
-                name: "deviceTypes",
-                filters: deviceTypes,
-            });
-        }
-        if (connectors && connectors.length > 0) {
-            params.push({
-                name: "connectors",
-                filters: connectors,
-            });
-        }
-        if (formFactors && formFactors.length > 0) {
-            params.push({
-                name: "formFactors",
-                filters: formFactors,
-            });
-        }
-
-        if (params.length > 0) {
-            setFilterList(params);
-            setFilterByRequest(buildFilterQuery(params));
-        }
-    };
-
-    const generateSortByFromParams = () => {
-        const sortParam = searchParams?.get("sort")?.split("-");
-
-        if (sortParam) {
-            const key = sortParam[0];
-            const value = sortParam[1];
-            setSort([
-                {
-                    [key]: value,
-                },
-            ]);
-        }
-    };
-
-    const generateSearchQueryByParams = () => {
-        const searchQuery = searchParams?.get("search");
-
-        const q: ISearchQuery[] = [];
-
-        searchQuery?.split(",").forEach((query) => {
-            const searchQuery = query.split("-");
-            const key = searchQuery[0];
-            const value = searchQuery[1];
-            q.push({
-                [key]: {
-                    search: value,
-                },
-            });
-        });
-        setSearchQuery(q);
-    };
-
-    const generateSortParams = (sort: IOrderBy[]) => {
-        const sortParams = updateParams(pathname || "", existingParams, [
-            {
-                key: "sort",
-                value: `${Object.keys(sort[0])[0]}-${
-                    Object.values(sort[0])[0]
-                }`,
-            },
-        ]);
-        router.replace(sortParams);
-    };
-
-    const generateFilterParams = (filters: FilterKeys[]) => {
-        const params: QueryParam[] = [];
-        const paramsToRemove: string[] = [];
-
-        filters.forEach((filter) => {
-            if (filter.filters.length > 0 && filter.filters[0]) {
-                params.push({
-                    key: filter.name,
-                    value: filter.filters.join(","),
-                });
-            } else {
-                paramsToRemove.push(filter.name);
-            }
-            const filterParams = updateParams(
-                pathname || "",
-                existingParams,
-                params,
-                paramsToRemove
-            );
-            router.replace(filterParams);
-        });
-    };
-
-    const generateSearchParams = () => {
-        let searchParams: string = "";
-        if (searchTerm.length > 0) {
-            const search: QueryParam[] = [
-                {
-                    key: "search",
-                    value: `title-${searchTerm}`,
-                },
-            ];
-
-            searchParams = updateParams(pathname || "", existingParams, search);
-        } else {
-            searchParams = updateParams(
-                pathname || "",
-                existingParams,
-                [],
-                ["search"]
-            );
-        }
-        router.replace(searchParams);
     };
 
     const actionButtons: IActionButtons = {

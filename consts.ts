@@ -49,3 +49,24 @@ export const sortButtons = [
         ],
     },
 ];
+
+export const defaultFilterList = [
+    {
+        name: "deviceTypes",
+        filters: [""],
+    },
+    {
+        name: "connectors",
+        filters: [""],
+    },
+    {
+        name: "formFactors",
+        filters: [""],
+    },
+];
+
+export const defaultSortList = [
+    {
+        title: "asc",
+    },
+];
