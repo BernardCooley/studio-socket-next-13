@@ -70,13 +70,13 @@ const CustomMultiSelect = forwardRef(
         };
 
         return (
-            <div className={`w-full mb-16 ${className}`} ref={containerRef}>
-                <label className="w-full text-2xl text-primary z-10 mb-4">
+            <div className={`w-full mb-2 ${className}`} ref={containerRef}>
+                <label className="w-full text-xs text-primary z-10 mb-1">
                     {label}
                 </label>
-                <div className={`relative w-full text-2xl`}>
+                <div className={`relative w-full text-xs`}>
                     <div
-                        className={`w-full p-2 border-4 flex justify-between ${
+                        className={`w-full border-1 flex justify-between ${
                             optionsDisplayed
                                 ? "border-primary rounded-t-md"
                                 : "border-fieldLabel rounded-md"
@@ -87,13 +87,13 @@ const CustomMultiSelect = forwardRef(
                         <Icons
                             iconType="chevronDown"
                             className="text-primary"
-                            fontSize="72px"
+                            fontSize="42px"
                         />
                     </div>
                     <div
                         className={`w-full absolute z-50 bg-primary-light transition-height duration-300 ease-in-out overflow-scroll rounded-b-md ${
                             optionsDisplayed
-                                ? "h-52 border-4 border-primary"
+                                ? "h-52 border-1 border-primary"
                                 : "h-0"
                         }`}
                     >

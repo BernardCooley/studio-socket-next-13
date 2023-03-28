@@ -2,172 +2,165 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useYDevFilterContext } from "../../../../../contexts/YDevFilterContext";
-import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
-import { useNavContext } from "../../../../../contexts/NavContext";
 import { useSearchContext } from "../../../../../contexts/SearchContext";
-import useIntersectionObserver from "@react-hook/intersection-observer";
-import Icons from "../../../../../icons";
-import routes from "../../../../../routes";
-import { fetchDevices, IRequestOptions } from "../../../../../bff/requests";
-import { useFormContext } from "../../../../../contexts/FormContext";
+import {
+    addDeviceToUser,
+    fetchDevices,
+    IRequestOptions,
+    removeDeviceFromUser,
+} from "../../../../../bff/requests";
 import { useSession } from "next-auth/react";
-import { FormMessageTypes, IDevice } from "../../../../../types";
-
-// TODO - Delete this page when devices are done
+import { FormMessage, IDevice } from "../../../../../types";
+import LoadingSpinner from "../../../../../components/LoadingSpinner";
+import { AndOr, IActionButtons, IOrderBy } from "../../../../../bff/types";
+import Dialog from "../../../../../components/Dialog";
+import { addParam, getDialogMessages } from "../../../../../utils";
+import {
+    Box,
+    Button,
+    ButtonGroup,
+    Center,
+    useToast,
+    VStack,
+} from "@chakra-ui/react";
+import FilterModal from "../../../../../components/FilterModal";
+import SearchModal from "../../../../../components/SearchModal";
+import DeviceItem from "../../../../../components/DeviceItem";
+import routes from "../../../../../routes";
+import FilterSortLabel from "../../../../../components/FilterSortLabel";
+import FilterIcons from "../../../../../components/FilterIcons";
+import PageTitle from "../../../../../components/PageTitle";
+import { AnimatePresence } from "framer-motion";
+import ToTop from "../../../../../components/ToTop";
+import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+    const vals: any[] = [];
+    const toast = useToast();
     const { data: user } = useSession();
     const {
-        sortBy: yourDevicesSortBy,
         filterModalShowing,
-        filterKeys: yourDevicesFilterKeys,
-        filteredByLabel: yourDevicesFilteredByLabel,
-        andOr: yourDevicesAndOr,
-        limit: yourDevicesLimit,
-        skip: yourDevicesSkip,
-        updateSkip: updateYourDevicesSkip,
-        refetch,
-        searchQuery: yourDevicesSearchQuery,
-        searchLabel: yourDevicesSearchLabel,
-    } = useYDevFilterContext();
-    const {
-        sortBy: allDevicesSortBy,
-        filterKeys: allDevicesFilterKeys,
-        filteredByLabel: allDevicesFilteredByLabel,
-        andOr: allDevicesAndOr,
-        limit: allDevicesLimit,
-        skip: allDevicesSkip,
-        updateSkip: updateAllDevicesSkip,
-        searchQuery: allDevicesSearchQuery,
-        searchLabel: allDevicesSearchLabel,
+        searchLabel,
+        showFilter,
+        updateSearchLabel,
+        sortOrFilter,
+        hideFilter,
+        clearFilterKeys,
+        updateFilterKeys,
+        updateSelectedFilterOptions,
+        selectedFilterOptions,
+        clearSelectedFilterOptions,
+        filterKeys,
     } = useODevFilterContext();
-    const { searchOpen } = useSearchContext();
-    const { updateDeviceListInView, navOpen } = useNavContext();
+    const limit = 50;
+    const andOr: AndOr = "AND";
+    const [skip, setSkip] = useState<number>(0);
+    const [sortBy, setSortBy] = useState<IOrderBy[]>([]);
+    const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
+    const { openSearch, searchQuery, updateSearchQuery } = useSearchContext();
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
-    const [yourDevices, setYourDevices] = useState<IDevice[] | null>(null);
-    const scrollElementRef = useRef<HTMLDivElement>(null);
-    const yourDevicesRef = useRef<HTMLDivElement>(null);
-    const ourDevicesRef = useRef<HTMLDivElement>(null);
-    const { isIntersecting } = useIntersectionObserver(yourDevicesRef);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
-    const { addFormMessages, updateIcon } = useFormContext();
-    const [showYourToTopButton, setShowYourToTopButton] =
-        useState<boolean>(false);
-    const [showAllToTopButton, setShowAllToTopButton] =
-        useState<boolean>(false);
+    const [showToTopButton, setShowToTopButton] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [dialogMessage, setDialogMessage] = useState<FormMessage | null>(
+        null
+    );
+    const cancelRef = useRef<HTMLButtonElement>(null);
+    const [isDialogShowing, setIsDialogShowing] = useState<boolean>(false);
+
+    const showDialog = (actionType: string) => {
+        setIsDialogShowing(true);
+        setDialogMessage(getDialogMessages(actionType));
+    };
+    const [deviceIdClicked, setDeviceIdClicked] = useState<string | null>(null);
 
     useEffect(() => {
-        scroll(false);
-        // TODO: not getting devices every time
-        getDevices(false);
-    }, [refetch]);
+        searchParams?.forEach((value, key) => {
+            vals.push({ key, value });
+        });
 
-    useEffect(
-        () => {
-            // getDevices(true);
-            if (isIntersecting) {
-                getDevices(false);
-            } else {
-                getDevices(true);
-            }
-        },
-        [
-            // allDevicesSortBy,
-            // yourDevicesSortBy,
-            // yourDevicesFilterKeys,
-            // allDevicesFilterKeys,
-            // user,
-            // allDevicesSearchQuery,
-            // yourDevicesSearchQuery,
-            // isIntersecting,
-        ]
+        if (!searchParams?.get("list")) {
+            router.replace(
+                addParam(pathname || "", vals, {
+                    key: "list",
+                    value: "yours",
+                })
+            );
+        }
+    }, []);
+
+    const [listSelected] = useState<"yours" | "all">(
+        searchParams?.get("list") as "yours" | "all"
     );
 
-    useEffect(() => {
-        updateDeviceListInView(isIntersecting ? "yours" : "ours");
-    }, [isIntersecting]);
+    const actionButtons: IActionButtons = {
+        yours: [
+            {
+                type: "close",
+                onClick: () => showDialog("remove"),
+                confirmAction: "remove",
+            },
+        ],
+        all: [
+            {
+                type: "add",
+                onClick: () => showDialog("add"),
+                confirmAction: "add",
+            },
+        ],
+    };
 
-    const getRequestOptions = (
-        isAllDevices: boolean,
-        customSkip: number | null
-    ): IRequestOptions => {
+    useEffect(() => {
+        getDevices();
+    }, [sortBy, filterKeys, user, searchQuery]);
+
+    const getRequestOptions = (customSkip: number | null): IRequestOptions => {
         return {
-            skip: customSkip
-                ? customSkip
-                : isAllDevices
-                ? allDevicesSkip
-                : yourDevicesSkip,
-            limit: isAllDevices ? allDevicesLimit : yourDevicesLimit,
-            filters: isAllDevices
-                ? allDevicesFilterKeys
-                : yourDevicesFilterKeys,
-            andOr: isAllDevices ? allDevicesAndOr : yourDevicesAndOr,
-            orderBy: isAllDevices ? allDevicesSortBy : yourDevicesSortBy,
-            userId: isAllDevices ? null : user?.user.id,
-            searchQuery: isAllDevices
-                ? allDevicesSearchQuery
-                : yourDevicesSearchQuery,
+            skip: customSkip ? customSkip : skip,
+            limit: limit,
+            filters: filterKeys,
+            andOr: andOr,
+            orderBy: sortBy,
+            userId: listSelected === "yours" ? user?.user.id : null,
+            searchQuery: searchQuery,
         };
     };
 
-    const getDevices = async (isAllDevices: boolean) => {
-        const requestBody = getRequestOptions(isAllDevices, null);
+    const getDevices = async () => {
+        const requestBody = getRequestOptions(null);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
-            if (isAllDevices) {
-                setAllDevices(devices);
-            } else {
-                setYourDevices(devices);
-            }
+            setAllDevices(devices);
+            setLoading(false);
         }
     };
 
-    const getMoreDevices = async (skip: number, isAllDevices: boolean) => {
-        const requestBody = getRequestOptions(isAllDevices, skip);
+    const getMoreDevices = async (skip: number) => {
+        const requestBody = getRequestOptions(skip);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
-            if (isAllDevices) {
-                setAllDevices((devices) => [...devices, ...moreDevices]);
-            } else {
-                setYourDevices((devices) =>
-                    devices ? [...devices, ...moreDevices] : null
-                );
-            }
+            setAllDevices((devices) => [...devices, ...moreDevices]);
         }
         setMoreLoading(false);
     };
 
-    const scroll = (toLeft: boolean) => {
-        if (scrollElementRef.current) {
-            scrollElementRef.current.scrollTo({
-                behavior: "smooth",
-                left: toLeft ? 600 : -600,
-            });
-        }
-    };
-
     const handleVerticalScroll = (
-        e: React.UIEvent<HTMLDivElement, UIEvent>,
-        isAllDevices: boolean
+        e: React.UIEvent<HTMLDivElement, UIEvent>
     ) => {
+        console.log("scrolling");
         const target = e.target as HTMLDivElement;
         const scrollPosition = target.scrollHeight - target.scrollTop;
 
         if (target.scrollTop > 500) {
-            if (isAllDevices) {
-                setShowAllToTopButton(true);
-            } else {
-                setShowYourToTopButton(true);
-            }
+            setShowToTopButton(true);
         } else {
-            if (isAllDevices) {
-                setShowAllToTopButton(false);
-            } else {
-                setShowYourToTopButton(false);
-            }
+            setShowToTopButton(false);
         }
 
         if (
@@ -176,40 +169,196 @@ const Devices = ({}: Props) => {
         ) {
             setMoreLoading(true);
 
-            if (isAllDevices) {
-                updateAllDevicesSkip(allDevicesSkip + allDevicesLimit);
-                getMoreDevices(allDevicesSkip + allDevicesLimit, isAllDevices);
-            } else {
-                updateYourDevicesSkip(yourDevicesSkip + yourDevicesLimit);
-                getMoreDevices(
-                    yourDevicesSkip + yourDevicesLimit,
-                    isAllDevices
-                );
+            setSkip(skip + limit);
+            getMoreDevices(skip + limit);
+        }
+    };
+
+    const add = async () => {
+        if (deviceIdClicked && user) {
+            const resp = await addDeviceToUser(user.user.id, deviceIdClicked);
+
+            if (resp) {
+                toast({
+                    title: "Success",
+                    description: dialogMessage?.successMessage,
+                    status: "success",
+                    duration: 2000,
+                    isClosable: false,
+                    position: "bottom",
+                    size: "sm",
+                });
             }
         }
     };
 
+    const remove = async () => {
+        if (deviceIdClicked && user) {
+            const resp = await removeDeviceFromUser(
+                user.user.id,
+                deviceIdClicked
+            );
+
+            if (resp) {
+                getDevices();
+
+                toast({
+                    title: "Success",
+                    description: dialogMessage?.successMessage,
+                    status: "success",
+                    duration: 2000,
+                    isClosable: false,
+                    position: "bottom",
+                    size: "sm",
+                });
+            }
+        }
+    };
+
+    const performAction = async (actionType: string) => {
+        if (actionType === "add") {
+            await add();
+        } else if (actionType === "remove") {
+            await remove();
+        }
+    };
+
     return (
-        <div
-            className={`relative overflow-hidden h-screen ${
-                filterModalShowing || searchOpen
-                    ? "opacity-40 pointer-events-none"
-                    : "opacity-100 pointer-events-auto"
-            } ${navOpen ? "disable" : ""}`}
-        >
-            {!isIntersecting && (
-                <Icons
-                    iconType="add"
-                    fontSize="142px"
-                    className="absolute bottom-6 right-4 border-8 text-primary-light bg-primary rounded-full z-50"
-                    href={routes.addDevice().as}
-                />
-            )}
-            <div
-                ref={scrollElementRef}
-                className="w-full flex snap-mandatory snap-x mx:auto overflow-y-scroll"
-            ></div>
-        </div>
+        <Box pt="52px" onScroll={handleVerticalScroll}>
+            {/* <Button onClick={addParam}></Button> */}
+            <Dialog
+                headerText={dialogMessage?.headerText || ""}
+                bodyText={dialogMessage?.bodyText || ""}
+                isOpen={isDialogShowing}
+                onClose={() => {
+                    setIsDialogShowing(false);
+                    setDialogMessage(null);
+                }}
+                buttons={[
+                    {
+                        text: "No",
+                        onClick: () => {
+                            setIsDialogShowing(false);
+                            setDialogMessage(null);
+                        },
+                    },
+                    {
+                        text: "Yes",
+                        onClick: () => {
+                            performAction(dialogMessage?.actionType || "");
+                            setIsDialogShowing(false);
+                            setDialogMessage(null);
+                        },
+                    },
+                ]}
+                cancelRef={cancelRef}
+            />
+            <LoadingSpinner
+                loading={loading || moreLoading}
+                label="Loading devices..."
+            />
+            <SearchModal
+                updateSearchQuery={updateSearchQuery}
+                updateSearchLabel={updateSearchLabel}
+                searchLabel={searchLabel}
+                searchType="devices"
+            />
+            <FilterModal
+                sortOrFilter={sortOrFilter}
+                filterModalShowing={filterModalShowing}
+                hideFilter={hideFilter}
+                updateSortBy={setSortBy}
+                clearFilterKeys={clearFilterKeys}
+                updateFilterKeys={updateFilterKeys}
+                updateFilteredByLabel={setFilteredByLabel}
+                updateSelectedFilterOptions={updateSelectedFilterOptions}
+                selectedFilterOptions={selectedFilterOptions}
+                clearSelectedFilterOptions={clearSelectedFilterOptions}
+                sortBy={sortBy}
+                filterKeys={filterKeys}
+            />
+            <PageTitle
+                title={`${listSelected === "yours" ? "Your" : "All"} devices`}
+            />
+            <Center>
+                <ButtonGroup gap="0" spacing={0}>
+                    <Button
+                        _hover={{
+                            bg: "brand.primary",
+                            color: "brand.primary-light",
+                        }}
+                        onClick={() =>
+                            router.replace(
+                                addParam(pathname || "", vals, {
+                                    key: "list",
+                                    value: "yours",
+                                })
+                            )
+                        }
+                        size="xs"
+                        fontSize="16px"
+                        variant={listSelected === "yours" ? "primary" : "ghost"}
+                        roundedLeft="full"
+                        h={4}
+                    >
+                        Yours
+                    </Button>
+                    <Button
+                        _hover={{
+                            bg: "brand.primary",
+                            color: "brand.primary-light",
+                        }}
+                        onClick={() =>
+                            router.replace(
+                                addParam(pathname || "", vals, {
+                                    key: "list",
+                                    value: "all",
+                                })
+                            )
+                        }
+                        size="xs"
+                        fontSize="16px"
+                        variant={listSelected === "all" ? "primary" : "ghost"}
+                        ml={0}
+                        roundedRight="full"
+                        h={4}
+                    >
+                        All
+                    </Button>
+                </ButtonGroup>
+            </Center>
+            <FilterIcons
+                searchTerm={searchQuery}
+                filterKeys={filterKeys}
+                sortBy={sortBy}
+                onFilterClick={() => showFilter("filter")}
+                onSortClick={() => showFilter("sort")}
+                onSearchClick={openSearch}
+            />
+            <FilterSortLabel
+                filterKeys={filterKeys}
+                sortBy={sortBy}
+                searchKeys={searchLabel}
+            />
+            <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>
+                <AnimatePresence>
+                    {allDevices &&
+                        allDevices.length > 0 &&
+                        allDevices.map((device) => (
+                            <DeviceItem
+                                onDeviceClick={() =>
+                                    setDeviceIdClicked(device.id)
+                                }
+                                actionButtons={actionButtons[listSelected]}
+                                key={device.id}
+                                device={device}
+                                href={routes.device(device.id).as}
+                            />
+                        ))}
+                </AnimatePresence>
+            </VStack>
+            <ToTop showButton={showToTopButton} listId="deviceList" />
+        </Box>
     );
 };
 

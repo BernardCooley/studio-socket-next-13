@@ -19,7 +19,7 @@ import {
 interface Props {
     device: IDevice;
     href?: string;
-    actionButtons: IActionButton[];
+    actionButtons: IActionButton[] | null;
     onDeviceClick?: () => void;
 }
 
@@ -106,16 +106,17 @@ const DeviceItem = memo(
                             direction="column"
                             h="full"
                         >
-                            {actionButtons.map((actionButton) => (
-                                <ActionIcon
-                                    key={actionButton.type}
-                                    type={actionButton.type}
-                                    fontSize="28px"
-                                    onClick={() => {
-                                        actionButton.onClick();
-                                    }}
-                                />
-                            ))}
+                            {actionButtons &&
+                                actionButtons.map((actionButton) => (
+                                    <ActionIcon
+                                        key={actionButton.type}
+                                        type={actionButton.type}
+                                        fontSize="28px"
+                                        onClick={() => {
+                                            actionButton.onClick();
+                                        }}
+                                    />
+                                ))}
                         </Flex>
                     </CardFooter>
                 </HStack>

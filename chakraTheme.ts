@@ -31,7 +31,9 @@ export const theme = extendTheme({
                 primary: {
                     color: primaryLight,
                     backgroundColor: primary,
-
+                    _active: {
+                        backgroundColor: primary,
+                    },
                     _hover: {
                         color: primary,
                         backgroundColor: primaryLight,

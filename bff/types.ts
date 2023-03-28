@@ -50,3 +50,13 @@ export interface IActionButton {
     onClick: () => void;
     confirmAction: string;
 }
+
+export interface IActionButtons {
+    yours: IActionButton[];
+    all: IActionButton[];
+}
+
+export interface QueryParam {
+    key: string;
+    value: string;
+}

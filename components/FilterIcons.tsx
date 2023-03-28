@@ -24,7 +24,7 @@ const FilterIcons = ({
         <Flex>
             <Icons
                 iconType="sort"
-                className={`z-30 rounded-lg shadow-lg ${
+                className={`z-30 rounded-sm shadow-lg ${
                     sortBy.length > 0
                         ? "filterSortIconActive"
                         : "filterSortIconInactive"
@@ -33,7 +33,7 @@ const FilterIcons = ({
                 fontSize="42px"
             />
             <Icons
-                className={`z-30 rounded-lg shadow-lg ${
+                className={`z-30 rounded-sm shadow-lg ${
                     filterKeys.length > 0 &&
                     filterKeys.filter((key) => key !== "").length > 0
                         ? "filterSortIconActive"
@@ -44,7 +44,7 @@ const FilterIcons = ({
                 fontSize="42px"
             />
             <Icons
-                className={`z-30 rounded-lg shadow-lg ${
+                className={`z-30 rounded-sm shadow-lg ${
                     searchTerm.length > 0
                         ? "filterSortIconActive"
                         : "filterSortIconInactive"

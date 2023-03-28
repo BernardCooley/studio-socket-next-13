@@ -39,21 +39,25 @@ const Dialog = ({
         >
             <AlertDialogOverlay>
                 <AlertDialogContent
-                    mt="500px"
                     w="90vw"
                     fontFamily="default"
                     bg="brand.primary-light"
+                    p={1}
                 >
-                    <AlertDialogHeader fontSize="xl" fontWeight="bold">
+                    <AlertDialogHeader p={1} fontSize="xs" fontWeight="bold">
                         {headerText}
                     </AlertDialogHeader>
 
-                    <AlertDialogBody>{bodyText}</AlertDialogBody>
+                    <AlertDialogBody p={1} fontSize="18px">
+                        {bodyText}
+                    </AlertDialogBody>
 
-                    <AlertDialogFooter>
-                        <ButtonGroup gap="4">
+                    <AlertDialogFooter p={1}>
+                        <ButtonGroup>
                             {buttons.map((button) => (
                                 <Button
+                                    size="xs"
+                                    fontSize="16px"
                                     variant="primary"
                                     key={button.text}
                                     ref={cancelRef}

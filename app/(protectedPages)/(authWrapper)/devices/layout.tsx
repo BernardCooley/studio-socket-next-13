@@ -4,22 +4,19 @@
 import { Box } from "@chakra-ui/react";
 import { ODevFilterContextProvider } from "../../../../contexts/ODevFilterContext";
 import { SearchContextProvider } from "../../../../contexts/SearchContext";
-import { YDevFilterContextProvider } from "../../../../contexts/YDevFilterContext";
 
 interface Props {
     children: React.ReactNode;
 }
 
-const DevicesWrapperLayout = ({ children }: Props) => {
+const AllDevicesWrapperLayout = ({ children }: Props) => {
     return (
         <SearchContextProvider>
             <ODevFilterContextProvider>
-                <YDevFilterContextProvider>
-                    <Box>{children}</Box>
-                </YDevFilterContextProvider>
+                <Box>{children}</Box>
             </ODevFilterContextProvider>
         </SearchContextProvider>
     );
 };
 
-export default DevicesWrapperLayout;
+export default AllDevicesWrapperLayout;

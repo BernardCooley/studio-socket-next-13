@@ -1,3 +1,4 @@
+import { QueryParam } from "./bff/types";
 import { FormMessage, FormMessageTypes, SelectOption } from "./types";
 
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
@@ -97,4 +98,24 @@ export const getDialogMessages = (actionType: string): FormMessage | null => {
             break;
     }
     return message;
+};
+
+export const paramBuilder = (params: QueryParam[]) => {
+    return params
+        .map((param) => {
+            return `${param.key}=${param.value}`;
+        })
+        .join("&");
+};
+
+export const addParam = (
+    pathname: string,
+    existingParams: QueryParam[],
+    newParam: QueryParam
+) => {
+    const newParams = [
+        ...existingParams.filter((param) => param.key !== newParam.key),
+        newParam,
+    ];
+    return `${pathname}?${paramBuilder(newParams)}`;
 };

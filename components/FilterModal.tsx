@@ -200,11 +200,11 @@ const FilterModal = ({
 
     const SortBody = () => {
         return (
-            <Box mb="50px">
-                <ButtonGroup gap="4" flexWrap="wrap" flexDir="column" w="full">
+            <Box mb="20px">
+                <ButtonGroup gap="1" flexWrap="wrap" flexDir="column" w="full">
                     {sortButtons.map((button) => (
                         <Button
-                            size="lg"
+                            size="xs"
                             key={button.sortKey[0].toString()}
                             isDisabled={sort.length === 0}
                             isActive={shallowEqual(sort[0], button.sortKey[0])}
@@ -227,7 +227,7 @@ const FilterModal = ({
         return (
             <Box>
                 <Button
-                    size="lg"
+                    size="xs"
                     isDisabled={sort.length === 0}
                     variant="primary"
                     onClick={handleSubmitSort}
@@ -271,19 +271,20 @@ const FilterModal = ({
 
     const FilterFooter = () => {
         return (
-            <ButtonGroup gap="4">
+            <ButtonGroup gap="1">
                 <Button
-                    size="lg"
+                    size="xs"
+                    fontSize="16px"
                     variant="primary"
                     onClick={handleClearFilters}
                 >
                     Clear
                 </Button>
                 <Button
-                    size="lg"
+                    size="xs"
+                    fontSize="16px"
                     variant="primary"
                     onClick={handleSubmitFilters}
-                    fontSize="lg"
                 >
                     Show results
                 </Button>
@@ -298,23 +299,24 @@ const FilterModal = ({
             blockScrollOnMount
             isCentered
             returnFocusOnClose
-            size="xl"
+            size="xs"
         >
             <ModalOverlay />
             <ModalContent
                 fontFamily="default"
                 w="90vw"
                 bg="brand.primary-light"
+                p={1}
             >
-                <ModalHeader>
+                <ModalHeader fontSize="28px" p={1}>
                     {sortOrFilter === "sort" ? "Sort by" : "Filter by"}
                 </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
+                <ModalCloseButton size="sm" h={2} w={2} border="0" />
+                <ModalBody p={1}>
                     {sortOrFilter === "sort" ? <SortBody /> : <FilterBody />}
                 </ModalBody>
 
-                <ModalFooter>
+                <ModalFooter p={1} mt={2}>
                     {sortOrFilter === "sort" ? (
                         <SortFooter />
                     ) : (
