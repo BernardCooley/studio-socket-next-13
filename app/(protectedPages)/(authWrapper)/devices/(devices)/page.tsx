@@ -12,7 +12,12 @@ import {
 import { useSession } from "next-auth/react";
 import { FormMessage, IDevice } from "../../../../../types";
 import LoadingSpinner from "../../../../../components/LoadingSpinner";
-import { AndOr, IActionButtons, IOrderBy } from "../../../../../bff/types";
+import {
+    AndOr,
+    IActionButtons,
+    IOrderBy,
+    QueryParam,
+} from "../../../../../bff/types";
 import Dialog from "../../../../../components/Dialog";
 import { addParam, getDialogMessages } from "../../../../../utils";
 import {
@@ -41,7 +46,7 @@ const Devices = ({}: Props) => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
-    const vals: any[] = [];
+    const [existingParams, setExistingParams] = useState<QueryParam[]>([]);
     const toast = useToast();
     const { data: user } = useSession();
     const {
@@ -61,7 +66,12 @@ const Devices = ({}: Props) => {
     const limit = 50;
     const andOr: AndOr = "AND";
     const [skip, setSkip] = useState<number>(0);
-    const [sortBy, setSortBy] = useState<IOrderBy[]>([]);
+    const [sortParam, setSortParam] = useState<IOrderBy[]>([]);
+    const [sort, setSort] = useState<{ [key: string]: string }[]>([
+        {
+            title: "asc",
+        },
+    ]);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
     const { openSearch, searchQuery, updateSearchQuery } = useSearchContext();
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
@@ -73,17 +83,20 @@ const Devices = ({}: Props) => {
     );
     const cancelRef = useRef<HTMLButtonElement>(null);
     const [isDialogShowing, setIsDialogShowing] = useState<boolean>(false);
-
-    const showDialog = (actionType: string) => {
-        setIsDialogShowing(true);
-        setDialogMessage(getDialogMessages(actionType));
-    };
     const [deviceIdClicked, setDeviceIdClicked] = useState<string | null>(null);
+    const [listSelected, setListSelected] = useState<"yours" | "all">(
+        searchParams?.get("list") as "yours" | "all"
+    );
 
     useEffect(() => {
+        const vals: QueryParam[] = [];
         searchParams?.forEach((value, key) => {
             vals.push({ key, value });
         });
+
+        setExistingParams(vals);
+
+        generateSortByFromParams();
 
         if (!searchParams?.get("list")) {
             router.replace(
@@ -92,12 +105,43 @@ const Devices = ({}: Props) => {
                     value: "yours",
                 })
             );
+        } else {
+            setListSelected(searchParams?.get("list") as "yours" | "all");
         }
-    }, []);
+    }, [searchParams]);
 
-    const [listSelected] = useState<"yours" | "all">(
-        searchParams?.get("list") as "yours" | "all"
-    );
+    useEffect(() => {
+        if (sortParam.length > 0) {
+            generateSortParamsBySortBy(sortParam);
+        }
+    }, [sortParam]);
+
+    const showDialog = (actionType: string) => {
+        setIsDialogShowing(true);
+        setDialogMessage(getDialogMessages(actionType));
+    };
+
+    const generateSortByFromParams = () => {
+        const sortParam = searchParams?.get("sort")?.split("-");
+
+        if (sortParam) {
+            const key = sortParam[0];
+            const value = sortParam[1];
+            setSort([
+                {
+                    [key]: value,
+                },
+            ]);
+        }
+    };
+
+    const generateSortParamsBySortBy = (sort: IOrderBy[]) => {
+        const sortParams = addParam(pathname || "", existingParams, {
+            key: "sort",
+            value: `${Object.keys(sort[0])[0]}-${Object.values(sort[0])[0]}`,
+        });
+        router.replace(sortParams);
+    };
 
     const actionButtons: IActionButtons = {
         yours: [
@@ -117,23 +161,30 @@ const Devices = ({}: Props) => {
     };
 
     useEffect(() => {
-        getDevices();
-    }, [sortBy, filterKeys, user, searchQuery]);
+        if (listSelected === "yours" && user) {
+            getDevices(user?.user.id);
+        } else if (listSelected === "all") {
+            getDevices(null);
+        }
+    }, [sort, user, listSelected]);
 
-    const getRequestOptions = (customSkip: number | null): IRequestOptions => {
+    const getRequestOptions = (
+        customSkip: number | null,
+        userId: string | null
+    ): IRequestOptions => {
         return {
             skip: customSkip ? customSkip : skip,
             limit: limit,
             filters: filterKeys,
             andOr: andOr,
-            orderBy: sortBy,
-            userId: listSelected === "yours" ? user?.user.id : null,
+            orderBy: sort,
+            userId,
             searchQuery: searchQuery,
         };
     };
 
-    const getDevices = async () => {
-        const requestBody = getRequestOptions(null);
+    const getDevices = async (userId: string | null) => {
+        const requestBody = getRequestOptions(null, userId);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
             setAllDevices(devices);
@@ -141,8 +192,8 @@ const Devices = ({}: Props) => {
         }
     };
 
-    const getMoreDevices = async (skip: number) => {
-        const requestBody = getRequestOptions(skip);
+    const getMoreDevices = async (skip: number, userId: string | null) => {
+        const requestBody = getRequestOptions(skip, userId);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
             setAllDevices((devices) => [...devices, ...moreDevices]);
@@ -153,7 +204,6 @@ const Devices = ({}: Props) => {
     const handleVerticalScroll = (
         e: React.UIEvent<HTMLDivElement, UIEvent>
     ) => {
-        console.log("scrolling");
         const target = e.target as HTMLDivElement;
         const scrollPosition = target.scrollHeight - target.scrollTop;
 
@@ -170,7 +220,7 @@ const Devices = ({}: Props) => {
             setMoreLoading(true);
 
             setSkip(skip + limit);
-            getMoreDevices(skip + limit);
+            getMoreDevices(skip + limit, user?.user.id);
         }
     };
 
@@ -200,7 +250,7 @@ const Devices = ({}: Props) => {
             );
 
             if (resp) {
-                getDevices();
+                getDevices(user.user.id);
 
                 toast({
                     title: "Success",
@@ -267,14 +317,14 @@ const Devices = ({}: Props) => {
                 sortOrFilter={sortOrFilter}
                 filterModalShowing={filterModalShowing}
                 hideFilter={hideFilter}
-                updateSortBy={setSortBy}
+                updateSortBy={setSortParam}
                 clearFilterKeys={clearFilterKeys}
                 updateFilterKeys={updateFilterKeys}
                 updateFilteredByLabel={setFilteredByLabel}
                 updateSelectedFilterOptions={updateSelectedFilterOptions}
                 selectedFilterOptions={selectedFilterOptions}
                 clearSelectedFilterOptions={clearSelectedFilterOptions}
-                sortBy={sortBy}
+                sortBy={sort}
                 filterKeys={filterKeys}
             />
             <PageTitle
@@ -289,7 +339,7 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParam(pathname || "", vals, {
+                                addParam(pathname || "", existingParams, {
                                     key: "list",
                                     value: "yours",
                                 })
@@ -310,7 +360,7 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParam(pathname || "", vals, {
+                                addParam(pathname || "", existingParams, {
                                     key: "list",
                                     value: "all",
                                 })
@@ -330,14 +380,14 @@ const Devices = ({}: Props) => {
             <FilterIcons
                 searchTerm={searchQuery}
                 filterKeys={filterKeys}
-                sortBy={sortBy}
+                sortBy={sort}
                 onFilterClick={() => showFilter("filter")}
                 onSortClick={() => showFilter("sort")}
                 onSearchClick={openSearch}
             />
             <FilterSortLabel
                 filterKeys={filterKeys}
-                sortBy={sortBy}
+                sortBy={sort}
                 searchKeys={searchLabel}
             />
             <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>

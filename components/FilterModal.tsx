@@ -201,14 +201,27 @@ const FilterModal = ({
     const SortBody = () => {
         return (
             <Box mb="20px">
-                <ButtonGroup gap="1" flexWrap="wrap" flexDir="column" w="full">
+                <ButtonGroup
+                    gap="1"
+                    flexDir="column"
+                    w="full"
+                    alignItems="center"
+                    justifyContent="center"
+                >
                     {sortButtons.map((button) => (
                         <Button
+                            w="full"
+                            textAlign="center"
                             size="xs"
-                            key={button.sortKey[0].toString()}
+                            fontSize="16px"
+                            key={button.label}
                             isDisabled={sort.length === 0}
-                            isActive={shallowEqual(sort[0], button.sortKey[0])}
+                            isActive={
+                                sort[0] &&
+                                shallowEqual(sort[0], button.sortKey[0])
+                            }
                             variant={
+                                sort[0] &&
                                 shallowEqual(sort[0], button.sortKey[0])
                                     ? "primary"
                                     : "ghost"
@@ -228,8 +241,9 @@ const FilterModal = ({
             <Box>
                 <Button
                     size="xs"
-                    isDisabled={sort.length === 0}
+                    fontSize="16px"
                     variant="primary"
+                    isDisabled={sort.length === 0}
                     onClick={handleSubmitSort}
                 >
                     Show results
