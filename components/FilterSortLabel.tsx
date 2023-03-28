@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { IOrderBy } from "../bff/types";
 import { sortButtons } from "../consts";
@@ -5,16 +6,24 @@ import { shallowEqual } from "../utils";
 
 interface Props {
     sortBy: IOrderBy[];
-    filterKeys: string[];
+    filterKeys: string[][];
     searchKeys: string[];
 }
 
 const FilterSortLabel = ({ sortBy, filterKeys, searchKeys }: Props) => {
+    const merged: string[] = [];
+
+    filterKeys.forEach((keys) => {
+        keys.forEach((filter) => {
+            merged.push(filter);
+        });
+    });
+
     const [parsedSortKey, setParsedSortKey] = useState<string>("");
 
     useEffect(() => {
         getSortTitle(sortBy);
-    }, [filterKeys, sortBy]);
+    }, [merged, sortBy]);
 
     const getSortTitle = (sortKey: IOrderBy) => {
         let sort = "";
@@ -29,23 +38,23 @@ const FilterSortLabel = ({ sortBy, filterKeys, searchKeys }: Props) => {
     };
 
     return (
-        <div className="m-4 text-md">
-            {parsedSortKey.length > 0 && <div>Sorted by {parsedSortKey}</div>}
-            {filterKeys.length > 0 &&
-                filterKeys.filter((key) => key !== "").length > 0 && (
-                    <div>
+        <Box fontSize="18px" m={1}>
+            {parsedSortKey.length > 0 && <Box>Sorted by {parsedSortKey}</Box>}
+            {merged.length > 0 &&
+                merged.filter((key) => key !== "").length > 0 && (
+                    <Box>
                         Filtered by{" "}
-                        {filterKeys.filter((key) => key !== "").join(", ")}
-                    </div>
+                        {merged.filter((key) => key !== "").join(", ")}
+                    </Box>
                 )}
             {searchKeys.length > 0 &&
                 searchKeys.filter((key) => key !== "").length > 0 && (
-                    <div>
+                    <Box>
                         Results for{" "}
                         {searchKeys.filter((key) => key !== "").join(", ")}
-                    </div>
+                    </Box>
                 )}
-        </div>
+        </Box>
     );
 };
 

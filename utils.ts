@@ -1,5 +1,10 @@
 import { QueryParam } from "./bff/types";
-import { FormMessage, FormMessageTypes, SelectOption } from "./types";
+import {
+    FilterKeys,
+    FormMessage,
+    FormMessageTypes,
+    SelectOption,
+} from "./types";
 
 export const getErrorMessages = (errors: any, fieldName: string): string[] => {
     if (!errors || errors.length === 0) return [];
@@ -108,14 +113,60 @@ export const paramBuilder = (params: QueryParam[]) => {
         .join("&");
 };
 
-export const addParam = (
+export const addParams = (
     pathname: string,
     existingParams: QueryParam[],
-    newParam: QueryParam
+    newParams: QueryParam[],
+    paramsToRemove: string[] = []
 ) => {
-    const newParams = [
-        ...existingParams.filter((param) => param.key !== newParam.key),
-        newParam,
+    const newQueryParams = [
+        ...existingParams.filter(
+            (param) => !newParams.map((p) => p.key).includes(param.key)
+        ),
+        ...newParams,
     ];
-    return `${pathname}?${paramBuilder(newParams)}`;
+    const removedParams = newQueryParams.filter(
+        (param) => !paramsToRemove.includes(param.key)
+    );
+    return `${pathname}?${paramBuilder(removedParams)}`;
+};
+
+export const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
+    const filts: any[] = [];
+    filterList.forEach((filter) => {
+        if (filter.name === "deviceTypes" && filter.filters[0] !== "") {
+            filts.push({
+                deviceTypes: {
+                    some: {
+                        name: {
+                            in: filter.filters,
+                        },
+                    },
+                },
+            });
+        }
+        if (filter.name === "formFactors" && filter.filters[0] !== "") {
+            filts.push({
+                formFactor: {
+                    name: {
+                        in: filter.filters,
+                    },
+                },
+            });
+        }
+        if (filter.name === "connectors" && filter.filters[0] !== "") {
+            filts.push({
+                connections: {
+                    some: {
+                        connector: {
+                            name: {
+                                in: filter.filters,
+                            },
+                        },
+                    },
+                },
+            });
+        }
+    });
+    return filts;
 };

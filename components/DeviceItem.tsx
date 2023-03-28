@@ -59,17 +59,9 @@ const DeviceItem = memo(
                 layout
                 direction={{ base: "column", sm: "row" }}
                 overflow="hidden"
-                variant="outline"
                 onClick={onDeviceClick}
             >
-                <HStack
-                    w="full"
-                    p="16px"
-                    borderRadius="lg"
-                    border="1px"
-                    borderColor="dark.500"
-                    mt="0px"
-                >
+                <HStack w="full" p="16px" borderRadius="lg" mt="0px">
                     <Link className="flex grow items-center" href={href}>
                         <Box>
                             <Image

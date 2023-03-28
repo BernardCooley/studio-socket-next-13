@@ -6,7 +6,7 @@ import Icons from "../icons";
 interface Props {
     sortBy: IOrderBy;
     onSortClick: () => void;
-    filterKeys: string[];
+    filterKeys: string[][];
     onFilterClick: () => void;
     onSearchClick: () => void;
     searchTerm: ISearchQuery[];
@@ -20,6 +20,14 @@ const FilterIcons = ({
     onSearchClick,
     searchTerm,
 }: Props) => {
+    let merged: string[] = [];
+
+    filterKeys.forEach((keys) => {
+        keys.forEach((filter) => {
+            merged.push(filter);
+        });
+    });
+
     return (
         <Flex>
             <Icons
@@ -34,8 +42,8 @@ const FilterIcons = ({
             />
             <Icons
                 className={`z-30 rounded-sm shadow-lg ${
-                    filterKeys.length > 0 &&
-                    filterKeys.filter((key) => key !== "").length > 0
+                    merged.length > 0 &&
+                    merged.filter((key) => key !== "").length > 0
                         ? "filterSortIconActive"
                         : "filterSortIconInactive"
                 }`}

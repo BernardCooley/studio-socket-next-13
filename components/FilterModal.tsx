@@ -33,7 +33,7 @@ interface Props {
     sortBy: IOrderBy[];
     filterKeys: FilterKeys[];
     clearFilterKeys: () => void;
-    updateFilterKeys: (filterKeys: FilterKeys[]) => void;
+    updateFilterKeys: (filterList: FilterKeys[]) => void;
     updateFilteredByLabel: (label: string[]) => void;
     updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
     selectedFilterOptions: SelectedFilterOptions | null;
@@ -185,7 +185,7 @@ const FilterModal = ({
 
         updateSelectedFilterOptions(selectedFilterOptions);
         updateFilteredByLabel(filterLabels);
-        updateFilterKeys(buildFilterQuery(selectedFilters));
+        updateFilterKeys(selectedFilters);
     };
 
     const getDefaultOption = (filterField: string): SelectOption[] | null => {

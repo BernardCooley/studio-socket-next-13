@@ -10,7 +10,7 @@ import {
     removeDeviceFromUser,
 } from "../../../../../bff/requests";
 import { useSession } from "next-auth/react";
-import { FormMessage, IDevice } from "../../../../../types";
+import { FilterKeys, FormMessage, IDevice } from "../../../../../types";
 import LoadingSpinner from "../../../../../components/LoadingSpinner";
 import {
     AndOr,
@@ -19,7 +19,11 @@ import {
     QueryParam,
 } from "../../../../../bff/types";
 import Dialog from "../../../../../components/Dialog";
-import { addParam, getDialogMessages } from "../../../../../utils";
+import {
+    addParams,
+    buildFilterQuery,
+    getDialogMessages,
+} from "../../../../../utils";
 import {
     Box,
     Button,
@@ -43,6 +47,20 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 interface Props {}
 
 const Devices = ({}: Props) => {
+    const defaultFilterList = [
+        {
+            name: "deviceTypes",
+            filters: [""],
+        },
+        {
+            name: "connectors",
+            filters: [""],
+        },
+        {
+            name: "formFactors",
+            filters: [""],
+        },
+    ];
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -56,12 +74,9 @@ const Devices = ({}: Props) => {
         updateSearchLabel,
         sortOrFilter,
         hideFilter,
-        clearFilterKeys,
-        updateFilterKeys,
         updateSelectedFilterOptions,
         selectedFilterOptions,
         clearSelectedFilterOptions,
-        filterKeys,
     } = useODevFilterContext();
     const limit = 50;
     const andOr: AndOr = "AND";
@@ -87,6 +102,8 @@ const Devices = ({}: Props) => {
     const [listSelected, setListSelected] = useState<"yours" | "all">(
         searchParams?.get("list") as "yours" | "all"
     );
+    const [filterList, setFilterList] = useState<FilterKeys[]>([]);
+    const [filterByRequest, setFilterByRequest] = useState<FilterKeys[]>([]);
 
     useEffect(() => {
         const vals: QueryParam[] = [];
@@ -97,13 +114,16 @@ const Devices = ({}: Props) => {
         setExistingParams(vals);
 
         generateSortByFromParams();
+        generateFilterByFromParams();
 
         if (!searchParams?.get("list")) {
             router.replace(
-                addParam(pathname || "", vals, {
-                    key: "list",
-                    value: "yours",
-                })
+                addParams(pathname || "", vals, [
+                    {
+                        key: "list",
+                        value: "yours",
+                    },
+                ])
             );
         } else {
             setListSelected(searchParams?.get("list") as "yours" | "all");
@@ -112,13 +132,49 @@ const Devices = ({}: Props) => {
 
     useEffect(() => {
         if (sortParam.length > 0) {
-            generateSortParamsBySortBy(sortParam);
+            generateSortParams(sortParam);
         }
     }, [sortParam]);
+
+    useEffect(() => {
+        generateFilterParams(filterList);
+    }, [filterList]);
 
     const showDialog = (actionType: string) => {
         setIsDialogShowing(true);
         setDialogMessage(getDialogMessages(actionType));
+    };
+
+    const generateFilterByFromParams = () => {
+        const deviceTypes = searchParams?.get("deviceTypes")?.split(",");
+        const connectors = searchParams?.get("connectors")?.split(",");
+        const formFactors = searchParams?.get("formFactors")?.split(",");
+
+        const params: FilterKeys[] = [];
+
+        if (deviceTypes && deviceTypes.length > 0) {
+            params.push({
+                name: "deviceTypes",
+                filters: deviceTypes,
+            });
+        }
+        if (connectors && connectors.length > 0) {
+            params.push({
+                name: "connectors",
+                filters: connectors,
+            });
+        }
+        if (formFactors && formFactors.length > 0) {
+            params.push({
+                name: "formFactors",
+                filters: formFactors,
+            });
+        }
+
+        if (params.length > 0) {
+            setFilterList(params);
+            setFilterByRequest(buildFilterQuery(params));
+        }
     };
 
     const generateSortByFromParams = () => {
@@ -135,12 +191,39 @@ const Devices = ({}: Props) => {
         }
     };
 
-    const generateSortParamsBySortBy = (sort: IOrderBy[]) => {
-        const sortParams = addParam(pathname || "", existingParams, {
-            key: "sort",
-            value: `${Object.keys(sort[0])[0]}-${Object.values(sort[0])[0]}`,
-        });
+    const generateSortParams = (sort: IOrderBy[]) => {
+        const sortParams = addParams(pathname || "", existingParams, [
+            {
+                key: "sort",
+                value: `${Object.keys(sort[0])[0]}-${
+                    Object.values(sort[0])[0]
+                }`,
+            },
+        ]);
         router.replace(sortParams);
+    };
+
+    const generateFilterParams = (filters: FilterKeys[]) => {
+        const params: QueryParam[] = [];
+        const paramsToRemove: string[] = [];
+
+        filters.forEach((filter) => {
+            if (filter.filters.length > 0 && filter.filters[0]) {
+                params.push({
+                    key: filter.name,
+                    value: filter.filters.join(","),
+                });
+            } else {
+                paramsToRemove.push(filter.name);
+            }
+            const filterParams = addParams(
+                pathname || "",
+                existingParams,
+                params,
+                paramsToRemove
+            );
+            router.replace(filterParams);
+        });
     };
 
     const actionButtons: IActionButtons = {
@@ -166,7 +249,7 @@ const Devices = ({}: Props) => {
         } else if (listSelected === "all") {
             getDevices(null);
         }
-    }, [sort, user, listSelected]);
+    }, [sort, user, listSelected, filterList]);
 
     const getRequestOptions = (
         customSkip: number | null,
@@ -175,7 +258,7 @@ const Devices = ({}: Props) => {
         return {
             skip: customSkip ? customSkip : skip,
             limit: limit,
-            filters: filterKeys,
+            filters: filterByRequest,
             andOr: andOr,
             orderBy: sort,
             userId,
@@ -238,6 +321,14 @@ const Devices = ({}: Props) => {
                     position: "bottom",
                     size: "sm",
                 });
+                router.replace(
+                    addParams(pathname || "", existingParams, [
+                        {
+                            key: "list",
+                            value: "yours",
+                        },
+                    ])
+                );
             }
         }
     };
@@ -275,7 +366,7 @@ const Devices = ({}: Props) => {
 
     return (
         <Box pt="52px" onScroll={handleVerticalScroll}>
-            {/* <Button onClick={addParam}></Button> */}
+            {/* <Button onClick={addParams}></Button> */}
             <Dialog
                 headerText={dialogMessage?.headerText || ""}
                 bodyText={dialogMessage?.bodyText || ""}
@@ -318,14 +409,14 @@ const Devices = ({}: Props) => {
                 filterModalShowing={filterModalShowing}
                 hideFilter={hideFilter}
                 updateSortBy={setSortParam}
-                clearFilterKeys={clearFilterKeys}
-                updateFilterKeys={updateFilterKeys}
+                clearFilterKeys={() => setFilterList(defaultFilterList)}
+                updateFilterKeys={setFilterList}
                 updateFilteredByLabel={setFilteredByLabel}
                 updateSelectedFilterOptions={updateSelectedFilterOptions}
                 selectedFilterOptions={selectedFilterOptions}
                 clearSelectedFilterOptions={clearSelectedFilterOptions}
                 sortBy={sort}
-                filterKeys={filterKeys}
+                filterKeys={filterList}
             />
             <PageTitle
                 title={`${listSelected === "yours" ? "Your" : "All"} devices`}
@@ -339,10 +430,12 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParam(pathname || "", existingParams, {
-                                    key: "list",
-                                    value: "yours",
-                                })
+                                addParams(pathname || "", existingParams, [
+                                    {
+                                        key: "list",
+                                        value: "yours",
+                                    },
+                                ])
                             )
                         }
                         size="xs"
@@ -360,10 +453,12 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParam(pathname || "", existingParams, {
-                                    key: "list",
-                                    value: "all",
-                                })
+                                addParams(pathname || "", existingParams, [
+                                    {
+                                        key: "list",
+                                        value: "all",
+                                    },
+                                ])
                             )
                         }
                         size="xs"
@@ -379,14 +474,14 @@ const Devices = ({}: Props) => {
             </Center>
             <FilterIcons
                 searchTerm={searchQuery}
-                filterKeys={filterKeys}
+                filterKeys={filterList.map((filter) => filter.filters)}
                 sortBy={sort}
                 onFilterClick={() => showFilter("filter")}
                 onSortClick={() => showFilter("sort")}
                 onSearchClick={openSearch}
             />
             <FilterSortLabel
-                filterKeys={filterKeys}
+                filterKeys={filterList.map((filter) => filter.filters)}
                 sortBy={sort}
                 searchKeys={searchLabel}
             />
