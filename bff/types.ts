@@ -9,7 +9,9 @@ export interface IOrderBy {
 }
 
 export interface ISearchQuery {
-    [key: string]: any;
+    [key: string]: {
+        search: string;
+    };
 }
 
 export interface IFetchDevicesBody {
@@ -43,7 +45,7 @@ export interface IFetchDevicesBody {
 
 export type AndOr = "AND" | "OR";
 
-export type SortFilter = "sort" | "filter";
+export type SortFilter = "sort" | "filter" | null;
 
 export interface IActionButton {
     type: string;

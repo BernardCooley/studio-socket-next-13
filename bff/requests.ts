@@ -9,7 +9,7 @@ export interface IRequestOptions {
     andOr: AndOr | "";
     orderBy: IOrderBy[] | null;
     userId?: string | null;
-    searchQuery?: ISearchQuery | null;
+    searchQuery?: ISearchQuery[] | null;
 }
 
 export const fetchDevices = async ({

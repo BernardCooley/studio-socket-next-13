@@ -37,7 +37,6 @@ interface Props {
     updateFilteredByLabel: (label: string[]) => void;
     updateSelectedFilterOptions: (options: SelectedFilterOptions) => void;
     selectedFilterOptions: SelectedFilterOptions | null;
-    clearSelectedFilterOptions: () => void;
 }
 
 const FilterModal = ({
@@ -52,7 +51,6 @@ const FilterModal = ({
     updateFilteredByLabel,
     updateSelectedFilterOptions,
     selectedFilterOptions,
-    clearSelectedFilterOptions,
 }: Props) => {
     const [types, setTypes] = useState<SelectOption[]>([]);
     const [connectors, setConnectors] = useState<SelectOption[]>([]);
@@ -84,7 +82,6 @@ const FilterModal = ({
 
         clearFilterKeys();
         updateFilteredByLabel([]);
-        clearSelectedFilterOptions();
         setFilterList([]);
     };
 

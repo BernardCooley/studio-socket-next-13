@@ -113,12 +113,12 @@ export const paramBuilder = (params: QueryParam[]) => {
         .join("&");
 };
 
-export const addParams = (
+export const updateParams = (
     pathname: string,
     existingParams: QueryParam[],
     newParams: QueryParam[],
     paramsToRemove: string[] = []
-) => {
+): string => {
     const newQueryParams = [
         ...existingParams.filter(
             (param) => !newParams.map((p) => p.key).includes(param.key)

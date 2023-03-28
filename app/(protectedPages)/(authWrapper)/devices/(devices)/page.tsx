@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { useSearchContext } from "../../../../../contexts/SearchContext";
 import {
     addDeviceToUser,
     fetchDevices,
@@ -16,11 +15,13 @@ import {
     AndOr,
     IActionButtons,
     IOrderBy,
+    ISearchQuery,
     QueryParam,
+    SortFilter,
 } from "../../../../../bff/types";
 import Dialog from "../../../../../components/Dialog";
 import {
-    addParams,
+    updateParams,
     buildFilterQuery,
     getDialogMessages,
 } from "../../../../../utils";
@@ -29,20 +30,22 @@ import {
     Button,
     ButtonGroup,
     Center,
+    Flex,
+    Input,
+    InputGroup,
     useToast,
     VStack,
 } from "@chakra-ui/react";
 import FilterModal from "../../../../../components/FilterModal";
-import SearchModal from "../../../../../components/SearchModal";
 import DeviceItem from "../../../../../components/DeviceItem";
 import routes from "../../../../../routes";
 import FilterSortLabel from "../../../../../components/FilterSortLabel";
-import FilterIcons from "../../../../../components/FilterIcons";
 import PageTitle from "../../../../../components/PageTitle";
 import { AnimatePresence } from "framer-motion";
 import ToTop from "../../../../../components/ToTop";
 import { useODevFilterContext } from "../../../../../contexts/ODevFilterContext";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Icons from "../../../../../icons";
 
 interface Props {}
 
@@ -67,17 +70,9 @@ const Devices = ({}: Props) => {
     const [existingParams, setExistingParams] = useState<QueryParam[]>([]);
     const toast = useToast();
     const { data: user } = useSession();
-    const {
-        filterModalShowing,
-        searchLabel,
-        showFilter,
-        updateSearchLabel,
-        sortOrFilter,
-        hideFilter,
-        updateSelectedFilterOptions,
-        selectedFilterOptions,
-        clearSelectedFilterOptions,
-    } = useODevFilterContext();
+    const { updateSelectedFilterOptions, selectedFilterOptions } =
+        useODevFilterContext();
+    const [showFilterOrSort, setShowFilterOrSort] = useState<SortFilter>(null);
     const limit = 50;
     const andOr: AndOr = "AND";
     const [skip, setSkip] = useState<number>(0);
@@ -88,7 +83,6 @@ const Devices = ({}: Props) => {
         },
     ]);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
-    const { openSearch, searchQuery, updateSearchQuery } = useSearchContext();
     const [allDevices, setAllDevices] = useState<IDevice[]>([]);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const [showToTopButton, setShowToTopButton] = useState<boolean>(false);
@@ -104,6 +98,8 @@ const Devices = ({}: Props) => {
     );
     const [filterList, setFilterList] = useState<FilterKeys[]>([]);
     const [filterByRequest, setFilterByRequest] = useState<FilterKeys[]>([]);
+    const [searchQuery, setSearchQuery] = useState<ISearchQuery[]>([]);
+    const [searchTerm, setSearchTerm] = useState<string>("");
 
     useEffect(() => {
         const vals: QueryParam[] = [];
@@ -112,19 +108,19 @@ const Devices = ({}: Props) => {
         });
 
         setExistingParams(vals);
-
         generateSortByFromParams();
         generateFilterByFromParams();
+        generateSearchQueryByParams();
 
-        if (!searchParams?.get("list")) {
-            router.replace(
-                addParams(pathname || "", vals, [
-                    {
-                        key: "list",
-                        value: "yours",
-                    },
-                ])
-            );
+        if (pathname === "/devices" && !searchParams?.get("list")) {
+            const params = updateParams(pathname, vals, [
+                {
+                    key: "list",
+                    value: "yours",
+                },
+            ]);
+            setListSelected("yours");
+            router.replace(params);
         } else {
             setListSelected(searchParams?.get("list") as "yours" | "all");
         }
@@ -139,6 +135,10 @@ const Devices = ({}: Props) => {
     useEffect(() => {
         generateFilterParams(filterList);
     }, [filterList]);
+
+    useEffect(() => {
+        generateSearchParams();
+    }, [searchTerm]);
 
     const showDialog = (actionType: string) => {
         setIsDialogShowing(true);
@@ -191,8 +191,26 @@ const Devices = ({}: Props) => {
         }
     };
 
+    const generateSearchQueryByParams = () => {
+        const searchQuery = searchParams?.get("search");
+
+        const q: ISearchQuery[] = [];
+
+        searchQuery?.split(",").forEach((query) => {
+            const searchQuery = query.split("-");
+            const key = searchQuery[0];
+            const value = searchQuery[1];
+            q.push({
+                [key]: {
+                    search: value,
+                },
+            });
+        });
+        setSearchQuery(q);
+    };
+
     const generateSortParams = (sort: IOrderBy[]) => {
-        const sortParams = addParams(pathname || "", existingParams, [
+        const sortParams = updateParams(pathname || "", existingParams, [
             {
                 key: "sort",
                 value: `${Object.keys(sort[0])[0]}-${
@@ -216,7 +234,7 @@ const Devices = ({}: Props) => {
             } else {
                 paramsToRemove.push(filter.name);
             }
-            const filterParams = addParams(
+            const filterParams = updateParams(
                 pathname || "",
                 existingParams,
                 params,
@@ -224,6 +242,28 @@ const Devices = ({}: Props) => {
             );
             router.replace(filterParams);
         });
+    };
+
+    const generateSearchParams = () => {
+        let searchParams: string = "";
+        if (searchTerm.length > 0) {
+            const search: QueryParam[] = [
+                {
+                    key: "search",
+                    value: `title-${searchTerm}`,
+                },
+            ];
+
+            searchParams = updateParams(pathname || "", existingParams, search);
+        } else {
+            searchParams = updateParams(
+                pathname || "",
+                existingParams,
+                [],
+                ["search"]
+            );
+        }
+        router.replace(searchParams);
     };
 
     const actionButtons: IActionButtons = {
@@ -249,7 +289,7 @@ const Devices = ({}: Props) => {
         } else if (listSelected === "all") {
             getDevices(null);
         }
-    }, [sort, user, listSelected, filterList]);
+    }, [sort, user, listSelected, filterList, searchQuery]);
 
     const getRequestOptions = (
         customSkip: number | null,
@@ -318,17 +358,16 @@ const Devices = ({}: Props) => {
                     status: "success",
                     duration: 2000,
                     isClosable: false,
-                    position: "bottom",
-                    size: "sm",
+                    position: "bottom-left",
+                    size: "xs",
+                    containerStyle: {
+                        width: "300px",
+                        maxWidth: "90%",
+                        fontSize: "22px",
+                        lineHeight: "28px",
+                        fontFamily: "default",
+                    },
                 });
-                router.replace(
-                    addParams(pathname || "", existingParams, [
-                        {
-                            key: "list",
-                            value: "yours",
-                        },
-                    ])
-                );
             }
         }
     };
@@ -349,8 +388,16 @@ const Devices = ({}: Props) => {
                     status: "success",
                     duration: 2000,
                     isClosable: false,
-                    position: "bottom",
-                    size: "sm",
+                    position: "bottom-left",
+                    size: "xs",
+                    containerStyle: {
+                        width: "300px",
+                        maxWidth: "90%",
+                        fontSize: "22px",
+                        lineHeight: "28px",
+                        fontFamily: "default",
+                        padding: "10px",
+                    },
                 });
             }
         }
@@ -364,9 +411,22 @@ const Devices = ({}: Props) => {
         }
     };
 
+    const mergeFilterKeys = () => {
+        let merged: string[] = [];
+
+        filterList
+            .map((filter) => filter.filters)
+            .forEach((keys) => {
+                keys.forEach((filter) => {
+                    merged.push(filter);
+                });
+            });
+
+        return merged;
+    };
+
     return (
         <Box pt="52px" onScroll={handleVerticalScroll}>
-            {/* <Button onClick={addParams}></Button> */}
             <Dialog
                 headerText={dialogMessage?.headerText || ""}
                 bodyText={dialogMessage?.bodyText || ""}
@@ -398,23 +458,18 @@ const Devices = ({}: Props) => {
                 loading={loading || moreLoading}
                 label="Loading devices..."
             />
-            <SearchModal
-                updateSearchQuery={updateSearchQuery}
-                updateSearchLabel={updateSearchLabel}
-                searchLabel={searchLabel}
-                searchType="devices"
-            />
             <FilterModal
-                sortOrFilter={sortOrFilter}
-                filterModalShowing={filterModalShowing}
-                hideFilter={hideFilter}
+                sortOrFilter={showFilterOrSort}
+                filterModalShowing={
+                    showFilterOrSort === "filter" || showFilterOrSort === "sort"
+                }
+                hideFilter={() => setShowFilterOrSort(null)}
                 updateSortBy={setSortParam}
                 clearFilterKeys={() => setFilterList(defaultFilterList)}
                 updateFilterKeys={setFilterList}
                 updateFilteredByLabel={setFilteredByLabel}
                 updateSelectedFilterOptions={updateSelectedFilterOptions}
                 selectedFilterOptions={selectedFilterOptions}
-                clearSelectedFilterOptions={clearSelectedFilterOptions}
                 sortBy={sort}
                 filterKeys={filterList}
             />
@@ -430,7 +485,7 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParams(pathname || "", existingParams, [
+                                updateParams(pathname || "", existingParams, [
                                     {
                                         key: "list",
                                         value: "yours",
@@ -453,7 +508,7 @@ const Devices = ({}: Props) => {
                         }}
                         onClick={() =>
                             router.replace(
-                                addParams(pathname || "", existingParams, [
+                                updateParams(pathname || "", existingParams, [
                                     {
                                         key: "list",
                                         value: "all",
@@ -472,18 +527,53 @@ const Devices = ({}: Props) => {
                     </Button>
                 </ButtonGroup>
             </Center>
-            <FilterIcons
-                searchTerm={searchQuery}
-                filterKeys={filterList.map((filter) => filter.filters)}
-                sortBy={sort}
-                onFilterClick={() => showFilter("filter")}
-                onSortClick={() => showFilter("sort")}
-                onSearchClick={openSearch}
-            />
+            <Flex alignItems="center" p={1} justifyContent="space-between">
+                <Icons
+                    iconType="sort"
+                    className={`z-30 rounded-sm shadow-lg ${
+                        sort.length > 0
+                            ? "filterSortIconActive"
+                            : "filterSortIconInactive"
+                    }`}
+                    onClick={() => setShowFilterOrSort("sort")}
+                    fontSize="42px"
+                />
+                <Center display="flex" flexGrow="2">
+                    <InputGroup display="flex" alignItems="center">
+                        <Input
+                            pl={1}
+                            fontSize="22px"
+                            color="brand.primary"
+                            variant="outline"
+                            colorScheme="dark"
+                            placeholder="Search"
+                            m={1}
+                            w="96%"
+                            h="40px"
+                            value={searchTerm}
+                            onChange={(e) => {
+                                setSearchTerm(e.target.value);
+                            }}
+                        />
+                    </InputGroup>
+                </Center>
+                <Icons
+                    className={`z-30 rounded-sm shadow-lg ${
+                        mergeFilterKeys().length > 0 &&
+                        mergeFilterKeys().filter((key) => key !== "").length > 0
+                            ? "filterSortIconActive"
+                            : "filterSortIconInactive"
+                    }`}
+                    iconType="filter"
+                    onClick={() => setShowFilterOrSort("filter")}
+                    fontSize="42px"
+                />
+            </Flex>
             <FilterSortLabel
+                onClearSearchClick={() => setSearchTerm("")}
                 filterKeys={filterList.map((filter) => filter.filters)}
                 sortBy={sort}
-                searchKeys={searchLabel}
+                searchKeys={searchQuery}
             />
             <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>
                 <AnimatePresence>

@@ -17,11 +17,9 @@ import Dialog from "../../../../../components/Dialog";
 import { getDialogMessages } from "../../../../../utils";
 import { Box, useToast, VStack } from "@chakra-ui/react";
 import FilterModal from "../../../../../components/FilterModal";
-import SearchModal from "../../../../../components/SearchModal";
 import DeviceItem from "../../../../../components/DeviceItem";
 import routes from "../../../../../routes";
 import FilterSortLabel from "../../../../../components/FilterSortLabel";
-import FilterIcons from "../../../../../components/FilterIcons";
 import PageTitle from "../../../../../components/PageTitle";
 import { AnimatePresence } from "framer-motion";
 import ToTop from "../../../../../components/ToTop";
@@ -207,12 +205,6 @@ const YourDevices = ({}: Props) => {
                 loading={loading || moreLoading}
                 label="Loading devices..."
             />
-            <SearchModal
-                updateSearchQuery={updateSearchQuery}
-                updateSearchLabel={updateSearchLabel}
-                searchLabel={searchLabel}
-                searchType="devices"
-            />
             <FilterModal
                 sortOrFilter={sortOrFilter}
                 filterModalShowing={filterModalShowing}
@@ -228,14 +220,6 @@ const YourDevices = ({}: Props) => {
                 filterKeys={filterKeys}
             />
             <PageTitle title="Your devices" />
-            <FilterIcons
-                searchTerm={searchQuery}
-                filterKeys={filterKeys}
-                sortBy={sortBy}
-                onFilterClick={() => showFilter("filter")}
-                onSortClick={() => showFilter("sort")}
-                onSearchClick={openSearch}
-            />
             <FilterSortLabel
                 filterKeys={filterKeys}
                 sortBy={sortBy}
