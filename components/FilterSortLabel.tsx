@@ -51,7 +51,7 @@ const FilterSortLabel = ({
     };
 
     return (
-        <Box fontSize="18px" m={1}>
+        <Box fontSize="18px" mx={1}>
             {parsedSortKey.length > 0 && <Box>Sorted by {parsedSortKey}</Box>}
             {mergedFilterKeys.length > 0 &&
                 mergedFilterKeys.filter((key) => key !== "").length > 0 && (

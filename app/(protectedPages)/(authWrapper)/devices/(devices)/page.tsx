@@ -433,7 +433,12 @@ const Devices = ({}: Props) => {
                     </Button>
                 </ButtonGroup>
             </Center>
-            <Flex alignItems="center" p={1} justifyContent="space-between">
+            <Flex
+                alignItems="center"
+                px={1}
+                pt={1}
+                justifyContent="space-between"
+            >
                 <Icons
                     iconType="sort"
                     className={`z-30 rounded-sm shadow-lg ${
@@ -450,7 +455,8 @@ const Devices = ({}: Props) => {
                             pl={1}
                             fontSize="22px"
                             color="brand.primary"
-                            variant="outline"
+                            variant="unstyled"
+                            borderColor="dark.300"
                             colorScheme="dark"
                             placeholder="Search"
                             m={1}
