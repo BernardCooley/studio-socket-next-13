@@ -78,7 +78,7 @@ const Devices = ({}: Props) => {
     const [sort, setSort] =
         useState<{ [key: string]: string }[]>(defaultSortList);
     const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
-    const [allDevices, setAllDevices] = useState<IDevice[]>([]);
+    const [devices, setAllDevices] = useState<IDevice[]>([]);
     const [moreLoading, setMoreLoading] = useState<boolean>(false);
     const [showToTopButton, setShowToTopButton] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
@@ -483,9 +483,9 @@ const Devices = ({}: Props) => {
             />
             <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>
                 <AnimatePresence>
-                    {allDevices &&
-                        allDevices.length > 0 &&
-                        allDevices.map((device) => (
+                    {devices &&
+                        devices.length > 0 &&
+                        devices.map((device) => (
                             <DeviceItem
                                 onDeviceClick={() =>
                                     setDeviceIdClicked(device.id)
