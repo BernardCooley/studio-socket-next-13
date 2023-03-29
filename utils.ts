@@ -131,6 +131,15 @@ export const getDialogMessages = (actionType: string): FormMessage | null => {
                 successMessage: "",
             };
             break;
+        case "password":
+            message = {
+                headerText: "Update Password",
+                bodyText: "Are you sure you want to update your password?",
+                type: FormMessageTypes.WARNING,
+                actionType: "edit",
+                successMessage: "",
+            };
+            break;
         default:
             break;
     }

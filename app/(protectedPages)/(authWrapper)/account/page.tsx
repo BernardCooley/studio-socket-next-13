@@ -115,17 +115,7 @@ const Account = ({}: Props) => {
         }
     };
 
-    const passwordReset = async () => {
-        try {
-            return (await changePassword(user?.email)) as Promise<{
-                [key: string]: string;
-            }>;
-        } catch (err: any) {
-            return null;
-        }
-    };
-
-    const updateItem = (type: String) => {
+    const updateItem = async (type: String) => {
         switch (type) {
             case "username":
                 updateUserDetail(
@@ -155,7 +145,20 @@ const Account = ({}: Props) => {
                                         />
                                     ),
                                 });
-                            } catch (err: any) {}
+                            } catch (err: any) {
+                                toast({
+                                    position: "bottom",
+                                    duration: 3000,
+                                    render: () => {
+                                        return (
+                                            <ErrorAlert
+                                                title="Error"
+                                                details="Something went wrong. Please try again later"
+                                            />
+                                        );
+                                    },
+                                });
+                            }
                         }
                     }
                 );
@@ -220,7 +223,36 @@ const Account = ({}: Props) => {
                 );
                 break;
             case "password":
-                passwordReset();
+                try {
+                    const resp = (await changePassword(
+                        user?.email
+                    )) as Promise<{
+                        [key: string]: string;
+                    }>;
+
+                    const { message } = await resp;
+
+                    toast({
+                        position: "bottom",
+                        duration: 5000,
+                        render: () => (
+                            <SuccessAlert title="Success" details={message} />
+                        ),
+                    });
+                } catch (err: any) {
+                    toast({
+                        position: "bottom",
+                        duration: 3000,
+                        render: () => {
+                            return (
+                                <ErrorAlert
+                                    title="Error"
+                                    details="Something went wrong. Please try again later"
+                                />
+                            );
+                        },
+                    });
+                }
                 break;
             case "avatar":
                 updateUserDetail(
@@ -281,6 +313,18 @@ const Account = ({}: Props) => {
                                 });
                             } catch (err: any) {
                                 console.log(err);
+                                toast({
+                                    position: "bottom",
+                                    duration: 3000,
+                                    render: () => {
+                                        return (
+                                            <ErrorAlert
+                                                title="Error"
+                                                details="Something went wrong. Please try again later"
+                                            />
+                                        );
+                                    },
+                                });
                             }
                         }
                     }
@@ -290,9 +334,43 @@ const Account = ({}: Props) => {
     };
 
     const deleteAccount = async () => {
-        return (await deleteUser(user.email)) as Promise<{
-            [key: string]: string;
-        }>;
+        try {
+            const resp = (await deleteUser(user.email)) as Promise<{
+                [key: string]: string;
+            }>;
+
+            const { message } = await resp;
+
+            updateUser({
+                ...user,
+                email_verified: false,
+            });
+
+            toast({
+                position: "bottom",
+                duration: 5000,
+                render: () => (
+                    <SuccessAlert title="Success" details={message} />
+                ),
+            });
+
+            setTimeout(() => {
+                signOut({ callbackUrl: "/" });
+            }, 5000);
+        } catch (err: any) {
+            toast({
+                position: "bottom",
+                duration: 3000,
+                render: () => {
+                    return (
+                        <ErrorAlert
+                            title="Error"
+                            details="Something went wrong. Please try again later"
+                        />
+                    );
+                },
+            });
+        }
     };
 
     return (
@@ -442,7 +520,13 @@ const Account = ({}: Props) => {
                         icon={
                             <Icons
                                 iconType="edit"
-                                onClick={() => updateItem("password")}
+                                onClick={() => {
+                                    setEditing("password");
+                                    setDialogMessage(
+                                        getDialogMessages("password")
+                                    );
+                                    setDialogOpen(true);
+                                }}
                                 fontSize="28px"
                             />
                         }
@@ -459,6 +543,7 @@ const Account = ({}: Props) => {
                             setDialogMessage(
                                 getDialogMessages("deleteAccount")
                             );
+                            setDialogOpen(true);
                         }}
                     >
                         Delete account
