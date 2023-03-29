@@ -53,14 +53,18 @@ import routes from "../../../../../routes";
 import FilterSortLabel from "../../../../../components/FilterSortLabel";
 import PageTitle from "../../../../../components/PageTitle";
 import { AnimatePresence } from "framer-motion";
-import ToTop from "../../../../../components/ToTop";
+import FloatingIconButton from "../../../../../components/FloatingIconButton";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Icons from "../../../../../icons";
 import { defaultFilterList, defaultSortList } from "../../../../../consts";
+import useScrollPosition from "../../../../../hooks/useScrollPosition";
 
 interface Props {}
 
 const Devices = ({}: Props) => {
+    const headerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const scrollPosition = useScrollPosition();
     const router = useRouter();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -77,9 +81,7 @@ const Devices = ({}: Props) => {
     const [sortParam, setSortParam] = useState<IOrderBy[]>([]);
     const [sort, setSort] =
         useState<{ [key: string]: string }[]>(defaultSortList);
-    const [filteredByLabel, setFilteredByLabel] = useState<string[]>([]);
-    const [devices, setAllDevices] = useState<IDevice[]>([]);
-    const [moreLoading, setMoreLoading] = useState<boolean>(false);
+    const [devices, setAllDevices] = useState<IDevice[] | null>(null);
     const [showToTopButton, setShowToTopButton] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [dialogMessage, setDialogMessage] = useState<FormMessage | null>(
@@ -95,25 +97,32 @@ const Devices = ({}: Props) => {
     const [filterByRequest, setFilterByRequest] = useState<FilterKeys[]>([]);
     const [searchQuery, setSearchQuery] = useState<ISearchQuery[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>("");
+    const [noMoreDevices, setNoMoreDevices] = useState<boolean>(false);
 
     useEffect(() => {
-        const vals: QueryParam[] = [];
-        searchParams?.forEach((value, key) => {
-            vals.push({ key, value });
-        });
+        if (searchParams) {
+            const vals: QueryParam[] = [];
+            searchParams?.forEach((value, key) => {
+                vals.push({ key, value });
+            });
 
-        setSort(generateSortByFromParams(searchParams));
-        setFilterList(generateFilterByFromParams(searchParams));
-        setFilterByRequest(
-            buildFilterQuery(generateFilterByFromParams(searchParams))
-        );
-        setSearchQuery(generateSearchQueryByParams(searchParams));
-        setExistingParams(vals);
-        setDefaultList(vals);
+            setSearchTerm(searchParams.get("search")?.split("-")[1] || "");
+
+            setSort(generateSortByFromParams(searchParams));
+            setFilterList(generateFilterByFromParams(searchParams));
+            setFilterByRequest(
+                buildFilterQuery(generateFilterByFromParams(searchParams))
+            );
+            setSearchQuery(generateSearchQueryByParams(searchParams));
+            setExistingParams(vals);
+            setDefaultList(vals);
+            setLoading(false);
+        }
     }, [searchParams]);
 
     useEffect(() => {
         if (sortParam.length > 0 && pathname) {
+            setLoading(true);
             router.replace(
                 generateSortParams(sortParam, pathname, existingParams)
             );
@@ -122,6 +131,7 @@ const Devices = ({}: Props) => {
 
     useEffect(() => {
         if (pathname) {
+            setLoading(true);
             router.replace(
                 generateFilterParams(filterList, pathname, existingParams)
             );
@@ -129,12 +139,8 @@ const Devices = ({}: Props) => {
     }, [filterList]);
 
     useEffect(() => {
-        if (pathname) {
-            router.replace(
-                generateSearchParams(searchTerm, pathname, existingParams)
-            );
-        }
-    }, [searchTerm]);
+        handleScroll();
+    }, [scrollPosition]);
 
     useEffect(() => {
         const selectedFilterOptions: SelectedFilterOptions = {};
@@ -152,6 +158,33 @@ const Devices = ({}: Props) => {
         setSelectedFilterOptions(selectedFilterOptions);
     }, [existingParams]);
 
+    const handleScroll = () => {
+        if (scrollPosition > window.innerHeight - 500) {
+            setShowToTopButton(true);
+        } else {
+            setShowToTopButton(false);
+        }
+
+        if (
+            containerRef.current?.getBoundingClientRect().height &&
+            scrollPosition >
+                containerRef.current?.getBoundingClientRect().height - 1200
+        ) {
+            if (
+                listSelected === "yours" &&
+                user &&
+                !noMoreDevices &&
+                !loading
+            ) {
+                setSkip(skip + limit);
+                getMoreDevices(skip + limit, user?.user.id);
+            } else if (listSelected === "all" && !noMoreDevices && !loading) {
+                setSkip(skip + limit);
+                getMoreDevices(skip + limit, null);
+            }
+        }
+    };
+
     const setDefaultList = (vals: QueryParam[]) => {
         if (pathname === "/devices" && !searchParams?.get("list")) {
             const params = updateParams(pathname, vals, [
@@ -161,6 +194,7 @@ const Devices = ({}: Props) => {
                 },
             ]);
             setListSelected("yours");
+            setLoading(true);
             router.replace(params);
         } else {
             setListSelected(searchParams?.get("list") as "yours" | "all");
@@ -195,6 +229,7 @@ const Devices = ({}: Props) => {
         } else if (listSelected === "all") {
             getDevices(null);
         }
+        setNoMoreDevices(false);
     }, [sort, user, listSelected, filterList, searchQuery]);
 
     const getRequestOptions = (
@@ -225,31 +260,11 @@ const Devices = ({}: Props) => {
         const requestBody = getRequestOptions(skip, userId);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
-            setAllDevices((devices) => [...devices, ...moreDevices]);
-        }
-        setMoreLoading(false);
-    };
-
-    const handleVerticalScroll = (
-        e: React.UIEvent<HTMLDivElement, UIEvent>
-    ) => {
-        const target = e.target as HTMLDivElement;
-        const scrollPosition = target.scrollHeight - target.scrollTop;
-
-        if (target.scrollTop > 500) {
-            setShowToTopButton(true);
-        } else {
-            setShowToTopButton(false);
-        }
-
-        if (
-            scrollPosition <= target.clientHeight &&
-            scrollPosition >= target.clientHeight - 700
-        ) {
-            setMoreLoading(true);
-
-            setSkip(skip + limit);
-            getMoreDevices(skip + limit, user?.user.id);
+            setAllDevices((devices) => [...(devices || []), ...moreDevices]);
+            if (moreDevices.length === 0) {
+                setNoMoreDevices(true);
+            }
+            setLoading(false);
         }
     };
 
@@ -332,7 +347,7 @@ const Devices = ({}: Props) => {
     };
 
     return (
-        <Box pt="52px" onScroll={handleVerticalScroll}>
+        <Box pt="52px" ref={containerRef} position="relative">
             <Dialog
                 headerText={dialogMessage?.headerText || ""}
                 bodyText={dialogMessage?.bodyText || ""}
@@ -360,10 +375,7 @@ const Devices = ({}: Props) => {
                 ]}
                 cancelRef={cancelRef}
             />
-            <LoadingSpinner
-                loading={loading || moreLoading}
-                label="Loading devices..."
-            />
+            <LoadingSpinner loading={loading} label="Loading devices..." />
             <FilterModal
                 sortOrFilter={showFilterOrSort}
                 filterModalShowing={
@@ -373,7 +385,6 @@ const Devices = ({}: Props) => {
                 updateSortBy={setSortParam}
                 clearFilterKeys={() => setFilterList(defaultFilterList)}
                 updateFilterKeys={setFilterList}
-                updateFilteredByLabel={setFilteredByLabel}
                 updateSelectedFilterOptions={setSelectedFilterOptions}
                 selectedFilterOptions={selectedFilterOptions}
                 sortBy={sort}
@@ -382,112 +393,175 @@ const Devices = ({}: Props) => {
             <PageTitle
                 title={`${listSelected === "yours" ? "Your" : "All"} devices`}
             />
-            <Center>
-                <ButtonGroup gap="0" spacing={0}>
-                    <Button
-                        _hover={{
-                            bg: "brand.primary",
-                            color: "brand.primary-light",
-                        }}
-                        onClick={() =>
-                            router.replace(
-                                updateParams(pathname || "", existingParams, [
-                                    {
-                                        key: "list",
-                                        value: "yours",
-                                    },
-                                ])
-                            )
-                        }
-                        size="xs"
-                        fontSize="16px"
-                        variant={listSelected === "yours" ? "primary" : "ghost"}
-                        roundedLeft="full"
-                        h={4}
-                    >
-                        Yours
-                    </Button>
-                    <Button
-                        _hover={{
-                            bg: "brand.primary",
-                            color: "brand.primary-light",
-                        }}
-                        onClick={() =>
-                            router.replace(
-                                updateParams(pathname || "", existingParams, [
-                                    {
-                                        key: "list",
-                                        value: "all",
-                                    },
-                                ])
-                            )
-                        }
-                        size="xs"
-                        fontSize="16px"
-                        variant={listSelected === "all" ? "primary" : "ghost"}
-                        ml={0}
-                        roundedRight="full"
-                        h={4}
-                    >
-                        All
-                    </Button>
-                </ButtonGroup>
-            </Center>
-            <Flex
-                alignItems="center"
-                px={1}
-                pt={1}
-                justifyContent="space-between"
+            <Box
+                bg="brand.primary-light"
+                zIndex="50"
+                w="full"
+                ref={headerRef}
+                position={scrollPosition > 58 ? "fixed" : "unset"}
+                pt={scrollPosition > 58 ? "12px" : "0"}
+                top={scrollPosition > 58 ? "50px" : "unset"}
+                shadow={scrollPosition > 58 ? "lg" : "none"}
             >
-                <Icons
-                    iconType="sort"
-                    className={`z-30 rounded-sm shadow-lg ${
-                        sort.length > 0
-                            ? "filterSortIconActive"
-                            : "filterSortIconInactive"
-                    }`}
-                    onClick={() => setShowFilterOrSort("sort")}
-                    fontSize="42px"
-                />
-                <Center display="flex" flexGrow="2">
-                    <InputGroup display="flex" alignItems="center">
-                        <Input
-                            pl={1}
-                            fontSize="22px"
-                            color="brand.primary"
-                            variant="unstyled"
-                            borderColor="dark.300"
-                            colorScheme="dark"
-                            placeholder="Search"
-                            m={1}
-                            w="96%"
-                            h="40px"
-                            value={searchTerm}
-                            onChange={(e) => {
-                                setSearchTerm(e.target.value);
+                <Center>
+                    <ButtonGroup gap="0" spacing={0}>
+                        <Button
+                            _hover={{
+                                bg: "brand.primary",
+                                color: "brand.primary-light",
                             }}
-                        />
-                    </InputGroup>
+                            onClick={() => {
+                                setLoading(true);
+                                router.replace(
+                                    updateParams(
+                                        pathname || "",
+                                        existingParams,
+                                        [
+                                            {
+                                                key: "list",
+                                                value: "yours",
+                                            },
+                                        ]
+                                    )
+                                );
+                            }}
+                            size="xs"
+                            fontSize="16px"
+                            variant={
+                                listSelected === "yours" ? "primary" : "ghost"
+                            }
+                            roundedLeft="full"
+                            h={4}
+                        >
+                            Yours
+                        </Button>
+                        <Button
+                            _hover={{
+                                bg: "brand.primary",
+                                color: "brand.primary-light",
+                            }}
+                            onClick={() => {
+                                setLoading(true);
+                                router.replace(
+                                    updateParams(
+                                        pathname || "",
+                                        existingParams,
+                                        [
+                                            {
+                                                key: "list",
+                                                value: "all",
+                                            },
+                                        ]
+                                    )
+                                );
+                            }}
+                            size="xs"
+                            fontSize="16px"
+                            variant={
+                                listSelected === "all" ? "primary" : "ghost"
+                            }
+                            ml={0}
+                            roundedRight="full"
+                            h={4}
+                        >
+                            All
+                        </Button>
+                    </ButtonGroup>
                 </Center>
-                <Icons
-                    className={`z-30 rounded-sm shadow-lg ${
-                        mergeFilterKeys().length > 0 &&
-                        mergeFilterKeys().filter((key) => key !== "").length > 0
-                            ? "filterSortIconActive"
-                            : "filterSortIconInactive"
-                    }`}
-                    iconType="filter"
-                    onClick={() => setShowFilterOrSort("filter")}
-                    fontSize="42px"
+                <Flex
+                    alignItems="center"
+                    px={1}
+                    pt={1}
+                    justifyContent="space-between"
+                >
+                    <Icons
+                        iconType="sort"
+                        className={`z-30 rounded-sm shadow-lg ${
+                            sort.length > 0
+                                ? "filterSortIconActive"
+                                : "filterSortIconInactive"
+                        }`}
+                        onClick={() => setShowFilterOrSort("sort")}
+                        fontSize="42px"
+                    />
+                    <Center display="flex" flexGrow="2">
+                        <InputGroup display="flex" alignItems="center">
+                            <Input
+                                pl={1}
+                                fontSize="22px"
+                                color="brand.primary"
+                                variant="unstyled"
+                                colorScheme="dark"
+                                placeholder="Search"
+                                borderRadius={0}
+                                border="1px"
+                                borderColor="gray.200"
+                                m={1}
+                                w="96%"
+                                h="40px"
+                                value={searchTerm}
+                                onChange={(e) => {
+                                    setSearchTerm(e.target.value);
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        if (pathname) {
+                                            setLoading(true);
+                                            router.replace(
+                                                generateSearchParams(
+                                                    searchTerm,
+                                                    pathname,
+                                                    existingParams
+                                                )
+                                            );
+                                        }
+                                    }
+                                }}
+                            />
+                        </InputGroup>
+                    </Center>
+                    <Icons
+                        className={`z-30 rounded-sm shadow-lg ${
+                            mergeFilterKeys().length > 0 &&
+                            mergeFilterKeys().filter((key) => key !== "")
+                                .length > 0
+                                ? "filterSortIconActive"
+                                : "filterSortIconInactive"
+                        }`}
+                        iconType="filter"
+                        onClick={() => setShowFilterOrSort("filter")}
+                        fontSize="42px"
+                    />
+                </Flex>
+                <FilterSortLabel
+                    onClearSearchClick={() => {
+                        setSearchTerm("");
+                        if (pathname) {
+                            setLoading(true);
+                            router.replace(
+                                generateSearchParams(
+                                    "",
+                                    pathname,
+                                    existingParams
+                                )
+                            );
+                        }
+                    }}
+                    filterKeys={filterList.map((filter) => filter.filters)}
+                    sortBy={sort}
+                    searchKeys={searchQuery}
                 />
-            </Flex>
-            <FilterSortLabel
-                onClearSearchClick={() => setSearchTerm("")}
-                filterKeys={filterList.map((filter) => filter.filters)}
-                sortBy={sort}
-                searchKeys={searchQuery}
-            />
-            <VStack mx={1} align="stretch" onScroll={handleVerticalScroll}>
+            </Box>
+            <VStack
+                mt={
+                    scrollPosition > 58
+                        ? headerRef.current?.getBoundingClientRect().height ||
+                          0 + 10
+                        : 0
+                }
+                mx={1}
+                align="stretch"
+            >
                 <AnimatePresence>
                     {devices &&
                         devices.length > 0 &&
@@ -503,8 +577,32 @@ const Devices = ({}: Props) => {
                             />
                         ))}
                 </AnimatePresence>
+                {devices && devices.length === 0 && (
+                    <Center mt={4}>
+                        <Box>No devices found</Box>
+                    </Center>
+                )}
             </VStack>
-            <ToTop showButton={showToTopButton} listId="deviceList" />
+            <FloatingIconButton
+                onIconClick={() =>
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "smooth",
+                    })
+                }
+                iconType="toTop"
+                showButton={showToTopButton}
+                positionX="left"
+                positionY="bottom"
+            />
+            <FloatingIconButton
+                onIconClick={() => router.push(routes.addDevice().as)}
+                iconType="add"
+                showButton={listSelected === "all"}
+                positionX="right"
+                positionY="bottom"
+            />
         </Box>
     );
 };

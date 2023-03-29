@@ -174,9 +174,9 @@ export const buildFilterQuery = (filterList: FilterKeys[]): any[] => {
 };
 
 export const generateSortByFromParams = (
-    searchParams: ReadonlyURLSearchParams | null
+    searchParams: ReadonlyURLSearchParams
 ): { [key: string]: string }[] => {
-    const sortParam = searchParams?.get("sort")?.split("-");
+    const sortParam = searchParams.get("sort")?.split("-");
 
     if (sortParam) {
         const key = sortParam[0];
@@ -191,11 +191,11 @@ export const generateSortByFromParams = (
 };
 
 export const generateFilterByFromParams = (
-    searchParams: ReadonlyURLSearchParams | null
+    searchParams: ReadonlyURLSearchParams
 ): FilterKeys[] => {
-    const deviceTypes = searchParams?.get("deviceTypes")?.split(",");
-    const connectors = searchParams?.get("connectors")?.split(",");
-    const formFactors = searchParams?.get("formFactors")?.split(",");
+    const deviceTypes = searchParams.get("deviceTypes")?.split(",");
+    const connectors = searchParams.get("connectors")?.split(",");
+    const formFactors = searchParams.get("formFactors")?.split(",");
 
     const params: FilterKeys[] = [];
 
@@ -222,9 +222,9 @@ export const generateFilterByFromParams = (
 };
 
 export const generateSearchQueryByParams = (
-    searchParams: ReadonlyURLSearchParams | null
+    searchParams: ReadonlyURLSearchParams
 ): ISearchQuery[] => {
-    const searchQuery = searchParams?.get("search");
+    const searchQuery = searchParams.get("search");
 
     const q: ISearchQuery[] = [];
 
