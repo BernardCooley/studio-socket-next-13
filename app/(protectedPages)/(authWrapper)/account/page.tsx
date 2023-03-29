@@ -177,21 +177,29 @@ const Account = ({}: Props) => {
                                         verify_email: true,
                                     }
                                 );
-                                updateUser(newUserData);
+
+                                updateUser({
+                                    ...(newUserData as Object),
+                                    email_verified: false,
+                                });
 
                                 toast({
                                     position: "bottom",
+                                    duration: 10000,
                                     render: ({ onClose }) => {
                                         toastRefs.current.push(onClose);
                                         return (
                                             <SuccessAlert
                                                 title="Success"
-                                                details="Email updated successfully. A confirmation email has been sent to your new email address. Please confirm your new email address to continue using your account."
+                                                details={`Email updated successfully. A confirmation email has been sent ${emailRef?.current?.value}. Please confirm your new email address to continue using your account. You will now be logged out`}
                                                 onClose={closeToast}
                                             />
                                         );
                                     },
                                 });
+                                setTimeout(() => {
+                                    signOut({ callbackUrl: "/" });
+                                }, 10000);
                             } catch (err: any) {
                                 console.log(err);
                                 toast({

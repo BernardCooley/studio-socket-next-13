@@ -29,6 +29,13 @@ export default NextAuth({
         maxAge: 3000,
     },
     callbacks: {
+        async signIn({ user }) {
+            if (user.email_verified) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         async jwt({ token, account, user }) {
             if (account) {
                 token.accessToken = account.access_token;
