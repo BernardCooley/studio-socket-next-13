@@ -19,6 +19,9 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontSize: {
+                "2xs": "18px",
+            },
             backgroundImage: {
                 modular:
                     "url('../public/assets/backgrounds/modular-side-dark.jpg')",

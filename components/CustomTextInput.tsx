@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Box } from "@chakra-ui/react";
 import React, {
     ChangeEvent,
     forwardRef,
@@ -84,13 +85,13 @@ const CustomTextInput = forwardRef(
                     hide ? "h-4" : "h-28"
                 }`}
             >
-                <div className="relative">
+                <Box className="relative">
                     <div className="relative">
                         <input
-                            className={`block px-2.5 pb-2.5 pt-5 w-full text-2xl text-primary bg-primary-light border-primary border-0 border-b-2 appearance-none focus:outline-none focus:ring-0 focus:border-b-4 focus:border-primary peer ${
+                            className={`block w-full text-2xs text-primary bg-primary-light border-primary border-0 border-b-1 appearance-none focus:outline-none focus:ring-0 focus:border-b-2 focus:border-primary peer ${
                                 borderless
                                     ? "border-0 border-b-0"
-                                    : "border-0 border-b-2"
+                                    : "border-0 border-b-1"
                             } ${hide ? "opacity-0 h-0 pointer-events-none" : ""}
                             ${inputClassName}`}
                             placeholder=" "
@@ -106,7 +107,7 @@ const CustomTextInput = forwardRef(
                         {fieldIcon}
                         <label
                             htmlFor={id}
-                            className={`absolute text-2xl text-fieldLabel duration-300 z-10 ${labelClasses} ${
+                            className={`absolute text-2xs text-fieldLabel duration-300 z-10 ${labelClasses} ${
                                 scaleLabel
                                     ? "transform -translate-y-6 scale-75 top-4 origin-[0] left-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-2 peer-focus:scale-75 peer-focus:-translate-y-6"
                                     : "-top-6"
@@ -115,7 +116,7 @@ const CustomTextInput = forwardRef(
                             {label}
                         </label>
                     </div>
-                </div>
+                </Box>
                 <ErrorMessages errorMessages={errorMessages} />
             </div>
         );

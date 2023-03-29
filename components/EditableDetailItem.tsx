@@ -11,11 +11,8 @@ interface Props {
     editing?: boolean;
     defaultValue?: string;
     errorMessages?: string[];
-    iconsEditing?: {
-        iconType: string;
-        onClick: () => void;
-        fontSize: string;
-    }[];
+    onTickClick: () => void;
+    onXClick: () => void;
 }
 
 const EditableDetailItem = forwardRef(
@@ -29,7 +26,8 @@ const EditableDetailItem = forwardRef(
             defaultValue,
             showIcons,
             errorMessages,
-            iconsEditing,
+            onTickClick,
+            onXClick,
         }: Props,
         ref: LegacyRef<HTMLInputElement> | undefined
     ) => {
@@ -42,15 +40,15 @@ const EditableDetailItem = forwardRef(
         return (
             <>
                 {subtitle && (
-                    <div className={`mb-4 ${clasName}`}>
-                        <div className="text-3xl">{title}</div>
+                    <div className={`mb-2 ${clasName}`}>
+                        <div className="text-2xs">{title}</div>
                         <div className="w-full flex justify-between items-center">
                             {editing ? (
                                 <div className="w-full">
                                     <input
                                         value={value}
                                         type="text"
-                                        className="bg-transparent w-full text-2xl"
+                                        className="bg-transparent w-full text-2xs p-0 pl-1"
                                         onChange={(e) =>
                                             setValue(e.target.value)
                                         }
@@ -61,26 +59,22 @@ const EditableDetailItem = forwardRef(
                                     />
                                 </div>
                             ) : (
-                                <div className="text-xl">{subtitle}</div>
+                                <div className="text-xs">{subtitle}</div>
                             )}
                             {showIcons && (
                                 <div>
                                     {editing ? (
                                         <div className="flex">
-                                            {iconsEditing?.map((icon) => (
-                                                <div
-                                                    className="mx-1"
-                                                    key={icon.iconType}
-                                                >
-                                                    <Icons
-                                                        iconType={icon.iconType}
-                                                        onClick={() =>
-                                                            icon.onClick()
-                                                        }
-                                                        fontSize={icon.fontSize}
-                                                    />
-                                                </div>
-                                            ))}
+                                            <Icons
+                                                iconType="tick"
+                                                onClick={onTickClick}
+                                                fontSize="28px"
+                                            />
+                                            <Icons
+                                                iconType="close"
+                                                onClick={onXClick}
+                                                fontSize="28px"
+                                            />
                                         </div>
                                     ) : (
                                         <div>{iconNotEditing}</div>

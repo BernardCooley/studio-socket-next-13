@@ -13,7 +13,7 @@ interface Props {
 
 export default function RootLayout({ children }: Props) {
     return (
-        <html lang="en">
+        <html lang="en" className="bg-primary-light">
             <Head>
                 <title>Studio socket</title>
                 <meta name="viewport" />

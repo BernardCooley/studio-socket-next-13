@@ -4,6 +4,9 @@ const primary = "#383B43";
 const primaryLight = "#ECE7E7";
 
 export const theme = extendTheme({
+    fontSizes: {
+        "2xs": "18px",
+    },
     fonts: {
         default: "SairaCondensed-Thin, sans-serif",
         regular: "SairaCondensed-Regular, sans-serif",

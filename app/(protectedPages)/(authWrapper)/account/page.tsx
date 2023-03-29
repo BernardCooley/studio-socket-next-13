@@ -4,7 +4,7 @@ import { signOut } from "next-auth/react";
 import React, { useEffect, useRef, useState } from "react";
 import Avatar from "../../../../components/Avatar";
 import PageTitle from "../../../../components/PageTitle";
-import { FormMessageTypes } from "../../../../types";
+import { FormMessage } from "../../../../types";
 import Icons from "../../../../icons";
 import EditableDetailItem from "../../../../components/EditableDetailItem";
 import {
@@ -14,9 +14,8 @@ import {
     UpdateUsernameSchema,
 } from "../../../../formValidation";
 import { useFormContext } from "../../../../contexts/FormContext";
-import { getErrorMessages } from "../../../../utils";
+import { getDialogMessages, getErrorMessages } from "../../../../utils";
 import DetailItem from "../../../../components/DetailItem";
-import { useNavContext } from "../../../../contexts/NavContext";
 import { useAuthContext } from "../../../../contexts/AuthContext";
 import {
     changePassword,
@@ -29,40 +28,42 @@ import {
     uploadFirebaseImage,
 } from "../../../../firebase/functions";
 import useUpdateDialog from "../../../../hooks/useUpdateDialog";
-import { Button } from "@chakra-ui/react";
+import { Box, Button, Flex, Square, useToast } from "@chakra-ui/react";
+import Dialog from "../../../../components/Dialog";
+import { SuccessAlert } from "../../../../components/ToastAlert";
+import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 interface Props {}
 
 const Account = ({}: Props) => {
+    const toast = useToast();
     const { update } = useUpdateDialog();
     const { user, updateUser } = useAuthContext();
     const [existingImageName, setExistingImageName] = useState<string>("");
     const [editing, setEditing] = useState<string>("");
-    const { file, updateFile, addFormMessages, updateIcon } = useFormContext();
+    const { file, updateFile } = useFormContext();
     const [errors, setErrors] = useState<string[]>([]);
     const usernameRef = useRef<HTMLInputElement>(null);
     const emailRef = useRef<HTMLInputElement>(null);
     const avatarRef = useRef<HTMLInputElement>(null);
-    const { navOpen } = useNavContext();
+    const [dialogMessage, setDialogMessage] = useState<FormMessage | null>(
+        null
+    );
+    const [loading, setLoading] = useState<boolean>(true);
+    const cancelRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         if (user) {
             setExistingImageName(getImageNameFromUrl(user.picture));
+            setLoading(false);
         }
     }, [user]);
 
-    const editingIcons = [
-        {
-            iconType: "tick",
-            onClick: () => updateItem(editing),
-            fontSize: "82px",
-        },
-        {
-            iconType: "close",
-            onClick: () => setEditing(""),
-            fontSize: "82px",
-        },
-    ];
+    useEffect(() => {
+        if (editing) {
+            setDialogMessage(getDialogMessages(editing));
+        }
+    }, [editing]);
 
     const editableDetailItems = [
         {
@@ -71,6 +72,8 @@ const Account = ({}: Props) => {
             name: "username",
             defaultValue: user?.username,
             ref: usernameRef,
+            onTickClick: () => setEditing("updateUsername"),
+            onXClick: () => setEditing(""),
         },
         {
             title: "Email",
@@ -78,6 +81,8 @@ const Account = ({}: Props) => {
             name: "email",
             defaultValue: user?.email,
             ref: emailRef,
+            onTickClick: () => setEditing("updateEmail"),
+            onXClick: () => setEditing(""),
         },
     ];
 
@@ -88,44 +93,15 @@ const Account = ({}: Props) => {
     const updateUserDetail = async (
         type: string,
         validation: () => void,
-        preFormMessage: string,
-        icon: string,
-        updateFunction: () => Promise<void>,
-        postFormMessage: string
+        updateFunction: () => Promise<void>
     ) => {
         try {
             setErrors([]);
             validation();
 
-            addFormMessages(
-                new Set([
-                    {
-                        message: preFormMessage,
-                        type: FormMessageTypes.INFO,
-                    },
-                ])
-            );
-            updateIcon(
-                <Icons
-                    iconType={icon}
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            );
-
             await updateFunction();
 
-            addFormMessages(
-                new Set([
-                    {
-                        message: postFormMessage,
-                        type: FormMessageTypes.INFO,
-                    },
-                ])
-            );
-
             setTimeout(() => {
-                addFormMessages(new Set([]));
                 setEditing("");
             }, 2000);
         } catch (err: any) {
@@ -134,36 +110,13 @@ const Account = ({}: Props) => {
     };
 
     const passwordReset = async () => {
-        update({
-            question: "Are you sure you want to reset your password?",
-            messageType: FormMessageTypes.INFO,
-            defaultIcon: (
-                <Icons
-                    iconType="password"
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            ),
-            successIcon: (
-                <Icons
-                    iconType="password"
-                    className="text-primary"
-                    fontSize="132px"
-                />
-            ),
-            successAction: async () => {
-                try {
-                    return (await changePassword(user?.email)) as Promise<{
-                        [key: string]: string;
-                    }>;
-                } catch (err: any) {
-                    return null;
-                }
-            },
-            successMessage: null,
-            successMessageType: FormMessageTypes.SUCCESS,
-            loadingMessage: "Resetting password...",
-        });
+        try {
+            return (await changePassword(user?.email)) as Promise<{
+                [key: string]: string;
+            }>;
+        } catch (err: any) {
+            return null;
+        }
     };
 
     const updateItem = (type: String) => {
@@ -175,20 +128,31 @@ const Account = ({}: Props) => {
                         UpdateUsernameSchema.parse({
                             username: usernameRef?.current?.value,
                         }),
-                    "Updating username",
-                    "accountCreated",
                     async () => {
                         if (usernameRef?.current?.value && user?.user_id) {
-                            const newUserData = await updateUserProfile(
-                                user.user_id,
-                                {
-                                    username: usernameRef.current.value,
-                                }
-                            );
-                            updateUser(newUserData);
+                            try {
+                                const newUserData = await updateUserProfile(
+                                    user.user_id,
+                                    {
+                                        username: usernameRef.current.value,
+                                    }
+                                );
+                                updateUser(newUserData);
+
+                                toast({
+                                    position: "bottom",
+                                    isClosable: false,
+                                    duration: 2000,
+                                    render: () => (
+                                        <SuccessAlert
+                                            title="Success"
+                                            details="Username updated successfully"
+                                        />
+                                    ),
+                                });
+                            } catch (err: any) {}
                         }
-                    },
-                    "Username updated"
+                    }
                 );
                 break;
             case "email":
@@ -198,30 +162,31 @@ const Account = ({}: Props) => {
                         UpdateEmailSchema.parse({
                             email: emailRef?.current?.value,
                         }),
-                    "Updating email",
-                    "accountCreated",
                     async () => {
                         if (emailRef?.current?.value && user?.user_id) {
-                            const newUserData = await updateUserProfile(
-                                user.user_id,
-                                {
-                                    email: emailRef.current.value,
-                                }
-                            );
-                            updateUser(newUserData);
-
-                            addFormMessages(
-                                new Set([
+                            try {
+                                const newUserData = await updateUserProfile(
+                                    user.user_id,
                                     {
-                                        message:
-                                            "Email sddress updated. Please check your inbox and confirm your new email address.",
-                                        type: FormMessageTypes.INFO,
-                                    },
-                                ])
-                            );
+                                        email: emailRef.current.value,
+                                    }
+                                );
+                                updateUser(newUserData);
+
+                                toast({
+                                    position: "bottom",
+                                    isClosable: false,
+                                    duration: 2000,
+                                    render: () => (
+                                        <SuccessAlert
+                                            title="Success"
+                                            details="Email updated successfully. A confirmation email has been sent to your new email address. Please confirm your new email address to continue using your account."
+                                        />
+                                    ),
+                                });
+                            } catch (err: any) {}
                         }
-                    },
-                    "Email address updated"
+                    }
                 );
                 break;
             case "password":
@@ -243,8 +208,6 @@ const Account = ({}: Props) => {
                             });
                         }
                     },
-                    "Updating avatar",
-                    "accountCreated",
                     async () => {
                         if (
                             avatarRef?.current?.value &&
@@ -275,133 +238,154 @@ const Account = ({}: Props) => {
                                         existingImageName
                                     );
                                 }
+
+                                toast({
+                                    position: "bottom",
+                                    isClosable: false,
+                                    duration: 2000,
+                                    render: () => (
+                                        <SuccessAlert
+                                            title="Success"
+                                            details="Avatar updated successfully"
+                                        />
+                                    ),
+                                });
                             } catch (err: any) {
-                                addFormMessages(
-                                    new Set([
-                                        {
-                                            message: err.message,
-                                            type: FormMessageTypes.ERROR,
-                                        },
-                                    ])
-                                );
+                                console.log(err);
                             }
                         }
-                    },
-                    "Avatar updated"
+                    }
                 );
                 break;
         }
     };
 
     const deleteAccount = async () => {
-        update({
-            question:
-                "Are you sure you want to delete your account? This cannot be undone.",
-            messageType: FormMessageTypes.ERROR,
-            defaultIcon: (
-                <Icons
-                    iconType="deleteAccount"
-                    className="text-error"
-                    fontSize="132px"
-                />
-            ),
-            successIcon: (
-                <Icons
-                    iconType="deleteAccount"
-                    className="text-success"
-                    fontSize="132px"
-                />
-            ),
-            successAction: async () => {
-                return (await deleteUser(user.email)) as Promise<{
-                    [key: string]: string;
-                }>;
-            },
-            successMessage:
-                "Your account has now been deleted. We are sorry to see you go.",
-            successMessageType: FormMessageTypes.SUCCESS,
-            loadingMessage: "Deleting account...",
-        });
+        return (await deleteUser(user.email)) as Promise<{
+            [key: string]: string;
+        }>;
     };
 
     return (
-        <div
-            className={`px-8 pt-16 flex flex-col items-center relative h-full min-h-screen ${
-                navOpen ? "disable" : ""
-            }`}
+        <Flex
+            px={2}
+            pt={6}
+            pb={10}
+            direction="column"
+            alignItems="center"
+            h="full"
+            position="relative"
+            minH="screen"
         >
-            <PageTitle title="Account" />
-            <Icons
-                iconType="logout"
-                className="absolute top-16 right-6"
-                onClick={() => signOut({ callbackUrl: "/" })}
-                fontSize="84px"
+            <LoadingSpinner loading={loading} label="Loading..." />
+            <Dialog
+                headerText={dialogMessage?.headerText || ""}
+                bodyText={dialogMessage?.bodyText || ""}
+                isOpen={dialogMessage !== null}
+                onClose={() => {
+                    setDialogMessage(null);
+                    setEditing("");
+                }}
+                buttons={[
+                    {
+                        text: "No",
+                        onClick: () => {
+                            setDialogMessage(null);
+                            setEditing("");
+                        },
+                    },
+                    {
+                        text: "Yes",
+                        onClick: () => {
+                            if (editing === "deleteAccount") {
+                                deleteAccount();
+                            } else {
+                                updateItem(editing);
+                            }
+                            setDialogMessage(null);
+                            setEditing("");
+                        },
+                    },
+                ]}
+                cancelRef={cancelRef}
             />
-            <div className="aspect-square w-full flex justify-center px-8">
+            <PageTitle title="Account" />
+            {user && (
+                <Icons
+                    iconType="logout"
+                    className="absolute top-8 right-2"
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                    fontSize="38px"
+                />
+            )}
+            <Square size="full" p={3}>
                 {user?.picture && (
-                    <div className="w-full mt-8">
+                    <Box mt={4} w="full">
                         <Avatar
                             image={file ? file : user.picture || ""}
                             icon={
                                 <Icons
+                                    styles={{
+                                        border: "1px solid #383B43",
+                                    }}
                                     iconType="edit"
-                                    className={`border-2 border-primary bg-primary-light rounded-full p-2 relative bottom-6 ${
+                                    className={`border-primary border-1 bg-primary-light rounded-full p-1 relative bottom-2 ${
                                         editing === "avatar" ? "hidden" : ""
                                     }`}
-                                    fontSize="102px"
+                                    fontSize="42px"
                                     onClick={() => setEditing("avatar")}
                                 />
                             }
                         />
-                    </div>
+                    </Box>
                 )}
-            </div>
+            </Square>
             {editing === "avatar" && (
-                <div>
-                    <div className="flex items-center">
-                        <CustomTextInput
-                            type="file"
-                            id="avatar"
-                            label="Avatar (jpg, jpeg, png)"
-                            name="avatar"
-                            ref={avatarRef}
-                            errorMessages={errors}
-                            isFile={true}
-                            borderless={true}
-                            scaleLabel={false}
-                            className="flex items-start flex-col justify-center relative"
-                            errorClassName="absolute bottom-2"
-                            onClick={() => setErrors([])}
-                        />
-                        <div className="flex">
-                            {file.length > 0 && (
-                                <div className="mx-1">
-                                    <Icons
-                                        iconType="tick"
-                                        onClick={() => updateItem(editing)}
-                                        fontSize="82px"
-                                    />
-                                </div>
-                            )}
-                            <div className="mx-1">
+                <Flex alignItems="center">
+                    <CustomTextInput
+                        type="file"
+                        id="avatar"
+                        label="Avatar (jpg, jpeg, png)"
+                        name="avatar"
+                        ref={avatarRef}
+                        errorMessages={errors}
+                        isFile={true}
+                        borderless={true}
+                        scaleLabel={false}
+                        className="flex items-start flex-col justify-center relative"
+                        errorClassName="absolute bottom-2"
+                        onClick={() => setErrors([])}
+                    />
+                    <Flex>
+                        {file.length > 0 && (
+                            <Box mx={1}>
                                 <Icons
-                                    iconType="close"
-                                    onClick={() => {
-                                        setEditing("");
-                                        updateFile("");
-                                        setErrors([]);
-                                    }}
-                                    fontSize="82px"
+                                    iconType="tick"
+                                    onClick={() => updateItem(editing)}
+                                    fontSize="28px"
                                 />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            </Box>
+                        )}
+                        <Box mx={1}>
+                            <Icons
+                                iconType="close"
+                                onClick={() => {
+                                    setEditing("");
+                                    updateFile("");
+                                    setErrors([]);
+                                }}
+                                fontSize="28px"
+                            />
+                        </Box>
+                    </Flex>
+                </Flex>
             )}
             {user && (
-                <div className="w-full">
+                <Box w="full">
                     {editableDetailItems.map((item) => (
                         <EditableDetailItem
+                            onXClick={item.onXClick}
+                            onTickClick={item.onTickClick}
                             key={item.name}
                             clasName="w-full"
                             title={item.title}
@@ -410,10 +394,9 @@ const Account = ({}: Props) => {
                                 <Icons
                                     iconType="edit"
                                     onClick={() => setEditing(item.name)}
-                                    fontSize="72px"
+                                    fontSize="28px"
                                 />
                             }
-                            iconsEditing={editingIcons}
                             editing={editing === item.name}
                             defaultValue={item.defaultValue}
                             ref={item.ref}
@@ -429,24 +412,29 @@ const Account = ({}: Props) => {
                             <Icons
                                 iconType="edit"
                                 onClick={() => updateItem("password")}
-                                fontSize="72px"
+                                fontSize="28px"
                             />
                         }
                     />
-                </div>
+                    <Button
+                        fontSize="2xs"
+                        bottom={0}
+                        right={1}
+                        pos="absolute"
+                        variant="ghost"
+                        colorScheme="red"
+                        onClick={() => {
+                            setEditing("deleteAccount");
+                            setDialogMessage(
+                                getDialogMessages("deleteAccount")
+                            );
+                        }}
+                    >
+                        Delete account
+                    </Button>
+                </Box>
             )}
-            <Button
-                pos="absolute"
-                bottom="4"
-                right="4"
-                size="lg"
-                variant="ghost"
-                colorScheme="red"
-                onClick={deleteAccount}
-            >
-                Delete account
-            </Button>
-        </div>
+        </Flex>
     );
 };
 

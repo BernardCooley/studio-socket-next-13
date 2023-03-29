@@ -83,10 +83,14 @@ const Navigation = ({}: Props) => {
                         onClick={closeNav}
                         fontSize="62px"
                     />
-                    <DrawerHeader borderBottomWidth="1px">
+                    <DrawerHeader
+                        borderBottomWidth="1px"
+                        paddingInline={2}
+                        p={2}
+                    >
                         <Center>Studio Socket</Center>
                     </DrawerHeader>
-                    <DrawerBody>
+                    <DrawerBody pt={0}>
                         {navLinks.map((link) => (
                             <Center key={link.name}>
                                 <Link

@@ -103,6 +103,36 @@ export const getDialogMessages = (actionType: string): FormMessage | null => {
                 successMessage: "",
             };
             break;
+        case "updateUsername":
+            message = {
+                headerText: "Update username",
+                bodyText: "Are you sure you want to update your username",
+                type: FormMessageTypes.WARNING,
+                actionType: "edit",
+                successMessage: "",
+            };
+            break;
+        case "updateEmail":
+            message = {
+                headerText: "Update email address",
+                bodyText: "Are you sure you want to update your email",
+                type: FormMessageTypes.WARNING,
+                actionType: "edit",
+                successMessage: "",
+            };
+            break;
+        case "deleteAccount":
+            message = {
+                headerText: "Delete Account",
+                bodyText:
+                    "Are you sure you want to delete your account? This cannot be undone.",
+                type: FormMessageTypes.WARNING,
+                actionType: "edit",
+                successMessage: "",
+            };
+            break;
+        default:
+            break;
     }
     return message;
 };

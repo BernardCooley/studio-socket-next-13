@@ -30,6 +30,8 @@ import VerticalAlignTopIcon from "@mui/icons-material/VerticalAlignTop";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export const deviceIcons = {
     Turntable: "/assets/icons/devices/turntable.png",
@@ -114,6 +116,7 @@ interface Props {
     onClick?: () => void;
     fontSize: string;
     href?: string;
+    styles?: React.CSSProperties;
 }
 
 interface IconProps {
@@ -125,6 +128,7 @@ interface IIcons {
 }
 
 const Icons = ({
+    styles,
     iconType,
     className,
     onClick = noop,
@@ -141,7 +145,10 @@ const Icons = ({
 
     const attributes = {
         style: {
-            fontSize: fontSize,
+            ...{
+                fontSize: fontSize,
+            },
+            ...styles,
         },
         className: className ? className : "",
         onClick: onClick,
@@ -176,6 +183,8 @@ const Icons = ({
         toTop: <VerticalAlignTopIcon {...attributes} />,
         addToList: <PlaylistAddIcon {...attributes} />,
         removeFromList: <PlaylistRemoveIcon {...attributes} />,
+        error: <ErrorOutlineIcon {...attributes} />,
+        info: <InfoOutlinedIcon {...attributes} />,
     };
 
     return <Icon>{icons[iconType]}</Icon>;
