@@ -38,12 +38,12 @@ import {
 } from "../../../../../utils";
 import {
     Box,
-    Button,
     ButtonGroup,
     Center,
     Flex,
     Input,
     InputGroup,
+    InputRightElement,
     useToast,
     VStack,
 } from "@chakra-ui/react";
@@ -58,6 +58,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Icons from "../../../../../icons";
 import { defaultFilterList, defaultSortList } from "../../../../../consts";
 import useScrollPosition from "../../../../../hooks/useScrollPosition";
+import ListSelectButton from "../../../../../components/ListSelectButton";
 
 interface Props {}
 
@@ -237,7 +238,7 @@ const Devices = ({}: Props) => {
         userId: string | null
     ): IRequestOptions => {
         return {
-            skip: customSkip ? customSkip : skip,
+            skip: customSkip ? customSkip : userId ? 0 : skip,
             limit: limit,
             filters: filterByRequest,
             andOr: andOr,
@@ -248,6 +249,7 @@ const Devices = ({}: Props) => {
     };
 
     const getDevices = async (userId: string | null) => {
+        setSkip(0);
         const requestBody = getRequestOptions(null, userId);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
@@ -346,6 +348,15 @@ const Devices = ({}: Props) => {
         return merged;
     };
 
+    const search = () => {
+        if (pathname) {
+            setLoading(true);
+            router.replace(
+                generateSearchParams(searchTerm, pathname, existingParams)
+            );
+        }
+    };
+
     return (
         <Box pt="52px" ref={containerRef} position="relative">
             <Dialog
@@ -404,12 +415,14 @@ const Devices = ({}: Props) => {
                 shadow={scrollPosition > 58 ? "lg" : "none"}
             >
                 <Center>
-                    <ButtonGroup gap="0" spacing={0}>
-                        <Button
-                            _hover={{
-                                bg: "brand.primary",
-                                color: "brand.primary-light",
-                            }}
+                    <ButtonGroup
+                        gap="0"
+                        spacing={0}
+                        w="full"
+                        justifyContent="center"
+                    >
+                        <ListSelectButton
+                            width="85px"
                             onClick={() => {
                                 setLoading(true);
                                 router.replace(
@@ -425,21 +438,12 @@ const Devices = ({}: Props) => {
                                     )
                                 );
                             }}
-                            size="xs"
-                            fontSize="16px"
-                            variant={
-                                listSelected === "yours" ? "primary" : "ghost"
-                            }
-                            roundedLeft="full"
-                            h={4}
-                        >
-                            Yours
-                        </Button>
-                        <Button
-                            _hover={{
-                                bg: "brand.primary",
-                                color: "brand.primary-light",
-                            }}
+                            active={listSelected === "yours"}
+                            name="Yours"
+                            roundedSide="left"
+                        />
+                        <ListSelectButton
+                            width="85px"
                             onClick={() => {
                                 setLoading(true);
                                 router.replace(
@@ -455,17 +459,10 @@ const Devices = ({}: Props) => {
                                     )
                                 );
                             }}
-                            size="xs"
-                            fontSize="16px"
-                            variant={
-                                listSelected === "all" ? "primary" : "ghost"
-                            }
-                            ml={0}
-                            roundedRight="full"
-                            h={4}
-                        >
-                            All
-                        </Button>
+                            active={listSelected === "all"}
+                            name="All"
+                            roundedSide="right"
+                        />
                     </ButtonGroup>
                 </Center>
                 <Flex
@@ -485,7 +482,11 @@ const Devices = ({}: Props) => {
                         fontSize="42px"
                     />
                     <Center display="flex" flexGrow="2">
-                        <InputGroup display="flex" alignItems="center">
+                        <InputGroup
+                            display="flex"
+                            alignItems="center"
+                            borderBottom="brand.primary"
+                        >
                             <Input
                                 pl={1}
                                 fontSize="22px"
@@ -494,8 +495,11 @@ const Devices = ({}: Props) => {
                                 colorScheme="dark"
                                 placeholder="Search"
                                 borderRadius={0}
-                                border="1px"
-                                borderColor="gray.200"
+                                borderTop="none"
+                                borderLeft="none"
+                                borderRight="none"
+                                borderBottom="brand.primary"
+                                borderWidth={1}
                                 m={1}
                                 w="96%"
                                 h="40px"
@@ -504,20 +508,37 @@ const Devices = ({}: Props) => {
                                     setSearchTerm(e.target.value);
                                 }}
                                 onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        if (pathname) {
-                                            setLoading(true);
-                                            router.replace(
-                                                generateSearchParams(
-                                                    searchTerm,
-                                                    pathname,
-                                                    existingParams
-                                                )
-                                            );
-                                        }
-                                    }
+                                    if (e.key === "Enter") search();
                                 }}
                             />
+                            {searchTerm.length && (
+                                <>
+                                    <InputRightElement
+                                        w="auto"
+                                        h="auto"
+                                        top="unset"
+                                        right={2}
+                                    >
+                                        <Icons
+                                            iconType="search"
+                                            onClick={search}
+                                            fontSize="28px"
+                                        />
+                                    </InputRightElement>
+                                    <InputRightElement
+                                        w="auto"
+                                        h="auto"
+                                        top="unset"
+                                        right={5}
+                                    >
+                                        <Icons
+                                            iconType="close"
+                                            onClick={() => setSearchTerm("")}
+                                            fontSize="28px"
+                                        />
+                                    </InputRightElement>
+                                </>
+                            )}
                         </InputGroup>
                     </Center>
                     <Icons
