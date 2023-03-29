@@ -59,6 +59,7 @@ import Icons from "../../../../../icons";
 import { defaultFilterList, defaultSortList } from "../../../../../consts";
 import useScrollPosition from "../../../../../hooks/useScrollPosition";
 import ListSelectButton from "../../../../../components/ListSelectButton";
+import { SuccessAlert } from "../../../../../components/ToastAlert";
 
 interface Props {}
 
@@ -283,20 +284,15 @@ const Devices = ({}: Props) => {
 
             if (resp) {
                 toast({
-                    title: "Success",
-                    description: dialogMessage?.successMessage,
-                    status: "success",
-                    duration: 2000,
+                    position: "bottom",
                     isClosable: false,
-                    position: "bottom-left",
-                    size: "xs",
-                    containerStyle: {
-                        width: "300px",
-                        maxWidth: "90%",
-                        fontSize: "22px",
-                        lineHeight: "28px",
-                        fontFamily: "default",
-                    },
+                    duration: 2000,
+                    render: () => (
+                        <SuccessAlert
+                            title="Success"
+                            details={dialogMessage?.successMessage || ""}
+                        />
+                    ),
                 });
             }
         }
@@ -313,21 +309,15 @@ const Devices = ({}: Props) => {
                 getDevices(user.user.id);
 
                 toast({
-                    title: "Success",
-                    description: dialogMessage?.successMessage,
-                    status: "success",
-                    duration: 2000,
+                    position: "bottom",
                     isClosable: false,
-                    position: "bottom-left",
-                    size: "xs",
-                    containerStyle: {
-                        width: "300px",
-                        maxWidth: "90%",
-                        fontSize: "22px",
-                        lineHeight: "28px",
-                        fontFamily: "default",
-                        padding: "10px",
-                    },
+                    duration: 2000,
+                    render: () => (
+                        <SuccessAlert
+                            title="Success"
+                            details={dialogMessage?.successMessage || ""}
+                        />
+                    ),
                 });
             }
         }
