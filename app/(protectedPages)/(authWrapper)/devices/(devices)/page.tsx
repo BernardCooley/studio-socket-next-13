@@ -234,11 +234,11 @@ const Devices = ({}: Props) => {
     }, [sort, user, listSelected, filterList, searchQuery]);
 
     const getRequestOptions = (
-        customSkip: number | null,
+        skip: number | null,
         userId: string | null
     ): IRequestOptions => {
         return {
-            skip: customSkip ? customSkip : userId ? 0 : skip,
+            skip: skip ? skip : 0,
             limit: limit,
             filters: filterByRequest,
             andOr: andOr,
@@ -249,16 +249,23 @@ const Devices = ({}: Props) => {
     };
 
     const getDevices = async (userId: string | null) => {
+        setLoading(true);
         setSkip(0);
         const requestBody = getRequestOptions(null, userId);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
             setAllDevices(devices);
             setLoading(false);
+            window.scrollTo({
+                top: 0,
+                left: 0,
+                behavior: "smooth",
+            });
         }
     };
 
     const getMoreDevices = async (skip: number, userId: string | null) => {
+        setLoading(true);
         const requestBody = getRequestOptions(skip, userId);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
