@@ -39,7 +39,7 @@ export const fetchDeviceById = async (id: string) => {
 
 export const updateUserProfile = async (
     userId: string,
-    updateData: { [key: string]: string }
+    updateData: { [key: string]: string | boolean }
 ) => {
     return fetchWithErrorHandling("./api/auth/updateUserProfile", "POST", {
         userId: userId,

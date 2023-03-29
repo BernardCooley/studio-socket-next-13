@@ -7,9 +7,10 @@ interface Props {
     details: string;
     children?: React.ReactNode;
     status?: "error" | "success" | "info" | "warning";
+    onClose?: () => void;
 }
 
-const BaseAlert = ({ title, details, children, status }: Props) => {
+const BaseAlert = ({ title, details, children, status, onClose }: Props) => {
     let color: string = "";
     switch (status) {
         case "error":
@@ -38,7 +39,16 @@ const BaseAlert = ({ title, details, children, status }: Props) => {
             px={2}
             fontFamily="default"
             rounded={10}
+            position="relative"
         >
+            {onClose && (
+                <Icons
+                    iconType="close"
+                    className="text-primary-light mr-2 rounded-full absolute top-1 -right-1"
+                    fontSize="32px"
+                    onClick={onClose}
+                />
+            )}
             {children}
             <Flex flexDirection="column">
                 {title && (
@@ -56,9 +66,14 @@ const BaseAlert = ({ title, details, children, status }: Props) => {
     );
 };
 
-export const SuccessAlert = ({ title, details }: Props) => {
+export const SuccessAlert = ({ title, details, onClose }: Props) => {
     return (
-        <BaseAlert title={title} details={details} status="success">
+        <BaseAlert
+            title={title}
+            details={details}
+            status="success"
+            onClose={onClose}
+        >
             <Icons
                 iconType="tick"
                 className="text-primary-light mr-2 rounded-full"
@@ -68,9 +83,14 @@ export const SuccessAlert = ({ title, details }: Props) => {
     );
 };
 
-export const ErrorAlert = ({ title, details }: Props) => {
+export const ErrorAlert = ({ title, details, onClose }: Props) => {
     return (
-        <BaseAlert title={title} details={details} status="error">
+        <BaseAlert
+            title={title}
+            details={details}
+            status="error"
+            onClose={onClose}
+        >
             <Icons
                 iconType="error"
                 className="text-primary-light mr-2 rounded-full"
@@ -80,9 +100,14 @@ export const ErrorAlert = ({ title, details }: Props) => {
     );
 };
 
-export const WarningAlert = ({ title, details }: Props) => {
+export const WarningAlert = ({ title, details, onClose }: Props) => {
     return (
-        <BaseAlert title={title} details={details} status="warning">
+        <BaseAlert
+            title={title}
+            details={details}
+            status="warning"
+            onClose={onClose}
+        >
             <Icons
                 iconType="warning"
                 className="text-primary-light mr-2 rounded-full"
@@ -92,9 +117,14 @@ export const WarningAlert = ({ title, details }: Props) => {
     );
 };
 
-export const InfoAlert = ({ title, details }: Props) => {
+export const InfoAlert = ({ title, details, onClose }: Props) => {
     return (
-        <BaseAlert title={title} details={details} status="info">
+        <BaseAlert
+            title={title}
+            details={details}
+            status="info"
+            onClose={onClose}
+        >
             <Icons
                 iconType="info"
                 className="text-primary-light mr-2 rounded-full"

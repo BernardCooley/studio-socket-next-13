@@ -27,17 +27,15 @@ import {
     deleteFirebaseImage,
     uploadFirebaseImage,
 } from "../../../../firebase/functions";
-import useUpdateDialog from "../../../../hooks/useUpdateDialog";
 import { Box, Button, Flex, Square, useToast } from "@chakra-ui/react";
 import Dialog from "../../../../components/Dialog";
-import { SuccessAlert } from "../../../../components/ToastAlert";
+import { ErrorAlert, SuccessAlert } from "../../../../components/ToastAlert";
 import LoadingSpinner from "../../../../components/LoadingSpinner";
 
 interface Props {}
 
 const Account = ({}: Props) => {
     const toast = useToast();
-    const { update } = useUpdateDialog();
     const { user, updateUser } = useAuthContext();
     const [existingImageName, setExistingImageName] = useState<string>("");
     const [editing, setEditing] = useState<string>("");
@@ -49,8 +47,10 @@ const Account = ({}: Props) => {
     const [dialogMessage, setDialogMessage] = useState<FormMessage | null>(
         null
     );
+    const [dialogOpen, setDialogOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const cancelRef = useRef<HTMLButtonElement>(null);
+    const toastRefs = useRef<Function[]>([]);
 
     useEffect(() => {
         if (user) {
@@ -58,6 +58,12 @@ const Account = ({}: Props) => {
             setLoading(false);
         }
     }, [user]);
+
+    const closeToast = () => {
+        toastRefs.current.forEach((cb) => cb());
+        toastRefs.current = [];
+        signOut({ callbackUrl: "/" });
+    };
 
     useEffect(() => {
         if (editing) {
@@ -72,7 +78,7 @@ const Account = ({}: Props) => {
             name: "username",
             defaultValue: user?.username,
             ref: usernameRef,
-            onTickClick: () => setEditing("updateUsername"),
+            onTickClick: () => setDialogOpen(true),
             onXClick: () => setEditing(""),
         },
         {
@@ -81,7 +87,7 @@ const Account = ({}: Props) => {
             name: "email",
             defaultValue: user?.email,
             ref: emailRef,
-            onTickClick: () => setEditing("updateEmail"),
+            onTickClick: () => setDialogOpen(true),
             onXClick: () => setEditing(""),
         },
     ];
@@ -103,7 +109,7 @@ const Account = ({}: Props) => {
 
             setTimeout(() => {
                 setEditing("");
-            }, 2000);
+            }, 3000);
         } catch (err: any) {
             setErrors(getErrorMessages(err.errors, type));
         }
@@ -141,8 +147,7 @@ const Account = ({}: Props) => {
 
                                 toast({
                                     position: "bottom",
-                                    isClosable: false,
-                                    duration: 2000,
+                                    duration: 3000,
                                     render: () => (
                                         <SuccessAlert
                                             title="Success"
@@ -169,22 +174,39 @@ const Account = ({}: Props) => {
                                     user.user_id,
                                     {
                                         email: emailRef.current.value,
+                                        verify_email: true,
                                     }
                                 );
                                 updateUser(newUserData);
 
                                 toast({
                                     position: "bottom",
-                                    isClosable: false,
-                                    duration: 2000,
-                                    render: () => (
-                                        <SuccessAlert
-                                            title="Success"
-                                            details="Email updated successfully. A confirmation email has been sent to your new email address. Please confirm your new email address to continue using your account."
-                                        />
-                                    ),
+                                    render: ({ onClose }) => {
+                                        toastRefs.current.push(onClose);
+                                        return (
+                                            <SuccessAlert
+                                                title="Success"
+                                                details="Email updated successfully. A confirmation email has been sent to your new email address. Please confirm your new email address to continue using your account."
+                                                onClose={closeToast}
+                                            />
+                                        );
+                                    },
                                 });
-                            } catch (err: any) {}
+                            } catch (err: any) {
+                                console.log(err);
+                                toast({
+                                    position: "bottom",
+                                    duration: 3000,
+                                    render: () => {
+                                        return (
+                                            <ErrorAlert
+                                                title="Error"
+                                                details="Something went wrong. Please try again later"
+                                            />
+                                        );
+                                    },
+                                });
+                            }
                         }
                     }
                 );
@@ -241,8 +263,7 @@ const Account = ({}: Props) => {
 
                                 toast({
                                     position: "bottom",
-                                    isClosable: false,
-                                    duration: 2000,
+                                    duration: 3000,
                                     render: () => (
                                         <SuccessAlert
                                             title="Success"
@@ -281,7 +302,7 @@ const Account = ({}: Props) => {
             <Dialog
                 headerText={dialogMessage?.headerText || ""}
                 bodyText={dialogMessage?.bodyText || ""}
-                isOpen={dialogMessage !== null}
+                isOpen={dialogOpen}
                 onClose={() => {
                     setDialogMessage(null);
                     setEditing("");
@@ -291,7 +312,7 @@ const Account = ({}: Props) => {
                         text: "No",
                         onClick: () => {
                             setDialogMessage(null);
-                            setEditing("");
+                            setDialogOpen(false);
                         },
                     },
                     {
@@ -304,6 +325,8 @@ const Account = ({}: Props) => {
                             }
                             setDialogMessage(null);
                             setEditing("");
+                            setDialogOpen(false);
+                            setDialogMessage(null);
                         },
                     },
                 ]}

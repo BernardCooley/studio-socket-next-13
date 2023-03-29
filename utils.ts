@@ -103,7 +103,7 @@ export const getDialogMessages = (actionType: string): FormMessage | null => {
                 successMessage: "",
             };
             break;
-        case "updateUsername":
+        case "username":
             message = {
                 headerText: "Update username",
                 bodyText: "Are you sure you want to update your username",
@@ -112,7 +112,7 @@ export const getDialogMessages = (actionType: string): FormMessage | null => {
                 successMessage: "",
             };
             break;
-        case "updateEmail":
+        case "email":
             message = {
                 headerText: "Update email address",
                 bodyText: "Are you sure you want to update your email",
