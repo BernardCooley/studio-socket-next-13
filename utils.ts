@@ -1,3 +1,8 @@
+import {
+    DefaultLinkModel,
+    DefaultNodeModel,
+    DefaultPortModel,
+} from "@projectstorm/react-diagrams-defaults";
 import { ReadonlyURLSearchParams } from "next/navigation";
 import { IOrderBy, ISearchQuery, QueryParam } from "./bff/types";
 import { defaultSortList } from "./consts";
@@ -347,4 +352,39 @@ export const generateSearchParams = (
     }
 
     return searchParams;
+};
+
+export const createCanvasNode = (
+    name: string,
+    deviceId: string,
+    color: string,
+    positionX: number,
+    positionY: number,
+    outPortName: string
+) => {
+    const node = new DefaultNodeModel({
+        name: name,
+        color: color,
+    });
+    node.setPosition(positionX, positionY);
+    let port = node.addOutPort(outPortName);
+
+    return {
+        node,
+        port,
+        deviceId
+    };
+};
+
+export const createNodeLink = (
+    port1: DefaultPortModel,
+    port2: DefaultPortModel,
+    linkLabel: string,
+    color?: string
+) => {
+    const link = port1.link<DefaultLinkModel>(port2);
+    link.setColor(color || "black");
+    link.addLabel(linkLabel);
+
+    return link;
 };

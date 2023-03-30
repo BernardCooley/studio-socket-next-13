@@ -11,7 +11,7 @@ const ProtectedLayout = ({ children }: Props) => {
     return (
         <AllContexts>
             <div className="relative h-full min-h-screen">
-                <Navigation />
+                {/* <Navigation /> */}
                 {children}
             </div>
         </AllContexts>
