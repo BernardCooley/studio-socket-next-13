@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react";
 import React from "react";
 
 interface Props {
@@ -6,13 +7,13 @@ interface Props {
 
 const ErrorMessages = ({ errorMessages }: Props) => {
     return (
-        <div className="text-error text-lg absolute">
+        <Box color="red.500" fontSize="2xs">
             {errorMessages &&
                 errorMessages.length > 0 &&
                 errorMessages.map((error) => (
-                    <div key={JSON.stringify(error)}>{error}</div>
+                    <Box key={JSON.stringify(error)}>{error}</Box>
                 ))}
-        </div>
+        </Box>
     );
 };
 

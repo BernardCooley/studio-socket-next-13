@@ -52,7 +52,7 @@ export const UpdateUsernameSchema = z.object({
 });
 
 export const UpdateAvatarTypeSchema = z.object({
-    avatar: z.string().regex(/jpg|jpeg|png/, {
+    avatar: z.string().regex(/jpg|JPG|jpeg|JPEG|png|PNG/, {
         message: "Invalid file type (only jpg, jpeg and png allowed)",
     }),
 });

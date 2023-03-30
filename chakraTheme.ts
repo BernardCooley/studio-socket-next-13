@@ -79,6 +79,7 @@ export const theme = extendTheme({
     colors: {
         brand: {
             primary: "#383B43",
+            "primary-opaque": "rgba(56, 59, 67, 0.76)",
             "primary-light": "#ECE7E7",
             "light-gray": "#9498A0",
             error: "#FF0000",

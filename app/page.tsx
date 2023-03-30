@@ -6,7 +6,15 @@ import { useRouter } from "next/navigation";
 import { IFirebaseImage } from "../types";
 import { getFirebaseImage } from "../firebase/functions";
 import { signIn } from "next-auth/react";
-import { Button } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Center,
+    ListItem,
+    Text,
+    UnorderedList,
+    VStack,
+} from "@chakra-ui/react";
 
 const listItems = [
     "Create a collection of your devices",
@@ -58,14 +66,26 @@ const Landing = ({}: Props) => {
     };
 
     return (
-        <div className="Home bg-primary-light">
-            <section className="text-primary-light flex flex-col items-center bg-modular bg-centered">
-                <div className="Links p-6 flex justify-between w-full text-2xl font-light">
-                    <Button size="lg" variant="ghost" onClick={login}>
+        <VStack bg="brand.primary-light">
+            <VStack
+                color="brand.primary-light"
+                alignItems="center"
+                backgroundImage="url('../assets/backgrounds/modular-side-dark.jpg')"
+                backgroundPosition="center"
+            >
+                <Box w="full">
+                    <Button
+                        fontFamily="default"
+                        size="sm"
+                        variant="ghost"
+                        onClick={login}
+                        left={0}
+                        position="relative"
+                    >
                         Sign in
                     </Button>
-                </div>
-                <div className="Logo w-full flex justify-center">
+                </Box>
+                <Center w="full">
                     <ImageWithFallback
                         title=""
                         image={logo}
@@ -74,39 +94,49 @@ const Landing = ({}: Props) => {
                         containerClassname="w-full"
                         size={{ width: 300, height: 300 }}
                     />
-                </div>
-                <div className="Title uppercase text-2xl tracking-widest font-light">
+                </Center>
+                <Text textTransform="uppercase" fontSize="md">
                     Music studio designer
-                </div>
-                <div className="Description mt-3 p-4 text-lg text-center bg-primary/80 shadow-3xl shadow-primary">
+                </Text>
+                <Text
+                    mt={2}
+                    p={1}
+                    fontSize="xs"
+                    textAlign="center"
+                    bg="brand.primary-opaque"
+                    className="shadow-3xl shadow-primary/80"
+                >
                     Plan and map your music studio. Search from our database of
                     Synths, Drum machines, Mixers, etc..., connect them via
                     audio and midi cables to build working plans of your
                     current, or dream studio.
-                </div>
-            </section>
-            <section className="py-3">
-                <div className="Table w-full flex justify-center">
-                    <ImageWithFallback
-                        title=""
-                        image={tableImage}
-                        fit="contain"
-                        layout="responsive"
-                        containerClassname="w-full p-3"
-                        size={{ width: 250, height: 100 }}
-                    />
-                </div>
-            </section>
-            <section className="shadow-3xl shadow-primary/40">
-                <ul className="p-4 pl-8 list-disc text-lg">
+                </Text>
+            </VStack>
+            <Center w="full">
+                <ImageWithFallback
+                    title=""
+                    image={tableImage}
+                    fit="contain"
+                    layout="responsive"
+                    containerClassname="w-full px-2"
+                    size={{ width: 250, height: 100 }}
+                />
+            </Center>
+            <Box w="full" className="shadow-3xl shadow-primary/40">
+                <UnorderedList
+                    alignItems="flex-start"
+                    p={1}
+                    pl={2}
+                    fontSize="2xs"
+                >
                     {listItems.map((item) => (
-                        <li key={item} className="">
+                        <ListItem key={item} className="">
                             {item}
-                        </li>
+                        </ListItem>
                     ))}
-                </ul>
-            </section>
-        </div>
+                </UnorderedList>
+            </Box>
+        </VStack>
     );
 };
 

@@ -311,6 +311,7 @@ const Account = ({}: Props) => {
                                         />
                                     ),
                                 });
+                                setEditing("");
                             } catch (err: any) {
                                 console.log(err);
                                 toast({
