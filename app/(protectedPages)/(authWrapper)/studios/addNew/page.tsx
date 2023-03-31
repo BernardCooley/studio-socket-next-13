@@ -8,20 +8,17 @@ import React, { useRef, useState } from "react";
 import BackButton from "../../../../../components/BackButton";
 import CustomTextInput from "../../../../../components/CustomTextInput";
 import PageTitle from "../../../../../components/PageTitle";
-import { useFormContext } from "../../../../../contexts/FormContext";
 import { useNavContext } from "../../../../../contexts/NavContext";
 import { db } from "../../../../../firebase/clientApp";
-import { getFormMessages, StudioSchema } from "../../../../../formValidation";
-import Icons from "../../../../../icons";
+import { StudioSchema } from "../../../../../formValidation";
 import routes from "../../../../../routes";
-import { FormMessageTypes, NewStudio } from "../../../../../types";
+import { NewStudio } from "../../../../../types";
 import { getErrorMessages } from "../../../../../utils";
 
 interface Props {}
 
 const AddNewStudio = ({}: Props) => {
     // TODO: Test when db is back up
-    const { formMessages, addFormMessages, updateIcon } = useFormContext();
     const { environment, navOpen } = useNavContext();
     const router = useRouter();
     const [errors, setErrors] = useState([]);
@@ -38,22 +35,6 @@ const AddNewStudio = ({}: Props) => {
             setErrors([]);
 
             if (titleRef.current && user) {
-                addFormMessages(
-                    new Set([
-                        {
-                            message: "Adding new studio...",
-                            type: FormMessageTypes.INFO,
-                        },
-                    ])
-                );
-                updateIcon(
-                    <Icons
-                        iconType="keyboard"
-                        className="text-primary"
-                        fontSize="132px"
-                    />
-                );
-
                 const newStudio: NewStudio = {
                     title: titleRef.current.value,
                     createdAt: new Date(),
@@ -70,22 +51,10 @@ const AddNewStudio = ({}: Props) => {
                         newStudio
                     );
 
-                    addFormMessages(
-                        new Set([
-                            {
-                                message: "New studio saved",
-                                type: FormMessageTypes.INFO,
-                            },
-                        ])
-                    );
-
                     setTimeout(() => {
-                        addFormMessages(new Set([]));
                         router.push(routes.studio(docRef.id).as);
                     }, 2000);
-                } catch (err: any) {
-                    addFormMessages(getFormMessages(err.code));
-                }
+                } catch (err: any) {}
             }
 
             return true;
@@ -108,9 +77,6 @@ const AddNewStudio = ({}: Props) => {
             >
                 <div className="w-full flex flex-col justify-center items-center">
                     <CustomTextInput
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
                         id="title"
                         type="text"
                         label="Title *"

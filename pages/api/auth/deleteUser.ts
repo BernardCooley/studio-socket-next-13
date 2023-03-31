@@ -52,7 +52,7 @@ export default async function handler(
             .then(async (response: AxiosResponse) => {
                 res.status(200).json(response.data);
             })
-            .catch((error) => {
+            .catch(() => {
                 res.status(400).json({
                     message: "Server error. Something went wrong.",
                 });

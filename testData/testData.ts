@@ -1,4 +1,6 @@
+import { Edge } from "reactflow";
 import { Studio } from "../types";
+import { IDeviceNode } from "../bff/types";
 
 export const formErrorMessages = [
     "Email/password incorrect.",
@@ -1395,5 +1397,259 @@ export const allDevicesTest = [
             url: "https://firebasestorage.googleapis.com/v0/b/studio-socket.appspot.com/o/gear_images%2F47304.png?alt=media&token=164dffe8-c31f-468b-9182-54e3e63c1af9",
             name: "47304.png",
         },
+    },
+];
+
+export const defaultEdges: Edge[] = [
+    {
+        label: "test",
+        labelStyle: {
+            fontSize: 32,
+        },
+        labelBgStyle: {
+            fill: "transparent",
+        },
+        style: {
+            stroke: "black",
+        },
+        markerStart: "arrow",
+        markerEnd: "arrow",
+        source: "cldjetpm2867rjhal19lf5lm1",
+        sourceHandle: "a",
+        target: "cldjetpng886kjhal3wy8b926",
+        targetHandle: "b",
+        id: "reactflow__edge-cldjetpm2867rjhal19lf5lm1a-cldjetpng886kjhal3wy8b926b",
+    },
+];
+
+export const defaultNodes: IDeviceNode[] = [
+    {
+        id: "cldjetplz862vjhaluhis81nd",
+        position: {
+            x: -346.5565164339581,
+            y: -39.247534749804174,
+        },
+        type: "deviceNode",
+        data: {
+            id: "cldjetplz862vjhaluhis81nd",
+            slug: "90211-1-echo",
+            title: "#1 Echo",
+            deviceId: "90211",
+            countryOfManufacturer: "USA",
+            datesProduced: null,
+            signalPath: {
+                name: "Digital Hardware (including Analog Connections)",
+            },
+            formFactor: {
+                name: "Footswitch",
+            },
+            manufacturers: [
+                {
+                    name: "Electro-Harmonix",
+                },
+            ],
+            deviceTypes: [
+                {
+                    name: "Effect",
+                },
+            ],
+            users: [
+                {
+                    id: "cldk0gpk30000jh5ring92f0w",
+                },
+            ],
+            connections: [
+                {
+                    connector: {
+                        name: "1/4 Phone Jack (6.35mm)",
+                    },
+                    description: [
+                        {
+                            name: "Mono",
+                        },
+                    ],
+                    devices: [
+                        {
+                            id: "cldjetplz862vjhaluhis81nd",
+                        },
+                    ],
+                },
+                {
+                    connector: {
+                        name: "1/4 Phone Jack (6.35mm)",
+                    },
+                    description: [
+                        {
+                            name: "Mono",
+                        },
+                    ],
+                    devices: [
+                        {
+                            id: "cldjetplz862vjhaluhis81nd",
+                        },
+                    ],
+                },
+            ],
+        },
+        targetPosition: "left",
+        sourcePosition: "right",
+        width: 239,
+        height: 184,
+        selected: false,
+        positionAbsolute: {
+            x: -346.5565164339581,
+            y: -39.247534749804174,
+        },
+        dragging: false,
+    },
+    {
+        id: "cldjetpm2867rjhal19lf5lm1",
+        position: {
+            x: -448.7849212037087,
+            y: 430.6730433266846,
+        },
+        type: "deviceNode",
+        data: {
+            id: "cldjetpm2867rjhal19lf5lm1",
+            slug: "943-novation-super-bass-station",
+            title: "Super Bass Station",
+            deviceId: "943",
+            countryOfManufacturer: "",
+            datesProduced: "1997-",
+            signalPath: {
+                name: "Analog Hardware",
+            },
+            formFactor: {
+                name: "19 Rackmount",
+            },
+            manufacturers: [
+                {
+                    name: "Novation",
+                },
+            ],
+            deviceTypes: [
+                {
+                    name: "Synthesizer",
+                },
+            ],
+            users: [
+                {
+                    id: "cldk0gpk30000jh5ring92f0w",
+                },
+            ],
+            connections: [],
+        },
+        targetPosition: "left",
+        sourcePosition: "right",
+        width: 258,
+        height: 186,
+        selected: true,
+        positionAbsolute: {
+            x: -448.7849212037087,
+            y: 430.6730433266846,
+        },
+        dragging: true,
+    },
+    {
+        id: "cldjetpng886kjhal3wy8b926",
+        position: {
+            x: 326.2585507414795,
+            y: -123.63188136328027,
+        },
+        type: "deviceNode",
+        data: {
+            id: "cldjetpng886kjhal3wy8b926",
+            slug: "7920-zoom-h4n",
+            title: "H4n",
+            deviceId: "7920",
+            countryOfManufacturer: null,
+            datesProduced: null,
+            signalPath: null,
+            formFactor: {
+                name: "Portable",
+            },
+            manufacturers: [
+                {
+                    name: "Zoom",
+                },
+            ],
+            deviceTypes: [
+                {
+                    name: "Digital Recorder",
+                },
+            ],
+            users: [
+                {
+                    id: "cldk0gpk30000jh5ring92f0w",
+                },
+            ],
+            connections: [
+                {
+                    connector: {
+                        name: "Combo XLR / 1/4",
+                    },
+                    description: [],
+                    devices: [
+                        {
+                            id: "cldjetpng886kjhal3wy8b926",
+                        },
+                    ],
+                },
+                {
+                    connector: {
+                        name: "Combo XLR / 1/4",
+                    },
+                    description: [],
+                    devices: [
+                        {
+                            id: "cldjetpng886kjhal3wy8b926",
+                        },
+                    ],
+                },
+                {
+                    connector: {
+                        name: "3.5mm Miniature Phone Jack (1/8)",
+                    },
+                    description: [],
+                    devices: [
+                        {
+                            id: "cldjetpng886kjhal3wy8b926",
+                        },
+                    ],
+                },
+                {
+                    connector: {
+                        name: "3.5mm Miniature Phone Jack (1/8)",
+                    },
+                    description: [],
+                    devices: [
+                        {
+                            id: "cldjetpng886kjhal3wy8b926",
+                        },
+                    ],
+                },
+                {
+                    connector: {
+                        name: "USB",
+                    },
+                    description: [],
+                    devices: [
+                        {
+                            id: "cldjetpng886kjhal3wy8b926",
+                        },
+                    ],
+                },
+            ],
+        },
+        targetPosition: "left",
+        sourcePosition: "right",
+        width: 92,
+        height: 184,
+        selected: false,
+        positionAbsolute: {
+            x: 326.2585507414795,
+            y: -123.63188136328027,
+        },
+        dragging: false,
     },
 ];

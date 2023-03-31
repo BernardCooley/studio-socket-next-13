@@ -34,7 +34,7 @@ export default async function handler(
             await prisma?.connectionDescription.findMany();
 
         const getConnections = async () => {
-            return Array.from(allDevices)
+            return Array.from(allDevices as [])
                 .filter((device: any) => device.connections)
                 .map((dev: any) => {
                     return dev.connections.map((connection: any) => {
@@ -63,23 +63,23 @@ export default async function handler(
                             name: connection.name,
                         };
 
-                        if (connector && connector.id) {
-                            ggg["connector"] = {
-                                connect: {
-                                    id: connector.id,
-                                },
-                            };
-                        } else {
-                            ggg["connector"] = "undefined";
-                        }
+                        // if (connector && connector.id) {
+                        //     ggg["connector"] = {
+                        //         connect: {
+                        //             id: connector.id,
+                        //         },
+                        //     };
+                        // } else {
+                        //     ggg["connector"] = "undefined";
+                        // }
 
-                        if (conns && conns.length > 0) {
-                            ggg["description"] = {
-                                connect: conns,
-                            };
-                        }
+                        // if (conns && conns.length > 0) {
+                        //     ggg["description"] = {
+                        //         connect: conns,
+                        //     };
+                        // }
 
-                        ggg["deviceId"] = dev.id;
+                        // ggg["deviceId"] = dev.id;
 
                         return ggg;
                     });
@@ -132,7 +132,7 @@ export default async function handler(
 
         const allConnections = await prisma?.connection.findMany();
 
-        const dataArray = Array.from(allDevices).map((device: any) => {
+        const dataArray = Array.from(allDevices as []).map((device: any) => {
             const signalPath = allSignalPaths?.find(
                 (signalPath) => signalPath.name === device.signal_path
             );
@@ -176,41 +176,41 @@ export default async function handler(
                 slug: device.slug,
             };
 
-            if (man && man.length > 0) {
-                ggg["manufacturers"] = {
-                    connect: man,
-                };
-            }
+            // if (man && man.length > 0) {
+            //     ggg["manufacturers"] = {
+            //         connect: man,
+            //     };
+            // }
 
-            if (dev && dev.length > 0) {
-                ggg["deviceTypes"] = {
-                    connect: dev,
-                };
-            }
+            // if (dev && dev.length > 0) {
+            //     ggg["deviceTypes"] = {
+            //         connect: dev,
+            //     };
+            // }
 
-            if (conns && conns.length > 0) {
-                ggg["connections"] = {
-                    connect: conns,
-                };
-            }
+            // if (conns && conns.length > 0) {
+            //     ggg["connections"] = {
+            //         connect: conns,
+            //     };
+            // }
 
-            if (signalPath) {
-                ggg["signalPath"] = {
-                    connect: {
-                        id: signalPath.id,
-                    },
-                };
-            }
+            // if (signalPath) {
+            //     ggg["signalPath"] = {
+            //         connect: {
+            //             id: signalPath.id,
+            //         },
+            //     };
+            // }
 
-            if (form) {
-                ggg["formFactor"] = {
-                    connect: {
-                        id: form.id,
-                    },
-                };
-            }
+            // if (form) {
+            //     ggg["formFactor"] = {
+            //         connect: {
+            //             id: form.id,
+            //         },
+            //     };
+            // }
 
-            ggg["deviceId"] = device.id;
+            // ggg["deviceId"] = device.id;
 
             return ggg;
         });

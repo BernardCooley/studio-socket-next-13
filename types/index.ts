@@ -1191,8 +1191,8 @@ export interface IDevice {
     slug: string;
     title: string;
     deviceId: string;
-    countryOfManufacturer: string;
-    datesProduced: string;
+    countryOfManufacturer: string | null;
+    datesProduced: string | null;
     formFactor: { name: string };
     manufacturers: { name: string }[];
     deviceTypes: { name: string }[];
@@ -1200,10 +1200,10 @@ export interface IDevice {
     connections: {
         connector: { name: string };
         description: { name: string }[];
-        devices: { id: string };
+        devices: { id: string }[];
     }[];
     image?: IFirebaseImage;
-    signalPath: { name: string };
+    signalPath: { name: string } | null;
 }
 
 export interface Filters {

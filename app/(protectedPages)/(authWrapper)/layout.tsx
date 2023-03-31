@@ -6,6 +6,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { getUserProfile } from "../../../bff/requests";
 import { useAuthContext } from "../../../contexts/AuthContext";
+import { ReactFlowProvider } from "reactflow";
 
 interface Props {
     children: React.ReactNode;
@@ -36,8 +37,10 @@ const AuthWrapperLayout = ({ children }: Props) => {
 
     return (
         <>
-            <ToastProvider />
-            <div className="relative h-full  min-h-screen">{children}</div>
+            <ReactFlowProvider>
+                <ToastProvider />
+                <div className="relative h-full  min-h-screen">{children}</div>
+            </ReactFlowProvider>
         </>
     );
 };

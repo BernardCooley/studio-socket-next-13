@@ -68,7 +68,7 @@ const AddConnectionSection = ({
             {connections.length > 0 && (
                 <Connections
                     onActionClick={onDeleteConnection}
-                    connections={connections}
+                    connections={null}
                     title=""
                     className="mt-4"
                     actionIcon={

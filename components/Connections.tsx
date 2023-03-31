@@ -2,7 +2,7 @@ import { Connection } from "@prisma/client";
 import React from "react";
 
 interface Props {
-    connections: Connection[];
+    connections: Connection[] | null;
     title?: string;
     className?: string;
     actionIcon?: JSX.Element;
@@ -46,12 +46,12 @@ const Connections = ({
                                     <td className="text-center capitalize border-primary">
                                         {connection.name.toLowerCase()}
                                     </td>
-                                    <td className="text-center border-primary">
+                                    {/* <td className="text-center border-primary">
                                         {connection.connector.name}
                                     </td>
                                     <td className="text-center border-primary">
                                         {connection.description?.join(", ")}
-                                    </td>
+                                    </td> */}
                                     {actionIcon && (
                                         <td
                                             onClick={() =>

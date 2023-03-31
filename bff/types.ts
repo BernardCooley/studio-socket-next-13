@@ -1,3 +1,5 @@
+import { IDevice } from "../types";
+
 export interface ISelect {
     select: {
         [key: string]: boolean;
@@ -61,4 +63,23 @@ export interface IActionButtons {
 export interface QueryParam {
     key: string;
     value: string;
+}
+
+export interface Position {
+    x: number;
+    y: number;
+}
+
+export interface IDeviceNode {
+    id: string;
+    position: Position;
+    data: IDevice;
+    type: string;
+    targetPosition: string;
+    sourcePosition: string;
+    width?: number;
+    height?: number;
+    selected?: boolean;
+    positionAbsolute?: Position;
+    dragging?: boolean;
 }

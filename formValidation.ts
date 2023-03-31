@@ -69,7 +69,10 @@ export const UpdateEmailSchema = z.object({
 
 // TODO: Update form messages to reflect auth0 error codes
 export const getFormMessages = (errorCode: any) => {
-    const messages: Set<FormMessage> = new Set();
+    const messages: Set<{
+        message: string;
+        type: FormMessageTypes;
+    }> = new Set();
 
     const errorMessages = [
         {

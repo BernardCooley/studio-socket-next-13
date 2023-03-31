@@ -83,7 +83,7 @@ const Devices = ({}: Props) => {
     const [sortParam, setSortParam] = useState<IOrderBy[]>([]);
     const [sort, setSort] =
         useState<{ [key: string]: string }[]>(defaultSortList);
-    const [devices, setAllDevices] = useState<IDevice[] | null>(null);
+    const [devices, setDevices] = useState<IDevice[] | null>(null);
     const [showToTopButton, setShowToTopButton] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [dialogMessage, setDialogMessage] = useState<FormMessage | null>(
@@ -255,7 +255,7 @@ const Devices = ({}: Props) => {
         const requestBody = getRequestOptions(null, userId);
         const devices = (await fetchDevices(requestBody)) as IDevice[];
         if (devices) {
-            setAllDevices(devices);
+            setDevices(devices);
             setLoading(false);
             window.scrollTo({
                 top: 0,
@@ -270,7 +270,7 @@ const Devices = ({}: Props) => {
         const requestBody = getRequestOptions(skip, userId);
         const moreDevices = (await fetchDevices(requestBody)) as IDevice[];
         if (moreDevices) {
-            setAllDevices((devices) => [...(devices || []), ...moreDevices]);
+            setDevices((devices) => [...(devices || []), ...moreDevices]);
             if (moreDevices.length === 0) {
                 setNoMoreDevices(true);
             }

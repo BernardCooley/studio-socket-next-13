@@ -14,33 +14,15 @@ interface UpdateDialogProps {
 }
 
 const useUpdateDialog = () => {
-    const {
-        addFormMessages,
-        updateIcon,
-        updateDialogButtons,
-        updateLoadingMessage,
-    } = useFormContext();
+    const { updateIcon, updateDialogButtons, updateLoadingMessage } =
+        useFormContext();
 
     const update = ({
-        question,
-        messageType,
         defaultIcon,
         successIcon,
         successAction,
-        successMessage,
-        successMessageType,
-        messageTimeout = 5000,
         loadingMessage = "",
     }: UpdateDialogProps) => {
-        addFormMessages(
-            new Set([
-                {
-                    message: question,
-                    type: messageType,
-                },
-            ])
-        );
-
         updateIcon(defaultIcon);
 
         updateDialogButtons([
@@ -52,23 +34,7 @@ const useUpdateDialog = () => {
                         const message = await successAction();
                         updateLoadingMessage("");
                         updateDialogButtons([]);
-
-                        addFormMessages(
-                            new Set([
-                                {
-                                    message: successMessage
-                                        ? successMessage
-                                        : message
-                                        ? message.message
-                                        : "",
-                                    type: successMessageType,
-                                },
-                            ])
-                        );
                         updateIcon(successIcon);
-                        setTimeout(() => {
-                            addFormMessages(new Set([]));
-                        }, messageTimeout);
                     } catch (err: any) {
                         updateLoadingMessage("");
                     }
@@ -78,7 +44,6 @@ const useUpdateDialog = () => {
             {
                 text: "No",
                 onClick: () => {
-                    addFormMessages(new Set([]));
                     updateDialogButtons([]);
                 },
                 classes: "bg-primary p-2 px-4 min-w-dialogButton rounded-lg",

@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
-import { DialogButton, FormMessage } from "../types";
+import { DialogButton, FormMessage, FormMessageTypes } from "../types";
 import Icons from "../icons";
 
 interface FormContextProps {
@@ -7,9 +7,6 @@ interface FormContextProps {
     updateIcon: (icon: React.ReactNode) => void;
     file: string;
     updateFile: (value: string) => void;
-    formMessages: Set<FormMessage>;
-    addFormMessages: (messages: Set<FormMessage>) => void;
-    clearFormMessages: () => void;
     dialogButtons: DialogButton[];
     updateDialogButtons: (buttons: DialogButton[]) => void;
     clearDialogButtons: () => void;
@@ -35,9 +32,6 @@ export const useFormContext = () => {
 };
 
 export const FormContextProvider = ({ children }: { children: ReactNode }) => {
-    const [formMessages, setFormMessages] = useState<Set<FormMessage>>(
-        new Set()
-    );
     const [file, setFile] = useState<string>("");
     const [icon, setIcon] = useState<React.ReactNode>(
         <Icons iconType="warning" className="text-error" fontSize="132px" />
@@ -58,22 +52,6 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
 
     const updateFile = (value: string) => {
         setFile(value);
-    };
-
-    const addFormMessages = (messages: Set<FormMessage>) => {
-        const newMessages: Set<FormMessage> = new Set();
-        messages.forEach((message) => {
-            newMessages.add({
-                message: message.message,
-                type: message.type,
-            });
-        });
-
-        setFormMessages(newMessages);
-    };
-
-    const clearFormMessages = () => {
-        setFormMessages(new Set());
     };
 
     const updateDialogButtons = (buttons: DialogButton[]) => {
@@ -99,9 +77,6 @@ export const FormContextProvider = ({ children }: { children: ReactNode }) => {
                 updateIcon,
                 file,
                 updateFile,
-                formMessages,
-                addFormMessages,
-                clearFormMessages,
                 dialogButtons,
                 updateDialogButtons,
                 clearDialogButtons,

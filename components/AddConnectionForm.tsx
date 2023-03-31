@@ -1,6 +1,5 @@
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import React, { RefObject } from "react";
-import { useFormContext } from "../contexts/FormContext";
 import Icons from "../icons";
 import { SelectOption } from "../types";
 import { getErrorMessages } from "../utils";
@@ -30,16 +29,11 @@ const AddConnectionForm = ({
     onAddDescription,
     descriptions,
 }: Props) => {
-    const { formMessages } = useFormContext();
-
     return (
         <div>
             <div className="w-full border-2 p-4 mt-4 rounded-xl">
                 <div>
                     <CustomTextInput
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
                         id="name"
                         type="text"
                         label="Name"
@@ -50,11 +44,6 @@ const AddConnectionForm = ({
                     <div className="w-full">
                         <div className="w-full flex justify-between items-center">
                             <CustomTextInput
-                                className={`${
-                                    formMessages.size > 0
-                                        ? "pointer-events-none"
-                                        : ""
-                                }`}
                                 id="description"
                                 type="text"
                                 label="Description"
@@ -81,9 +70,6 @@ const AddConnectionForm = ({
                         </ul>
                     </div>
                     <CustomSelect
-                        className={`${
-                            formMessages.size > 0 ? "pointer-events-none" : ""
-                        }`}
                         name="connector"
                         options={options}
                         label="Connector"

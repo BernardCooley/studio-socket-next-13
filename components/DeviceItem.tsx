@@ -19,7 +19,7 @@ import {
 interface Props {
     device: IDevice;
     href?: string;
-    actionButtons: IActionButton[] | null;
+    actionButtons?: IActionButton[] | null;
     onDeviceClick?: () => void;
 }
 
