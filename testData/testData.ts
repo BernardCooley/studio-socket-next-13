@@ -1424,7 +1424,7 @@ export const defaultEdges: Edge[] = [
 
 export const defaultNodes: IDeviceNode[] = [
     {
-        id: "cldjetplz862vjhaluhis81nd",
+        id: "92BlPsYg5IORxQjeTFr1nNaH6-cldjetplz862vjhaluhis81nd",
         position: {
             x: -346.5565164339581,
             y: -39.247534749804174,
@@ -1503,7 +1503,7 @@ export const defaultNodes: IDeviceNode[] = [
         dragging: false,
     },
     {
-        id: "cldjetpm2867rjhal19lf5lm1",
+        id: "wourlK9gTv4YJKwhlniw2Q8jb-cldjetpm2867rjhal19lf5lm1",
         position: {
             x: -448.7849212037087,
             y: 430.6730433266846,
@@ -1551,7 +1551,7 @@ export const defaultNodes: IDeviceNode[] = [
         dragging: true,
     },
     {
-        id: "cldjetpng886kjhal3wy8b926",
+        id: "L4jrwArffVgSyS8xNL5RSkX8Y-cldjetpng886kjhal3wy8b926",
         position: {
             x: 326.2585507414795,
             y: -123.63188136328027,

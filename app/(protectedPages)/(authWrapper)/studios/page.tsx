@@ -27,6 +27,7 @@ import { IDeviceNode } from "../../../../bff/types";
 import DeviceItem from "../../../../components/DeviceItem";
 import Icons from "../../../../icons";
 import { defaultNodes, defaultEdges } from "../../../../testData/testData";
+import { generateRandomString } from "../../../../utils";
 
 interface Studio {
     nodes: IDeviceNode[];
@@ -60,15 +61,6 @@ const Studios = ({}: Props) => {
             getDevices(user.user.id);
         }
     }, [user]);
-
-    useEffect(() => {
-        if (currentStudio) {
-            console.log(
-                "🚀 ~ file: page.tsx:69 ~ useEffect ~ currentStudio:",
-                currentStudio
-            );
-        }
-    }, [currentStudio]);
 
     useEffect(() => {
         console.log("get edges");
@@ -124,9 +116,17 @@ const Studios = ({}: Props) => {
         []
     );
 
-    const addToStudio = (device: IDevice) => {
+    const addDevice = (device: IDevice) => {
+        const nodeIds = nodes.map((node) => node.id.split("-")[0]);
+
+        let nodeId = generateRandomString(25);
+
+        while (nodeIds.includes(nodeId)) {
+            nodeId = generateRandomString(25);
+        }
+
         const newNode: IDeviceNode = {
-            id: device.id,
+            id: `${nodeId}-${device.id}`,
             position: {
                 x: randomNumber(0, 350),
                 y: randomNumber(0, 750),
@@ -196,7 +196,7 @@ const Studios = ({}: Props) => {
                                                 {
                                                     type: "add",
                                                     onClick: () =>
-                                                        addToStudio(device),
+                                                        addDevice(device),
                                                     confirmAction: "add",
                                                 },
                                             ]}
