@@ -1414,17 +1414,17 @@ export const defaultEdges: Edge[] = [
         },
         markerStart: "arrow",
         markerEnd: "arrow",
-        source: "cldjetpm2867rjhal19lf5lm1",
+        source: "92BlPsYg5IORxQjeTFr1nNaH6",
         sourceHandle: "a",
-        target: "cldjetpng886kjhal3wy8b926",
+        target: "wourlK9gTv4YJKwhlniw2Q8jb",
         targetHandle: "b",
-        id: "reactflow__edge-cldjetpm2867rjhal19lf5lm1a-cldjetpng886kjhal3wy8b926b",
+        id: "reactflow__edge-92BlPsYg5IORxQjeTFr1nNaH6a-wourlK9gTv4YJKwhlniw2Q8jbb",
     },
 ];
 
 export const defaultNodes: IDeviceNode[] = [
     {
-        id: "92BlPsYg5IORxQjeTFr1nNaH6-cldjetplz862vjhaluhis81nd",
+        id: "92BlPsYg5IORxQjeTFr1nNaH6",
         position: {
             x: -346.5565164339581,
             y: -39.247534749804174,
@@ -1503,7 +1503,7 @@ export const defaultNodes: IDeviceNode[] = [
         dragging: false,
     },
     {
-        id: "wourlK9gTv4YJKwhlniw2Q8jb-cldjetpm2867rjhal19lf5lm1",
+        id: "wourlK9gTv4YJKwhlniw2Q8jb",
         position: {
             x: -448.7849212037087,
             y: 430.6730433266846,
@@ -1551,7 +1551,7 @@ export const defaultNodes: IDeviceNode[] = [
         dragging: true,
     },
     {
-        id: "L4jrwArffVgSyS8xNL5RSkX8Y-cldjetpng886kjhal3wy8b926",
+        id: "L4jrwArffVgSyS8xNL5RSkX8Y",
         position: {
             x: 326.2585507414795,
             y: -123.63188136328027,

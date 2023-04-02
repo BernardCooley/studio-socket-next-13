@@ -117,7 +117,7 @@ const Studios = ({}: Props) => {
     );
 
     const addDevice = (device: IDevice) => {
-        const nodeIds = nodes.map((node) => node.id.split("-")[0]);
+        const nodeIds = nodes.map((node) => node.id);
 
         let nodeId = generateRandomString(25);
 
@@ -126,7 +126,7 @@ const Studios = ({}: Props) => {
         }
 
         const newNode: IDeviceNode = {
-            id: `${nodeId}-${device.id}`,
+            id: nodeId,
             position: {
                 x: randomNumber(0, 350),
                 y: randomNumber(0, 750),
