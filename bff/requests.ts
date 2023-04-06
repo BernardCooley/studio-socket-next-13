@@ -1,3 +1,4 @@
+import { Studio } from "@prisma/client";
 import { devicesInclude } from "./includes";
 import { AndOr, IFetchDevicesBody, IOrderBy, ISearchQuery } from "./types";
 import { buildQuery, fetchWithErrorHandling } from "./utils";
@@ -92,4 +93,16 @@ export const removeDeviceFromUser = async (
         userId: userId,
         deviceId: deviceId,
     });
+};
+
+export const createStudio = async (studio: Studio) => {
+    return fetchWithErrorHandling(`/api/createStudio`, "POST", { studio });
+};
+
+export const fetchStudios = async (userId: string) => {
+    return fetchWithErrorHandling(`/api/getStudios`, "POST", { userId });
+};
+
+export const updateStudio = async (studio: Studio) => {
+    return fetchWithErrorHandling(`/api/updateStudio`, "POST", { studio });
 };
