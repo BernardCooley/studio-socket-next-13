@@ -15,6 +15,16 @@ model User {
   id String @id @default(cuid())
   userId String @unique
   devices Device[]
+  studios Studio[]
+}
+
+model Studio {
+  id String @id @default(cuid())
+  name String
+  user User @relation(fields: [userId], references: [id])
+  userId String
+  devices Device[]
+  layout String
 }
 
 model Device {
@@ -32,6 +42,7 @@ model Device {
   users User[]
   connections Connection[]
   slug String
+  studios Studio[]
 }
 
 model Manufacturer {
