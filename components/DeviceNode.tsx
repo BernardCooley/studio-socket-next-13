@@ -72,7 +72,7 @@ const DeviceNode = memo(
         );
     },
     (prevProps, nextProps) => {
-        return prevProps.data.deviceId === nextProps.data.deviceId;
+        return prevProps.data === nextProps.data;
     }
 );
 

@@ -1,4 +1,4 @@
-import { IDevice } from "../types";
+import { Node } from "reactflow";
 
 export interface ISelect {
     select: {
@@ -70,16 +70,4 @@ export interface Position {
     y: number;
 }
 
-export interface IDeviceNode {
-    id: string;
-    position: Position;
-    data: IDevice;
-    type: string;
-    targetPosition: string;
-    sourcePosition: string;
-    width?: number;
-    height?: number;
-    selected?: boolean;
-    positionAbsolute?: Position;
-    dragging?: boolean;
-}
+export type IDeviceNode = Node<any, string | undefined>;

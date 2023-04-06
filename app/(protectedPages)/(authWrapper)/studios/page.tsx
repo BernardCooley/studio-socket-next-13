@@ -17,6 +17,7 @@ import ReactFlow, {
     Edge,
     Connection,
     BezierEdge,
+    Position,
 } from "reactflow";
 import { UnorderedList } from "@chakra-ui/react";
 import "reactflow/dist/style.css";
@@ -50,11 +51,21 @@ const Studios = ({}: Props) => {
         []
     );
     const { data: user } = useSession();
-    const [nodes, setNodes, onNodesChange] = useNodesState(defaultNodes as any);
+    const [nodes, setNodes, onNodesChange] = useNodesState(
+        defaultNodes as IDeviceNode[]
+    );
     const [edges, setEdges, onEdgesChange] = useEdgesState(defaultEdges);
     const [devices, setDevices] = useState<IDevice[] | null>(null);
     const [devicesShowing, setDevicesShowing] = useState(false);
-    const [currentStudio, setCurrentStudio] = useState<Studio | null>(null);
+    const [history, setHistory] = useState<Studio[]>([
+        {
+            nodes: defaultNodes,
+            edges: defaultEdges,
+        },
+    ]);
+    const [currentHistoryPoint, setCurrentHistoryPoint] = useState(
+        history.length - 1
+    );
 
     useEffect(() => {
         if (user) {
@@ -63,19 +74,55 @@ const Studios = ({}: Props) => {
     }, [user]);
 
     useEffect(() => {
-        console.log("get edges");
-        setCurrentStudio({
-            nodes: nodes as IDeviceNode[],
-            edges: edges,
-        });
+        if (history) {
+            console.log("history", history);
+            // TODO Store history[history.length - 1] in the database
+            setCurrentHistoryPoint(history.length - 1);
+        }
+    }, [history]);
+
+    useEffect(() => {
+        setNodes(history[currentHistoryPoint].nodes);
+        setEdges(history[currentHistoryPoint].edges);
+    }, [currentHistoryPoint]);
+
+    useEffect(() => {
+        updateHistory();
     }, [edges]);
 
-    const getNodes = () => {
-        console.log("get nodes");
-        setCurrentStudio({
-            nodes: nodes as IDeviceNode[],
-            edges: edges,
-        });
+    const transformNode = (node: IDeviceNode) => {
+        return {
+            id: node.id,
+            position: node.position,
+            data: node.data,
+            dragging: node.dragging,
+            positionAbsolute: node.positionAbsolute,
+            sourcePosition: node.sourcePosition,
+            targetPosition: node.targetPosition,
+            type: node.type,
+        };
+    };
+
+    const updateHistory = () => {
+        if (history.length > 0) {
+            const oldNodes = history[history.length - 1].nodes.map((node) => {
+                return transformNode(node);
+            });
+
+            const newNodes = nodes.map((node) => {
+                return transformNode(node);
+            });
+
+            if (JSON.stringify(oldNodes) !== JSON.stringify(newNodes)) {
+                setHistory((history) => [
+                    ...history,
+                    {
+                        nodes: nodes as IDeviceNode[],
+                        edges: edges,
+                    },
+                ]);
+            }
+        }
     };
 
     const randomNumber = (min: number, max: number) => {
@@ -133,8 +180,8 @@ const Studios = ({}: Props) => {
             },
             type: "deviceNode",
             data: device,
-            targetPosition: "left",
-            sourcePosition: "right",
+            targetPosition: Position.Left,
+            sourcePosition: Position.Right,
         };
         setNodes((nodes) => [...nodes, newNode as any]);
         setDevicesShowing(false);
@@ -166,8 +213,7 @@ const Studios = ({}: Props) => {
                     markerStart: "arrow",
                     markerEnd: "arrow",
                 }}
-                onNodeDragStop={getNodes}
-                elevateNodesOnSelect
+                onNodeDragStop={updateHistory}
             >
                 <MiniMap />
                 <Controls />

@@ -1,4 +1,4 @@
-import { Edge } from "reactflow";
+import { Edge, Position } from "reactflow";
 import { Studio } from "../types";
 import { IDeviceNode } from "../bff/types";
 
@@ -1491,8 +1491,8 @@ export const defaultNodes: IDeviceNode[] = [
                 },
             ],
         },
-        targetPosition: "left",
-        sourcePosition: "right",
+        targetPosition: Position.Left,
+        sourcePosition: Position.Right,
         width: 239,
         height: 184,
         selected: false,
@@ -1539,8 +1539,8 @@ export const defaultNodes: IDeviceNode[] = [
             ],
             connections: [],
         },
-        targetPosition: "left",
-        sourcePosition: "right",
+        targetPosition: Position.Left,
+        sourcePosition: Position.Right,
         width: 258,
         height: 186,
         selected: true,
@@ -1641,8 +1641,8 @@ export const defaultNodes: IDeviceNode[] = [
                 },
             ],
         },
-        targetPosition: "left",
-        sourcePosition: "right",
+        targetPosition: Position.Left,
+        sourcePosition: Position.Right,
         width: 92,
         height: 184,
         selected: false,
