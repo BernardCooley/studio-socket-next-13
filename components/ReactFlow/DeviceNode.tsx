@@ -1,8 +1,8 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
-import React, { memo } from "react";
+import { memo } from "react";
 import { Handle, Position } from "reactflow";
-import { deviceIcons } from "../icons";
-import { IDevice } from "../types";
+import { deviceIcons } from "../../icons";
+import { IDevice } from "../../types";
 
 const handleAStyle = { top: -5, width: "20px", height: "20px" };
 const handleBStyle = { bottom: -5, width: "20px", height: "20px" };
@@ -56,7 +56,9 @@ const DeviceNode = memo(
                         htmlWidth="50px"
                     />
 
-                    <Box>{device.data.title}</Box>
+                    <Box maxW="300px" textAlign="center">
+                        {device.data.title}
+                    </Box>
                 </Flex>
                 <Handle
                     type="target"

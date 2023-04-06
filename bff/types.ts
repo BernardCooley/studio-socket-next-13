@@ -1,4 +1,5 @@
-import { Node } from "reactflow";
+import { CSSProperties } from "react";
+import { Node, Position } from "reactflow";
 
 export interface ISelect {
     select: {
@@ -65,9 +66,17 @@ export interface QueryParam {
     value: string;
 }
 
-export interface Position {
-    x: number;
-    y: number;
-}
-
 export type IDeviceNode = Node<any, string | undefined>;
+
+export interface ICustomEdge {
+    id: string;
+    sourceX: number;
+    sourceY: number;
+    targetX: number;
+    targetY: number;
+    sourcePosition: Position;
+    targetPosition: Position;
+    style?: CSSProperties;
+    data: any;
+    markerEnd?: string;
+}

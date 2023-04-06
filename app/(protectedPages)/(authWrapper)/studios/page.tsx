@@ -16,7 +16,6 @@ import ReactFlow, {
     updateEdge,
     Edge,
     Connection,
-    BezierEdge,
     Position,
 } from "reactflow";
 import "reactflow/dist/style.css";
@@ -29,13 +28,14 @@ import {
     updateStudio,
 } from "../../../../bff/requests";
 import { IDevice } from "../../../../types";
-import DeviceNode from "../../../../components/DeviceNode";
+import DeviceNode from "../../../../components/ReactFlow/DeviceNode";
 import { IDeviceNode } from "../../../../bff/types";
 import DeviceItem from "../../../../components/DeviceItem";
 import Icons from "../../../../icons";
 import { generateRandomString } from "../../../../utils";
 import { Studio } from "@prisma/client";
 import { ErrorAlert } from "../../../../components/ToastAlert";
+import CustomEdge from "../../../../components/ReactFlow/CustomEdge";
 
 interface IStudio {
     nodes: IDeviceNode[];
@@ -57,7 +57,7 @@ const Studios = memo(
         );
         const edgeTypes = useMemo(
             () => ({
-                default: BezierEdge,
+                default: CustomEdge,
             }),
             []
         );
@@ -215,7 +215,18 @@ const Studios = memo(
         };
 
         const onConnect = useCallback(
-            (params: any) => setEdges((eds) => addEdge(params, eds)),
+            (params: any) => {
+                setEdges((eds) =>
+                    addEdge(
+                        {
+                            ...params,
+                            type: "buttonedge",
+                            data: { label: "ethaetjaertjaryjry" },
+                        },
+                        eds
+                    )
+                );
+            },
             [setEdges]
         );
 
