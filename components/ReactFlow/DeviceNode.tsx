@@ -1,11 +1,8 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
 import { memo } from "react";
-import { Handle, Position } from "reactflow";
 import { deviceIcons } from "../../icons";
 import { IDevice } from "../../types";
-
-const handleAStyle = { top: -5, width: "20px", height: "20px" };
-const handleBStyle = { bottom: -5, width: "20px", height: "20px" };
+import CustomHandle from "./CustomHandle";
 
 const DeviceNode = memo(
     (device: { data: IDevice }) => {
@@ -17,23 +14,24 @@ const DeviceNode = memo(
                 transitionDuration="0.1s"
                 transitionTimingFunction="ease-in-out"
                 shadow="lg"
+                borderColor="brand.primary-light"
                 _hover={{
                     shadow: "2xl",
-                    transform: "scale(1.05)",
+                    borderColor: "brand.primary",
                 }}
                 borderRadius="md"
                 bg="brand.primary-light"
             >
-                <Box position="absolute" top={-3} right="50%" fontSize="2xs">
-                    in
+                <Box
+                    width="100%"
+                    display="flex"
+                    justifyContent="space-around"
+                    position="absolute"
+                    top="-16px"
+                >
+                    <CustomHandle id="a" label="Out1" type="source" />
+                    <CustomHandle id="a1" label="Out" type="source" />
                 </Box>
-                <Handle
-                    type="source"
-                    position={Position.Bottom}
-                    id="a"
-                    isConnectable={true}
-                    style={handleAStyle}
-                />
                 <Flex
                     direction="column"
                     alignItems="center"
@@ -60,15 +58,16 @@ const DeviceNode = memo(
                         {device.data.title}
                     </Box>
                 </Flex>
-                <Handle
-                    type="target"
-                    position={Position.Bottom}
-                    id="b"
-                    isConnectable={true}
-                    style={handleBStyle}
-                />
-                <Box position="absolute" bottom={-3} right="50%" fontSize="2xs">
-                    out
+                <Box
+                    width="100%"
+                    display="flex"
+                    justifyContent="space-around"
+                    position="absolute"
+                    bottom="-16px"
+                >
+                    <CustomHandle id="b" label="In" type="target" />
+                    <CustomHandle id="b1" label="In" type="target" />
+                    <CustomHandle id="b2" label="In" type="target" />
                 </Box>
             </Box>
         );
