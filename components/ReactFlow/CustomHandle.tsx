@@ -15,10 +15,10 @@ const CustomHandle = ({ type, label, id }: Props) => {
         <Box display="flex" justifyContent="center" width="30px">
             {hovered && (
                 <Box
-                    top={type === "source" ? -4 : "unset"}
-                    bottom={type === "target" ? -6 : "unset"}
+                    top={type === "source" ? 2 : "unset"}
+                    bottom={type === "target" ? 2 : "unset"}
                     position="absolute"
-                    fontSize="2xs"
+                    fontSize="xs"
                     overflow="auto"
                     textAlign="center"
                 >
@@ -33,7 +33,7 @@ const CustomHandle = ({ type, label, id }: Props) => {
                 id={id}
                 isConnectable={true}
                 style={{
-                    ...(type === "source" ? { top: 0 } : { bottom: 0 }),
+                    ...(type === "source" ? { bottom: -14 } : { bottom: 2 }),
                     ...{
                         left: "unset",
                         width: "10px",

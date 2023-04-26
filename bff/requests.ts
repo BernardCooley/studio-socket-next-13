@@ -1,6 +1,12 @@
 import { Studio } from "@prisma/client";
 import { devicesInclude } from "./includes";
-import { AndOr, IFetchDevicesBody, IOrderBy, ISearchQuery } from "./types";
+import {
+    AndOr,
+    IConnector,
+    IFetchDevicesBody,
+    IOrderBy,
+    ISearchQuery,
+} from "./types";
 import { buildQuery, fetchWithErrorHandling } from "./utils";
 
 export interface IRequestOptions {
@@ -71,7 +77,7 @@ export const fetchDeviceTypes = async () => {
 };
 
 export const fetchConnectors = async () => {
-    return fetchWithErrorHandling(`/api/getConnectors`, "GET");
+    return fetchWithErrorHandling<IConnector[]>(`/api/getConnectors`, "GET");
 };
 
 export const fetchFormFactors = async () => {

@@ -1,25 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import { Box, Slide, useToast } from "@chakra-ui/react";
+import { Box, useToast } from "@chakra-ui/react";
 import { useSession } from "next-auth/react";
 import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import { useCallback } from "react";
-import ReactFlow, {
-    MiniMap,
-    Controls,
-    Background,
+import {
     useNodesState,
     useEdgesState,
     addEdge,
-    Panel,
     updateEdge,
     Edge,
     Connection,
     Position,
+    EdgeTypes,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { UnorderedList } from "@chakra-ui/react";
 import "reactflow/dist/style.css";
 import {
     fetchDevices,
@@ -30,12 +26,15 @@ import {
 import { IDevice } from "../../../../types";
 import DeviceNode from "../../../../components/ReactFlow/DeviceNode";
 import { IDeviceNode } from "../../../../bff/types";
-import DeviceItem from "../../../../components/DeviceItem";
-import Icons from "../../../../icons";
-import { generateRandomString } from "../../../../utils";
+import {
+    generateRandomNumber,
+    generateRandomString,
+    transformNode,
+} from "../../../../utils";
 import { Studio } from "@prisma/client";
 import { ErrorAlert } from "../../../../components/ToastAlert";
 import CustomEdge from "../../../../components/ReactFlow/CustomEdge";
+import Canvas from "../../../../components/ReactFlow/Canvas";
 
 interface IStudio {
     nodes: IDeviceNode[];
@@ -46,6 +45,8 @@ interface Props {}
 
 const Studios = memo(
     ({}: Props) => {
+        // TODO: use this
+        const [newEdge, setNewEdge] = useState<Edge | null>(null);
         const [isSaving, setIsSaving] = useState(false);
         const [triggerSave, setTriggerSave] = useState(false);
         const toast = useToast();
@@ -145,19 +146,6 @@ const Studios = memo(
             setStudioLayout(JSON.parse(studios[0].layout));
         };
 
-        const transformNode = (node: IDeviceNode) => {
-            return {
-                id: node.id,
-                position: node.position,
-                data: node.data,
-                dragging: node.dragging,
-                positionAbsolute: node.positionAbsolute,
-                sourcePosition: node.sourcePosition,
-                targetPosition: node.targetPosition,
-                type: node.type,
-            };
-        };
-
         const updateHistory = () => {
             if (history.length > 0) {
                 const oldNodes = history[history.length - 1].nodes.map(
@@ -187,10 +175,6 @@ const Studios = memo(
             }
         };
 
-        const randomNumber = (min: number, max: number) => {
-            return Math.floor(Math.random() * (max - min) + min);
-        };
-
         const getRequestOptions = (
             skip: number | null,
             userId: string | null
@@ -216,12 +200,21 @@ const Studios = memo(
 
         const onConnect = useCallback(
             (params: any) => {
+                console.log(params);
+                setNewEdge(params);
                 setEdges((eds) =>
                     addEdge(
                         {
                             ...params,
-                            type: "buttonedge",
-                            data: { label: "ethaetjaertjaryjry" },
+                            type: "default",
+                            animated: true,
+                            style: {
+                                stroke: "blue",
+                            },
+                            data: {
+                                label: "Out",
+                                connectionType: "midi",
+                            },
                         },
                         eds
                     )
@@ -236,6 +229,27 @@ const Studios = memo(
             []
         );
 
+        // TODO: Fix this
+        const addNewEdge = (params: any) => {
+            setEdges((eds) =>
+                addEdge(
+                    {
+                        ...params,
+                        type: "default",
+                        animated: true,
+                        style: {
+                            stroke: "blue",
+                        },
+                        data: {
+                            label: "Out",
+                            connectionType: "midi",
+                        },
+                    },
+                    eds
+                )
+            );
+        };
+
         const addDevice = (device: IDevice) => {
             const nodeIds = nodes.map((node) => node.id);
 
@@ -248,8 +262,8 @@ const Studios = memo(
             const newNode: IDeviceNode = {
                 id: nodeId,
                 position: {
-                    x: randomNumber(0, 350),
-                    y: randomNumber(0, 750),
+                    x: generateRandomNumber(0, 350),
+                    y: generateRandomNumber(0, 750),
                 },
                 type: "deviceNode",
                 data: device,
@@ -274,82 +288,21 @@ const Studios = memo(
                         Saving...
                     </Box>
                 )}
-                <ReactFlow
+                <Canvas
                     nodes={nodes}
                     edges={edges}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
                     onEdgeUpdate={onEdgeUpdate}
-                    fitView
                     nodeTypes={nodeTypes}
-                    edgeTypes={edgeTypes}
-                    defaultEdgeOptions={{
-                        label: "test",
-                        labelStyle: {
-                            fontSize: 32,
-                        },
-                        labelBgStyle: {
-                            fill: "transparent",
-                        },
-                        style: {
-                            stroke: "black",
-                        },
-                        markerStart: "arrow",
-                        markerEnd: "arrow",
-                    }}
-                    onNodeDragStop={updateHistory}
-                >
-                    <MiniMap />
-                    <Controls />
-                    <Background />
-                    <Panel position="top-left">
-                        <Slide
-                            direction="left"
-                            in={devicesShowing}
-                            style={{ zIndex: 10, marginTop: "50px" }}
-                        >
-                            <Box position="relative">
-                                <UnorderedList
-                                    bg="brand.primary-light"
-                                    listStyleType="none"
-                                    p={1}
-                                    fontSize="2xs"
-                                    color="brand.primary"
-                                    h="500px"
-                                    w="300px"
-                                    overflow="scroll"
-                                >
-                                    {devices &&
-                                        devices.map((device) => (
-                                            <DeviceItem
-                                                actionButtons={[
-                                                    {
-                                                        type: "add",
-                                                        onClick: () =>
-                                                            addDevice(device),
-                                                        confirmAction: "add",
-                                                    },
-                                                ]}
-                                                key={device.id}
-                                                device={device}
-                                            />
-                                        ))}
-                                </UnorderedList>
-                            </Box>
-                        </Slide>
-                        {!devicesShowing && (
-                            <Icons
-                                iconType="chevronRight"
-                                onClick={() =>
-                                    setDevicesShowing(!devicesShowing)
-                                }
-                                fontSize="42px"
-                                className="absolute top-1/2 -right-3"
-                            />
-                        )}
-                    </Panel>
-                </ReactFlow>
+                    edgeTypes={edgeTypes as EdgeTypes}
+                    updateHistory={updateHistory}
+                    devicesShowing={devicesShowing}
+                    devices={devices}
+                    addDevice={addDevice}
+                    setDevicesShowing={setDevicesShowing}
+                />
             </Box>
         );
     },

@@ -1,5 +1,5 @@
 import React from "react";
-import { getBezierPath } from "reactflow";
+import { getSimpleBezierPath } from "reactflow";
 import { ICustomEdge } from "../../bff/types";
 
 export default function CustomEdge({
@@ -12,10 +12,8 @@ export default function CustomEdge({
     targetPosition,
     style = {},
     data,
-    markerEnd,
 }: ICustomEdge) {
-    console.log("🚀 ~ file: CustomEdge.tsx:29 ~ data:", data);
-    const [edgePath] = getBezierPath({
+    const [edgePath] = getSimpleBezierPath({
         sourceX,
         sourceY,
         sourcePosition,
@@ -31,19 +29,20 @@ export default function CustomEdge({
                 style={style}
                 className="react-flow__edge-path"
                 d={edgePath}
-                markerEnd={markerEnd}
+            />
+            <path
+                className="react-flow__edge-path"
+                style={{ strokeWidth: 5 }}
+                d={edgePath}
             />
             <text>
                 <textPath
                     onClick={() => console.log("rstjsryjyr")}
                     href={`#${id}`}
-                    style={{ fontSize: "24px" }}
-                    dominant-baseline="auto"
-                    baseline-shift="10px"
+                    style={{ fontSize: "18px" }}
                     startOffset="50%"
-                    textAnchor="middle"
                 >
-                    Test edge
+                    {data.label}
                 </textPath>
             </text>
         </>

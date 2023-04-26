@@ -80,3 +80,8 @@ export interface ICustomEdge {
     data: any;
     markerEnd?: string;
 }
+
+export interface IConnector {
+    id: string;
+    name: string;
+}

@@ -12,6 +12,7 @@ import Icons from "../icons";
 import useOnClickOutside from "../hooks/useClickOutside";
 import { noop } from "../utils";
 import ErrorMessages from "./ErrorMessages";
+import { Box, Input } from "@chakra-ui/react";
 
 interface Props {
     options: SelectOption[];
@@ -50,56 +51,78 @@ const CustomSelect = forwardRef(
         };
 
         return (
-            <div className={`w-full mb-16 ${className}`} ref={containerRef}>
-                <label className="w-full text-2xl text-primary z-10 mb-4">
+            <Box w="full" mb={2} ref={containerRef}>
+                <Box w="full" fontSize="2xs" color="brand.primary">
                     {label}
-                </label>
-                <div className="relative w-full text-2xl">
-                    <div
-                        className={`w-full p-2 border-4 flex justify-between ${
+                </Box>
+                <Box position="relative" w="full" fontSize="2xs">
+                    <Box
+                        w="full"
+                        p={2}
+                        border={1}
+                        display="flex"
+                        justifyContent="space-between"
+                        borderColor={
                             optionsDisplayed
-                                ? "border-primary rounded-t-md"
-                                : "border-fieldLabel rounded-md"
-                        }`}
+                                ? "brand.primary"
+                                : "brand.fieldLabel"
+                        }
                         onClick={() => setOptionsDisplayed(!optionsDisplayed)}
                     >
-                        <span>{value.label}</span>
+                        <Box>{value.label}</Box>
                         <Icons
                             iconType="chevronDown"
                             className="text-primary"
-                            fontSize="72px"
+                            fontSize="32px"
                         />
-                    </div>
-                    <div
-                        className={`w-full absolute z-50 bg-primary-light transition-height duration-300 ease-in-out overflow-scroll rounded-b-md ${
-                            optionsDisplayed
-                                ? "h-52 border-4 border-primary"
-                                : "h-0"
-                        }`}
+                    </Box>
+                    <Box
+                        w="full"
+                        position="absolute"
+                        bg="brand.primary-light"
+                        transition="height 300ms ease-in-out"
+                        overflowY="scroll"
+                        overflowX="auto"
+                        roundedBottom="md"
+                        h={optionsDisplayed ? "250px" : "0px"}
+                        zIndex={50}
                     >
                         {options.map((option) => (
-                            <div
+                            <Box
                                 onClick={() => handleChange(option)}
-                                className={`w-full border-2 p-2 border-primary ${
+                                w="full"
+                                p={1}
+                                border={1}
+                                borderColor={
                                     option.value === value.value
-                                        ? "bg-primary text-primary-light font-medium border-l-8 border-l-primary-light"
-                                        : "bg-primary-light text-primary"
-                                }`}
+                                        ? "brand.primary"
+                                        : "brand.primary-light"
+                                }
+                                bg={
+                                    option.value === value.value
+                                        ? "brand.primary"
+                                        : "brand.primary-light"
+                                }
+                                color={
+                                    option.value === value.value
+                                        ? "brand.primary-light"
+                                        : "brand.primary"
+                                }
                                 key={option.value}
                             >
                                 {option.label}
-                            </div>
+                            </Box>
                         ))}
-                    </div>
+                    </Box>
                     <ErrorMessages errorMessages={errorMessages} />
-                </div>
-                <input
+                </Box>
+                <Input
                     className="opacity-0 absolute top-0 left-0"
                     ref={ref}
                     value={value.value}
                     onChange={noop}
                 />
-            </div>
+            </Box>
         );
     }
 );

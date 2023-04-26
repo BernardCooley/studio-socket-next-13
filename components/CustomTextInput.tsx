@@ -92,7 +92,11 @@ const CustomTextInput = forwardRef(
                                 borderless
                                     ? "border-0 border-b-0"
                                     : "border-0 border-b-1"
-                            } ${hide ? "opacity-0 h-0 pointer-events-none" : ""}
+                            } ${
+                                hide
+                                    ? "opacity-0 h-0 pointer-events-none"
+                                    : "h-4"
+                            }
                             ${inputClassName}`}
                             placeholder=" "
                             type={type}

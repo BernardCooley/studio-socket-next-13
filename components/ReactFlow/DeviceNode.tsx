@@ -27,10 +27,13 @@ const DeviceNode = memo(
                     display="flex"
                     justifyContent="space-around"
                     position="absolute"
-                    top="-16px"
+                    top="-6px"
                 >
-                    <CustomHandle id="a" label="Out1" type="source" />
-                    <CustomHandle id="a1" label="Out" type="source" />
+                    <CustomHandle
+                        id={`${device.data.id}-newIn1`}
+                        label="In"
+                        type="target"
+                    />
                 </Box>
                 <Flex
                     direction="column"
@@ -63,11 +66,13 @@ const DeviceNode = memo(
                     display="flex"
                     justifyContent="space-around"
                     position="absolute"
-                    bottom="-16px"
+                    bottom="-6px"
                 >
-                    <CustomHandle id="b" label="In" type="target" />
-                    <CustomHandle id="b1" label="In" type="target" />
-                    <CustomHandle id="b2" label="In" type="target" />
+                    <CustomHandle
+                        id={`${device.data.id}-newOut1`}
+                        label="Out"
+                        type="source"
+                    />
                 </Box>
             </Box>
         );

@@ -1,5 +1,5 @@
 import { ReadonlyURLSearchParams } from "next/navigation";
-import { IOrderBy, ISearchQuery, QueryParam } from "./bff/types";
+import { IDeviceNode, IOrderBy, ISearchQuery, QueryParam } from "./bff/types";
 import { defaultSortList } from "./consts";
 import {
     FilterKeys,
@@ -362,4 +362,21 @@ export const generateRandomString = (length: number) => {
     }
 
     return result;
+};
+
+export const generateRandomNumber = (min: number, max: number) => {
+    return Math.floor(Math.random() * (max - min) + min);
+};
+
+export const transformNode = (node: IDeviceNode) => {
+    return {
+        id: node.id,
+        position: node.position,
+        data: node.data,
+        dragging: node.dragging,
+        positionAbsolute: node.positionAbsolute,
+        sourcePosition: node.sourcePosition,
+        targetPosition: node.targetPosition,
+        type: node.type,
+    };
 };
